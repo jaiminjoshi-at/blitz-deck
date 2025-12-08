@@ -7,12 +7,13 @@ import { notFound } from 'next/navigation';
 import Quiz from '@/components/Quiz/Quiz';
 
 interface Props {
-    params: {
+    params: Promise<{
         lessonId: string;
-    };
+    }>;
 }
 
-export default async function LessonPage({ params }: Props) {
+export default async function LessonPage(props: Props) {
+    const params = await props.params;
     const packs = await getAllContentPacks();
     let lesson = null;
 

@@ -16,12 +16,13 @@ import { notFound } from 'next/navigation';
 import LessonList from '@/components/LessonList';
 
 interface Props {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
-export default async function PathwayPage({ params }: Props) {
+export default async function PathwayPage(props: Props) {
+    const params = await props.params;
     // In a real app, we'd look up the pack by pathway ID. 
     // For now, we'll search all packs for the pathway.
     const packs = await getAllContentPacks();
