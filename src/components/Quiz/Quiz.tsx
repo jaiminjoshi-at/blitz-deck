@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import Link from 'next/link';
 import { Lesson } from '@/lib/content/types';
 import MultipleChoiceQuestion from './MultipleChoiceQuestion';
 import MatchingQuestion from './MatchingQuestion';
-import Link from 'next/link';
-import { useProgressStore } from '@/lib/store';
+import { useQuiz } from '@/hooks/useQuiz';
 
 interface Props {
     lesson: Lesson;
@@ -16,48 +16,24 @@ interface Props {
 }
 
 export default function Quiz({ lesson, pathwayId }: Props) {
-    const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
-    const [score, setScore] = React.useState(0);
-    const [showResult, setShowResult] = React.useState(false);
-
-    const currentQuestion = lesson.questions[currentQuestionIndex];
-
-    const handleAnswer = (isCorrect: boolean) => {
-        if (isCorrect) {
-            setScore(score + 1);
-        }
-
-        // Small delay before next question
-        setTimeout(() => {
-            if (currentQuestionIndex < lesson.questions.length - 1) {
-                setCurrentQuestionIndex(currentQuestionIndex + 1);
-            } else {
-                setShowResult(true);
-            }
-        }, 1500);
-    };
-
-    const completeLesson = useProgressStore((state) => state.completeLesson);
-
-    React.useEffect(() => {
-        if (showResult) {
-            const isPassed = score === lesson.questions.length;
-            if (isPassed) {
-                completeLesson(lesson.id);
-            }
-        }
-    }, [showResult, score, lesson.questions.length, lesson.id, completeLesson]);
+    const {
+        currentQuestionIndex,
+        currentQuestion,
+        score,
+        showResult,
+        handleAnswer,
+        totalQuestions,
+        isPassed
+    } = useQuiz(lesson);
 
     if (showResult) {
-        const isPassed = score === lesson.questions.length;
-
         return (
             <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="h4" gutterBottom>
                     {isPassed ? 'Lesson Completed!' : 'Keep Practicing!'}
                 </Typography>
                 <Typography variant="h5">
-                    You scored {score} out of {lesson.questions.length}
+                    You scored {score} out of {totalQuestions}
                 </Typography>
                 <Box sx={{ mt: 4 }}>
                     <Link href={pathwayId ? `/pathway/${pathwayId}` : "/"} passHref style={{ textDecoration: 'none' }}>

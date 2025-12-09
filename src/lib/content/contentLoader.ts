@@ -1,23 +1,39 @@
 import { ContentPack } from './types';
-import germanBasics from '@/content/packs/german-basics.json';
-import germanAdvanced from '@/content/packs/german-advanced.json';
+import fs from 'fs';
+import path from 'path';
+import { PATHS } from '../constants';
 
-// In a real app, this might load from a file system or API
-// For now, we import the JSON directly to simulate loading
-const contentPacks: Record<string, ContentPack> = {
-    'german-basics': germanBasics as ContentPack,
-    'german-advanced': germanAdvanced as ContentPack,
-};
+// This function scans the content directory for JSON files
+export async function getAllContentPacks(): Promise<ContentPack[]> {
+    const contentDir = path.isAbsolute(PATHS.CONTENT_DIR)
+        ? PATHS.CONTENT_DIR
+        : path.join(process.cwd(), PATHS.CONTENT_DIR);
 
-export async function loadContentPack(id: string): Promise<ContentPack | null> {
-    // Simulate async loading
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(contentPacks[id] || null);
-        }, 100);
-    });
+    if (!fs.existsSync(contentDir)) {
+        console.warn(`Content directory not found: ${contentDir}`);
+        return [];
+    }
+
+    const files = await fs.promises.readdir(contentDir);
+    const packs: ContentPack[] = [];
+
+    for (const file of files) {
+        if (file.endsWith('.json')) {
+            try {
+                const filePath = path.join(contentDir, file);
+                const fileContent = await fs.promises.readFile(filePath, 'utf-8');
+                const pack = JSON.parse(fileContent) as ContentPack;
+                packs.push(pack);
+            } catch (error) {
+                console.error(`Error processing content pack ${file}:`, error);
+            }
+        }
+    }
+
+    return packs;
 }
 
-export async function getAllContentPacks(): Promise<ContentPack[]> {
-    return Object.values(contentPacks);
+export async function loadContentPack(id: string): Promise<ContentPack | null> {
+    const packs = await getAllContentPacks();
+    return packs.find(p => p.id === id) || null;
 }

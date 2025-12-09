@@ -1,13 +1,16 @@
-version: '3'
-
 services:
   lingo-pro:
-    container_name: lingo-pro
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: lingo-pro
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-    restart: always
+      - CONTENT_DIR=/app/content 
+    volumes:
+      # Mount the local content packs directory to the container
+      # Admin can update JSON files here to update content
+      - ./src/content/packs:/app/content

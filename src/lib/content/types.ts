@@ -38,3 +38,18 @@ export interface ContentPack {
     language: string;
     pathways: Pathway[];
 }
+
+export interface UserProfile {
+    id: string;
+    name: string;
+    avatar: string;
+    xp: number;
+    streak: number;
+    lastLoginDate: string;
+}
+
+export interface UserProgress {
+    profiles: UserProfile[];
+    activeProfileId: string | null;
+    lessonStatus: { [lessonId: string]: boolean };
+}

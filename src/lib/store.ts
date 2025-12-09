@@ -1,108 +1,94 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { STORAGE_KEYS } from './constants';
+import { UserProfile, UserProgress } from './content/types';
 
-export interface UserProfile {
-    id: string;
-    name: string;
-    avatar: string;
-    joinedAt: string;
-    completedLessons: string[];
-    xp: number;
-    streak: number;
-    lastLoginDate: string | null;
-}
-
-interface AppState {
-    profiles: UserProfile[];
-    activeProfileId: string | null;
-
-    // Actions
-    addProfile: (name: string, avatar: string) => void;
-    selectProfile: (id: string) => void;
-    updateActiveProfile: (updates: Partial<UserProfile>) => void;
-    deleteProfile: (id: string) => void;
-
-    // Progress Actions (proxied to active profile)
+interface ProgressState extends UserProgress {
     completeLesson: (lessonId: string) => void;
     isLessonCompleted: (lessonId: string) => boolean;
+    addProfile: (name: string, avatar: string) => void;
+    selectProfile: (profileId: string) => void;
+    updateActiveProfile: (updates: Partial<UserProfile>) => void;
+    deleteProfile: (profileId: string) => void;
 }
 
-export const useProgressStore = create<AppState>()(
+export const useProgressStore = create<ProgressState>()(
     persist(
         (set, get) => ({
             profiles: [],
             activeProfileId: null,
+            lessonStatus: {},
 
-            addProfile: (name, avatar) => {
+            completeLesson: (lessonId) => {
+                const { activeProfileId, profiles } = get();
+                if (!activeProfileId) return;
+
+                const today = new Date().toISOString().split('T')[0];
+
+                set((state) => ({
+                    lessonStatus: {
+                        ...state.lessonStatus,
+                        [`${activeProfileId}:${lessonId}`]: true
+                    },
+                    profiles: state.profiles.map(p => {
+                        if (p.id !== activeProfileId) return p;
+
+                        // Check streak logic
+                        let newStreak = p.streak;
+                        if (p.lastLoginDate !== today) {
+                            const lastDate = new Date(p.lastLoginDate);
+                            const diff = Math.floor((new Date().getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+                            if (diff === 1) newStreak += 1;
+                            else if (diff > 1) newStreak = 1;
+                            else if (p.streak === 0) newStreak = 1;
+                        }
+
+                        return {
+                            ...p,
+                            xp: p.xp + 10,
+                            streak: newStreak,
+                            lastLoginDate: today
+                        };
+                    })
+                }));
+            },
+
+            isLessonCompleted: (lessonId) => {
+                const { activeProfileId, lessonStatus } = get();
+                if (!activeProfileId) return false;
+                return !!lessonStatus[`${activeProfileId}:${lessonId}`];
+            },
+
+            addProfile: (name, avatar) => set((state) => {
                 const newProfile: UserProfile = {
                     id: crypto.randomUUID(),
                     name,
                     avatar,
-                    joinedAt: new Date().toISOString(),
-                    completedLessons: [],
                     xp: 0,
                     streak: 0,
-                    lastLoginDate: null,
+                    lastLoginDate: new Date().toISOString().split('T')[0]
                 };
-                set((state) => ({
+                return {
                     profiles: [...state.profiles, newProfile],
-                    activeProfileId: newProfile.id // Auto-select new profile
-                }));
-            },
+                    activeProfileId: newProfile.id
+                };
+            }),
 
-            selectProfile: (id) => {
-                set({ activeProfileId: id });
-            },
+            selectProfile: (profileId) => set({ activeProfileId: profileId }),
 
-            updateActiveProfile: (updates) => {
-                const { profiles, activeProfileId } = get();
-                if (!activeProfileId) return;
+            updateActiveProfile: (updates) => set((state) => ({
+                profiles: state.profiles.map(p =>
+                    p.id === state.activeProfileId ? { ...p, ...updates } : p
+                )
+            })),
 
-                const updatedProfiles = profiles.map((p) =>
-                    p.id === activeProfileId ? { ...p, ...updates } : p
-                );
-                set({ profiles: updatedProfiles });
-            },
-
-            deleteProfile: (id) => {
-                const { profiles, activeProfileId } = get();
-                const updatedProfiles = profiles.filter(p => p.id !== id);
-                // If we deleted the active profile, logout
-                const newActiveId = activeProfileId === id ? null : activeProfileId;
-                set({ profiles: updatedProfiles, activeProfileId: newActiveId });
-            },
-
-            completeLesson: (lessonId) => {
-                const { profiles, activeProfileId } = get();
-                if (!activeProfileId) return;
-
-                const profile = profiles.find(p => p.id === activeProfileId);
-                if (!profile) return;
-
-                if (!profile.completedLessons.includes(lessonId)) {
-                    // Update lesson, XP, etc.
-                    const updatedProfile = {
-                        ...profile,
-                        completedLessons: [...profile.completedLessons, lessonId],
-                        xp: profile.xp + 50 // Simple XP logic for now
-                    };
-
-                    const updatedProfiles = profiles.map((p) =>
-                        p.id === activeProfileId ? updatedProfile : p
-                    );
-                    set({ profiles: updatedProfiles });
-                }
-            },
-
-            isLessonCompleted: (lessonId) => {
-                const { profiles, activeProfileId } = get();
-                if (!activeProfileId) return false;
-                const profile = profiles.find(p => p.id === activeProfileId);
-                return profile ? profile.completedLessons.includes(lessonId) : false;
-            }
+            deleteProfile: (profileId) => set((state) => ({
+                profiles: state.profiles.filter(p => p.id !== profileId),
+                activeProfileId: state.activeProfileId === profileId ? null : state.activeProfileId
+            })),
         }),
         {
-            name: 'lingo-pro-storage', // Retain new storage key to avoid conflicts with old schema
+            name: STORAGE_KEYS.PROGRESS,
         }
     )
 );
