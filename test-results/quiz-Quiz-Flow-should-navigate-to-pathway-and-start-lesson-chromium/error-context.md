@@ -1,0 +1,52 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - generic [ref=e10]:
+      - text: Rendering
+      - generic [ref=e11]:
+        - generic [ref=e12]: .
+        - generic [ref=e13]: .
+        - generic [ref=e14]: .
+  - alert [ref=e15]
+  - banner [ref=e17]:
+    - generic [ref=e18]:
+      - button "menu" [ref=e19] [cursor=pointer]:
+        - img [ref=e20]
+      - generic [ref=e22] [cursor=pointer]: LingoPro
+      - link "Home" [ref=e23] [cursor=pointer]:
+        - /url: /
+      - button "account of current user" [ref=e25] [cursor=pointer]:
+        - heading "😎" [level=6] [ref=e26]
+  - generic [ref=e28]:
+    - heading "LingoPro" [level=1] [ref=e29]
+    - heading "Welcome to your language learning journey." [level=2] [ref=e30]
+    - generic [ref=e31]:
+      - link "🧠 German Mastery Master complex grammar, idioms, and business German. 0% 0/4 0" [ref=e34] [cursor=pointer]:
+        - /url: /pathway/german-mastery
+        - button "🧠 German Mastery Master complex grammar, idioms, and business German. 0% 0/4 0" [ref=e35]:
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - generic [ref=e38]: 🧠
+              - generic [ref=e39]: German Mastery
+            - paragraph [ref=e40]: Master complex grammar, idioms, and business German.
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - generic [ref=e43]: 0%
+              - generic [ref=e44]: 0/4
+            - progressbar [ref=e45]
+      - link "🇩🇪 German for Beginners Start your journey with basic German vocabulary and grammar. 0% 0/1 0" [ref=e49] [cursor=pointer]:
+        - /url: /pathway/intro-german
+        - button "🇩🇪 German for Beginners Start your journey with basic German vocabulary and grammar. 0% 0/1 0" [active] [ref=e50]:
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e53]: 🇩🇪
+              - generic [ref=e54]: German for Beginners
+            - paragraph [ref=e55]: Start your journey with basic German vocabulary and grammar.
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]: 0%
+              - generic [ref=e59]: 0/1
+            - progressbar [ref=e60]
+```
