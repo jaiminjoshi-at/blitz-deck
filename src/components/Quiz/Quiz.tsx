@@ -36,11 +36,19 @@ export default function Quiz({ lesson }: Props) {
         }, 1500);
     };
 
+    const completeLesson = useProgressStore((state) => state.completeLesson);
+
+    React.useEffect(() => {
+        if (showResult) {
+            const isPassed = score === lesson.questions.length;
+            if (isPassed) {
+                completeLesson(lesson.id);
+            }
+        }
+    }, [showResult, score, lesson.questions.length, lesson.id, completeLesson]);
+
     if (showResult) {
         const isPassed = score === lesson.questions.length;
-        if (isPassed) {
-            useProgressStore.getState().completeLesson(lesson.id);
-        }
 
         return (
             <Paper sx={{ p: 4, textAlign: 'center' }}>
