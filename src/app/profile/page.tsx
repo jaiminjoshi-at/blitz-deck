@@ -8,6 +8,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
 import { useProgressStore } from '@/lib/store';
 import AvatarPicker from '@/components/Profile/AvatarPicker';
 import { useRouter } from 'next/navigation';
@@ -18,11 +25,13 @@ export default function ProfilePage() {
 
     const user = profiles.find(p => p.id === activeProfileId);
 
-    // Local state for form
+    // Local state
     const [name, setName] = React.useState('');
     const [avatar, setAvatar] = React.useState('👋');
+    const [showSuccess, setShowSuccess] = React.useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
 
-    // Load initial state when user is found
+    // Load initial state
     React.useEffect(() => {
         if (user) {
             setName(user.name);
@@ -32,19 +41,22 @@ export default function ProfilePage() {
 
     const handleSave = () => {
         updateActiveProfile({ name, avatar });
-        alert('Profile saved!');
+        setShowSuccess(true);
     };
 
-    const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this profile? This cannot be undone.')) {
-            if (activeProfileId) {
-                deleteProfile(activeProfileId);
-                router.push('/'); // Will basically refresh to Landing Page since active is null
-            }
+    const handleDeleteClick = () => {
+        setShowDeleteDialog(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (activeProfileId) {
+            deleteProfile(activeProfileId);
+            router.push('/');
         }
+        setShowDeleteDialog(false);
     };
 
-    if (!user) return null; // Should be handled by AuthGuard, but safety first
+    if (!user) return null;
 
     return (
         <Container maxWidth="md">
@@ -91,12 +103,43 @@ export default function ProfilePage() {
                     <Button
                         variant="outlined"
                         color="error"
-                        onClick={handleDelete}
+                        onClick={handleDeleteClick}
                     >
                         Delete Profile
                     </Button>
                 </Paper>
             </Box>
+
+            {/* Success Toast */}
+            <Snackbar
+                open={showSuccess}
+                autoHideDuration={4000}
+                onClose={() => setShowSuccess(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={() => setShowSuccess(false)} severity="success" sx={{ width: '100%' }}>
+                    Profile saved successfully!
+                </Alert>
+            </Snackbar>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog
+                open={showDeleteDialog}
+                onClose={() => setShowDeleteDialog(false)}
+            >
+                <DialogTitle>Delete Profile?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this profile? All progress including completed lessons, XP, and streaks will be permanently lost.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
+                    <Button onClick={handleConfirmDelete} color="error" autoFocus>
+                        Delete Permanently
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 }

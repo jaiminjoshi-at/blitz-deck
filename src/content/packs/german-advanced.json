@@ -1,0 +1,103 @@
+{
+    "id": "german-advanced",
+    "version": "1.0.0",
+    "language": "de",
+    "pathways": [
+        {
+            "id": "advanced-german",
+            "title": "German Mastery",
+            "description": "Master complex grammar, idioms, and business German.",
+            "units": [
+                {
+                    "id": "adv-unit-1",
+                    "title": "Complex Grammar & Idioms",
+                    "description": "Dive into the subjunctive and passive voice.",
+                    "lessons": [
+                        {
+                            "id": "adv-lesson-1",
+                            "title": "Konjunktiv II & Idioms",
+                            "description": "Hypothetical situations and common sayings.",
+                            "content": "This lesson covers the Konjunktiv II for polite requests and hypothetical scenarios.",
+                            "questions": [
+                                {
+                                    "id": "adv-q1",
+                                    "type": "multiple-choice",
+                                    "prompt": "Which sentence correctly uses Konjunktiv II to express a wish?",
+                                    "options": [
+                                        "Ich habe viel Geld.",
+                                        "Ich hätte gerne mehr Zeit.",
+                                        "Ich werde nach Hause gehen.",
+                                        "Ich bin müde."
+                                    ],
+                                    "correctAnswer": "Ich hätte gerne mehr Zeit."
+                                },
+                                {
+                                    "id": "adv-q2",
+                                    "type": "matching",
+                                    "prompt": "Match the German idiom to its English equivalent.",
+                                    "correctAnswer": [
+                                        "Da steppt der Bär:It's a lively party",
+                                        "Tomaten auf den Augen haben:To be oblivious"
+                                    ],
+                                    "pairs": {
+                                        "Da steppt der Bär": "It's a lively party",
+                                        "Tomaten auf den Augen haben": "To be oblivious"
+                                    }
+                                },
+                                {
+                                    "id": "adv-q3",
+                                    "type": "multiple-choice",
+                                    "prompt": "What does 'Ich verstehe nur Bahnhof' mean?",
+                                    "options": [
+                                        "I like the train station.",
+                                        "I understand nothing.",
+                                        "I need to catch a train.",
+                                        "The station is closed."
+                                    ],
+                                    "correctAnswer": "I understand nothing."
+                                },
+                                {
+                                    "id": "adv-q4",
+                                    "type": "multiple-choice",
+                                    "prompt": "Select the correct Passive Voice construction: 'Der Brief ___ geschrieben.'",
+                                    "options": [
+                                        "wird",
+                                        "werde",
+                                        "hat",
+                                        "ist"
+                                    ],
+                                    "correctAnswer": "wird"
+                                },
+                                {
+                                    "id": "adv-q5",
+                                    "type": "matching",
+                                    "prompt": "Match the business term to its definition.",
+                                    "correctAnswer": [
+                                        "Der Vertrieb:Sales Department",
+                                        "Die Buchhaltung:Accounting"
+                                    ],
+                                    "pairs": {
+                                        "Der Vertrieb": "Sales Department",
+                                        "Die Buchhaltung": "Accounting"
+                                    }
+                                },
+                                {
+                                    "id": "adv-q6",
+                                    "type": "multiple-choice",
+                                    "prompt": "Which preposition takes the Genitive case?",
+                                    "options": [
+                                        "Wegen",
+                                        "Für",
+                                        "Mit",
+                                        "Ohne"
+                                    ],
+                                    "correctAnswer": "Wegen"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
