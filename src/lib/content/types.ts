@@ -28,6 +28,7 @@ export interface Pathway {
     id: string;
     title: string;
     description: string;
+    icon?: string; // Emoji or URL
     units: Unit[];
 }
 

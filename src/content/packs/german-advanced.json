@@ -7,6 +7,7 @@
             "id": "german-mastery",
             "title": "German Mastery",
             "description": "Master complex grammar, idioms, and business German.",
+            "icon": "🧠",
             "units": [
                 {
                     "id": "adv-unit-1",

@@ -27,10 +27,10 @@ export default async function Home() {
           Welcome to your language learning journey.
         </Typography>
 
-        <Grid container spacing={4} sx={{ mt: 4 }}>
+        <Grid container spacing={2} sx={{ mt: 4 }}>
           {packs.map((pack) => (
             pack.pathways.map((pathway) => (
-              <Grid key={`${pack.id}-${pathway.id}`} size={{ xs: 12, sm: 6, md: 4 }}>
+              <Grid key={`${pack.id}-${pathway.id}`} size={{ xs: 12, sm: 6, md: 3 }}>
                 <PathwayCard pathway={pathway} packId={pack.id} />
               </Grid>
             ))
