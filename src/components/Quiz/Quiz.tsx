@@ -12,9 +12,10 @@ import { useProgressStore } from '@/lib/store';
 
 interface Props {
     lesson: Lesson;
+    pathwayId?: string;
 }
 
-export default function Quiz({ lesson }: Props) {
+export default function Quiz({ lesson, pathwayId }: Props) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
     const [score, setScore] = React.useState(0);
     const [showResult, setShowResult] = React.useState(false);
@@ -59,8 +60,8 @@ export default function Quiz({ lesson }: Props) {
                     You scored {score} out of {lesson.questions.length}
                 </Typography>
                 <Box sx={{ mt: 4 }}>
-                    <Link href="/" passHref style={{ textDecoration: 'none' }}>
-                        <Button variant="contained">Back to Home</Button>
+                    <Link href={pathwayId ? `/pathway/${pathwayId}` : "/"} passHref style={{ textDecoration: 'none' }}>
+                        <Button variant="contained">{pathwayId ? "Back to Pathway" : "Back to Home"}</Button>
                     </Link>
                 </Box>
             </Paper>

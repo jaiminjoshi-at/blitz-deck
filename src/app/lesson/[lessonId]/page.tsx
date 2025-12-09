@@ -16,6 +16,7 @@ export default async function LessonPage(props: Props) {
     const params = await props.params;
     const packs = await getAllContentPacks();
     let lesson = null;
+    let pathwayId = null;
 
     // Find lesson across all packs
     for (const pack of packs) {
@@ -24,6 +25,7 @@ export default async function LessonPage(props: Props) {
                 const found = unit.lessons.find(l => l.id === params.lessonId);
                 if (found) {
                     lesson = found;
+                    pathwayId = pathway.id;
                     break;
                 }
             }
@@ -47,7 +49,7 @@ export default async function LessonPage(props: Props) {
                 </Typography>
 
                 <Box sx={{ mt: 4 }}>
-                    <Quiz lesson={lesson} />
+                    <Quiz lesson={lesson} pathwayId={pathwayId || undefined} />
                 </Box>
             </Box>
         </Container>

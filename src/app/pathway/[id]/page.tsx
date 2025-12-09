@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { loadContentPack, getAllContentPacks } from '@/lib/content/contentLoader';
 import { notFound } from 'next/navigation';
 import LessonList from '@/components/LessonList';
+import UnitList from '@/components/UnitList';
 
 interface Props {
     params: Promise<{
@@ -40,6 +41,8 @@ export default async function PathwayPage(props: Props) {
         notFound();
     }
 
+    const units = pathway.units;
+
     return (
         <Container maxWidth="md">
             <Box sx={{ my: 4 }}>
@@ -51,19 +54,7 @@ export default async function PathwayPage(props: Props) {
                 </Typography>
 
                 <Box sx={{ mt: 4 }}>
-                    {pathway.units.map((unit) => (
-                        <Accordion key={unit.id} defaultExpanded>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography variant="h6">{unit.title}</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography variant="body2" color="text.secondary" paragraph>
-                                    {unit.description}
-                                </Typography>
-                                <LessonList lessons={unit.lessons} />
-                            </AccordionDetails>
-                        </Accordion>
-                    ))}
+                    <UnitList units={units} />
                 </Box>
             </Box>
         </Container>

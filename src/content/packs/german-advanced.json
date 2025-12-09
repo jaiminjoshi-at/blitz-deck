@@ -1,10 +1,10 @@
 {
     "id": "german-advanced",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "language": "de",
     "pathways": [
         {
-            "id": "advanced-german",
+            "id": "german-mastery",
             "title": "German Mastery",
             "description": "Master complex grammar, idioms, and business German.",
             "units": [
@@ -15,83 +15,84 @@
                     "lessons": [
                         {
                             "id": "adv-lesson-1",
-                            "title": "Konjunktiv II & Idioms",
-                            "description": "Hypothetical situations and common sayings.",
-                            "content": "This lesson covers the Konjunktiv II for polite requests and hypothetical scenarios.",
+                            "title": "Konjunktiv II Rules",
+                            "description": "Understanding the hypothetical.",
+                            "content": "Lesson content placeholder.",
                             "questions": [
                                 {
                                     "id": "adv-q1",
                                     "type": "multiple-choice",
-                                    "prompt": "Which sentence correctly uses Konjunktiv II to express a wish?",
+                                    "prompt": "Which sentence is Konjunktiv II?",
                                     "options": [
-                                        "Ich habe viel Geld.",
-                                        "Ich hätte gerne mehr Zeit.",
-                                        "Ich werde nach Hause gehen.",
-                                        "Ich bin müde."
+                                        "Ich gehe",
+                                        "Ich ginge",
+                                        "Ich bin gegangen"
                                     ],
-                                    "correctAnswer": "Ich hätte gerne mehr Zeit."
-                                },
+                                    "correctAnswer": "Ich ginge"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "adv-lesson-2",
+                            "title": "Idioms in Context",
+                            "description": "Using idioms in daily life.",
+                            "content": "Lesson content placeholder.",
+                            "questions": [
                                 {
                                     "id": "adv-q2",
                                     "type": "matching",
-                                    "prompt": "Match the German idiom to its English equivalent.",
+                                    "prompt": "Match meanings",
                                     "correctAnswer": [
-                                        "Da steppt der Bär:It's a lively party",
-                                        "Tomaten auf den Augen haben:To be oblivious"
+                                        "Blaumachen:To skip work"
                                     ],
                                     "pairs": {
-                                        "Da steppt der Bär": "It's a lively party",
-                                        "Tomaten auf den Augen haben": "To be oblivious"
+                                        "Blaumachen": "To skip work"
                                     }
-                                },
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "adv-unit-2",
+                    "title": "Business German",
+                    "description": "Navigate the office environment.",
+                    "lessons": [
+                        {
+                            "id": "adv-lesson-3",
+                            "title": "Office Vocabulary",
+                            "description": "Common office items.",
+                            "content": "Lesson content placeholder.",
+                            "questions": [
                                 {
                                     "id": "adv-q3",
                                     "type": "multiple-choice",
-                                    "prompt": "What does 'Ich verstehe nur Bahnhof' mean?",
+                                    "prompt": "Das Büro",
                                     "options": [
-                                        "I like the train station.",
-                                        "I understand nothing.",
-                                        "I need to catch a train.",
-                                        "The station is closed."
+                                        "The Office",
+                                        "The Bear",
+                                        "The Beer"
                                     ],
-                                    "correctAnswer": "I understand nothing."
-                                },
+                                    "correctAnswer": "The Office"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "adv-lesson-4",
+                            "title": "Writing Emails",
+                            "description": "Formal correspondence.",
+                            "content": "Lesson content placeholder.",
+                            "questions": [
                                 {
                                     "id": "adv-q4",
                                     "type": "multiple-choice",
-                                    "prompt": "Select the correct Passive Voice construction: 'Der Brief ___ geschrieben.'",
+                                    "prompt": "Formal closing?",
                                     "options": [
-                                        "wird",
-                                        "werde",
-                                        "hat",
-                                        "ist"
+                                        "Tschüss",
+                                        "Mit freundlichen Grüßen",
+                                        "Servus"
                                     ],
-                                    "correctAnswer": "wird"
-                                },
-                                {
-                                    "id": "adv-q5",
-                                    "type": "matching",
-                                    "prompt": "Match the business term to its definition.",
-                                    "correctAnswer": [
-                                        "Der Vertrieb:Sales Department",
-                                        "Die Buchhaltung:Accounting"
-                                    ],
-                                    "pairs": {
-                                        "Der Vertrieb": "Sales Department",
-                                        "Die Buchhaltung": "Accounting"
-                                    }
-                                },
-                                {
-                                    "id": "adv-q6",
-                                    "type": "multiple-choice",
-                                    "prompt": "Which preposition takes the Genitive case?",
-                                    "options": [
-                                        "Wegen",
-                                        "Für",
-                                        "Mit",
-                                        "Ohne"
-                                    ],
-                                    "correctAnswer": "Wegen"
+                                    "correctAnswer": "Mit freundlichen Grüßen"
                                 }
                             ]
                         }
