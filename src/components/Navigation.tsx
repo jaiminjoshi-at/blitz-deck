@@ -57,17 +57,21 @@ export default function Navigation() {
                     <Button color="inherit" component={Link} href="/">Home</Button>
 
                     {activeProfile && (
-                        <div>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Button
+                                color="inherit"
+                                onClick={handleMenu}
                                 aria-controls="menu-appbar"
                                 aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
+                                sx={{ textTransform: 'none' }}
                             >
-                                <Typography variant="h6" sx={{ mr: 1 }}>{activeProfile.avatar}</Typography>
-                            </IconButton>
+                                <Typography variant="subtitle1" sx={{ mr: 1 }}>
+                                    {activeProfile.name}
+                                </Typography>
+                                <Typography variant="h6">
+                                    {activeProfile.avatar}
+                                </Typography>
+                            </Button>
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
@@ -86,7 +90,7 @@ export default function Navigation() {
                                 <MenuItem onClick={() => { router.push('/profile'); handleClose(); }}>Profile</MenuItem>
                                 <MenuItem onClick={handleSwitchProfile}>Switch Profile</MenuItem>
                             </Menu>
-                        </div>
+                        </Box>
                     )}
                 </Toolbar>
             </AppBar>

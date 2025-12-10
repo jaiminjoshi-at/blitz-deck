@@ -16,11 +16,32 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
     const [matches, setMatches] = React.useState<Record<string, string>>({});
     const [completed, setCompleted] = React.useState(false);
 
-    const leftItems = Object.keys(question.pairs || {});
-    const rightItems = Object.values(question.pairs || {});
+    const [leftItems, setLeftItems] = React.useState<string[]>([]);
+    const [rightItems, setRightItems] = React.useState<string[]>([]);
 
-    // Shuffle right items for randomness (simple shuffle)
-    const [shuffledRightItems] = React.useState(() => [...rightItems].sort(() => Math.random() - 0.5));
+    React.useEffect(() => {
+        // Initialize and shuffle items when question changes
+        const rawLeft = Object.keys(question.pairs || {});
+        const rawRight = Object.values(question.pairs || {});
+
+        // Shuffle helper
+        const shuffle = (array: string[]) => {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        };
+
+        setLeftItems(shuffle(rawLeft));
+        setRightItems(shuffle(rawRight));
+
+        // Reset state
+        setSelectedLeft(null);
+        setMatches({});
+        setCompleted(false);
+    }, [question]);
 
     const handleLeftClick = (item: string) => {
         if (matches[item]) return; // Already matched
@@ -68,7 +89,7 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
                     ))}
                 </Grid>
                 <Grid size={{ xs: 6 }}>
-                    {shuffledRightItems.map((item) => {
+                    {rightItems.map((item) => {
                         const isMatched = Object.values(matches).includes(item);
                         return (
                             <Paper
