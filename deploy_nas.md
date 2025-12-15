@@ -32,7 +32,26 @@ services:
       - ./packs:/app/content
 ```
 
-### Step 2: Run
+### Step 2: Organize Your Content (Important!)
+The application expects a specific nested structure for your content packs. **Do not just drop JSON files into the `packs` folder.**
+
+1.  Create a folder named `packs` on your NAS (in the same place as your `docker-compose.yml`).
+2.  Inside `packs`, create a folder for your course (e.g., `german-basics`).
+3.  Inside `german-basics`, you must have the full hierarchy:
+    ```text
+    packs/
+    └── german-basics/            <-- The Content Pack Folder
+        ├── metadata.json         <-- Pack info
+        └── course-1/             <-- A Pathway Folder
+            ├── metadata.json     <-- Pathway info
+            └── unit-1/           <-- A Unit Folder
+                ├── metadata.json <-- Unit info
+                └── lesson-1.json <-- The Lesson content
+    ```
+
+**Pro Tip**: The code repository on your computer already has working content in `src/content/packs`. The easiest way is to copy that entire `packs` folder to your NAS.
+
+### Step 3: Run
 Run this command in the folder where you saved the file:
 ```bash
 docker-compose up -d
