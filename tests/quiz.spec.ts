@@ -12,7 +12,7 @@ test.describe('Quiz Flow', () => {
                 },
                 version: 0
             };
-            window.localStorage.setItem('lingo-pro-storage', JSON.stringify(mockState));
+            window.localStorage.setItem('blitz-deck-storage', JSON.stringify(mockState));
         });
 
         await page.goto('/');

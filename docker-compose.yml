@@ -1,9 +1,9 @@
 services:
-  lingo-pro:
+  blitz-deck:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: lingo-pro
+    container_name: blitz-deck
     restart: unless-stopped
     ports:
       - "3000:3000"
