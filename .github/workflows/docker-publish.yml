@@ -10,8 +10,15 @@ on:
     branches: [ "master" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/**' # Optional: ignore changes to the workflow itself unless you want to test it
   pull_request:
     branches: [ "master" ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
 
 env:
   # Use docker.io for Docker Hub if empty
