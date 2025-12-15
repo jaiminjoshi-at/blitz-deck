@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -51,9 +52,13 @@ export default function Navigation() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => router.push('/')}>
-                        LingoPro
-                    </Typography>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', flexGrow: 1 }} onClick={() => router.push('/')}>
+                        <Image src="/logo.png" alt="BlitzDeck Logo" width={32} height={32} style={{ marginRight: '10px', borderRadius: '8px' }} />
+                        <Typography variant="h6" component="div">
+                            BlitzDeck
+                        </Typography>
+                    </Box>
                     <Button color="inherit" component={Link} href="/">Home</Button>
 
                     {activeProfile && (

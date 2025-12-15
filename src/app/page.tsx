@@ -21,10 +21,10 @@ export default async function Home() {
         }}
       >
         <Typography variant="h2" component="h1" gutterBottom>
-          LingoPro
+          BlitzDeck
         </Typography>
         <Typography variant="h5" component="h2" gutterBottom>
-          Welcome to your language learning journey.
+          Build it. Deck it. Know it.
         </Typography>
 
         <Grid container spacing={2} sx={{ mt: 4 }}>

@@ -16,6 +16,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AvatarPicker from '@/components/Profile/AvatarPicker';
 import { useProgressStore } from '@/lib/store';
+import Image from 'next/image';
 
 export default function LandingPage() {
     const { profiles, selectProfile, addProfile } = useProgressStore();
@@ -36,12 +37,16 @@ export default function LandingPage() {
 
     return (
         <Container maxWidth="md" sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+
             <Box sx={{ textAlign: 'center', mb: 8 }}>
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                    <Image src="/logo.png" alt="BlitzDeck Logo" width={120} height={120} />
+                </Box>
                 <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-                    LingoPro
+                    BlitzDeck
                 </Typography>
                 <Typography variant="h4" color="text.secondary">
-                    Who is learning today?
+                    Build it. Deck it. Know it.
                 </Typography>
             </Box>
 

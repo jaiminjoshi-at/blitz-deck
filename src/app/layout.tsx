@@ -4,7 +4,7 @@ import Navigation from '@/components/Navigation';
 import AuthGuard from '@/components/Auth/AuthGuard';
 
 export const metadata: Metadata = {
-  title: 'LingoPro',
+  title: 'BlitzDeck',
   description: 'Language Learning Platform',
 };
 

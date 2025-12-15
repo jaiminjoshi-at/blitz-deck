@@ -1,5 +1,5 @@
 export const STORAGE_KEYS = {
-    PROGRESS: 'lingo-pro-storage',
+    PROGRESS: 'blitz-deck-storage',
 };
 
 export const PATHS = {

@@ -12,7 +12,7 @@ test.describe('Smoke Tests', () => {
                 },
                 version: 0
             };
-            window.localStorage.setItem('lingo-pro-storage', JSON.stringify(mockState));
+            window.localStorage.setItem('blitz-deck-storage', JSON.stringify(mockState));
         });
     });
 
@@ -20,10 +20,10 @@ test.describe('Smoke Tests', () => {
         await page.goto('/');
 
         // Check for the main title
-        await expect(page.getByRole('heading', { name: 'LingoPro' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'BlitzDeck' })).toBeVisible();
 
         // Check for the welcome data
-        await expect(page.getByText('Welcome to your language learning journey')).toBeVisible();
+        await expect(page.getByText('Build it. Deck it. Know it.')).toBeVisible();
     });
 
     test('should display pathway cards', async ({ page }) => {
