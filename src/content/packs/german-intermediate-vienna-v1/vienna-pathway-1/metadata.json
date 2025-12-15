@@ -1,0 +1,9 @@
+{
+  "id": "vienna-pathway-1",
+  "title": "Deutsch in Wien: Mittelstufe",
+  "description": "Erweitern Sie Ihre Sprachkenntnisse mit Fokus auf den österreichischen Alltag.",
+  "icon": "🇦🇹",
+  "units": [
+    "unit-wien-alltag"
+  ]
+}

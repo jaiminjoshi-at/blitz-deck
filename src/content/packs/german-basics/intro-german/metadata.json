@@ -1,0 +1,9 @@
+{
+  "id": "intro-german",
+  "title": "German for Beginners",
+  "description": "Start your journey with basic German vocabulary and grammar.",
+  "icon": "🇩🇪",
+  "units": [
+    "unit-1"
+  ]
+}

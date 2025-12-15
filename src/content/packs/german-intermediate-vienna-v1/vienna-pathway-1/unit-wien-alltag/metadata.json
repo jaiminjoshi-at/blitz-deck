@@ -1,0 +1,9 @@
+{
+  "id": "unit-wien-alltag",
+  "title": "Alltag und Verkehr in Wien",
+  "description": "Wichtige Situationen in der Stadt meistern: Von den Öffis bis zur Höflichkeit.",
+  "lessons": [
+    "lesson-oeffis",
+    "lesson-kulinarik"
+  ]
+}

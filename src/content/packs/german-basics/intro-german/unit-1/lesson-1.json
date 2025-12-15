@@ -1,0 +1,33 @@
+{
+  "id": "lesson-1",
+  "title": "Hallo!",
+  "description": "Basic greetings.",
+  "content": "In this lesson, you will learn common greetings.",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "multiple-choice",
+      "prompt": "How do you say 'Hello' in German?",
+      "options": [
+        "Hallo",
+        "Tschüss",
+        "Danke",
+        "Bitte"
+      ],
+      "correctAnswer": "Hallo"
+    },
+    {
+      "id": "q2",
+      "type": "matching",
+      "prompt": "Match the English greeting to the German translation.",
+      "correctAnswer": [
+        "Hello:Hallo",
+        "Good morning:Guten Morgen"
+      ],
+      "pairs": {
+        "Hello": "Hallo",
+        "Good morning": "Guten Morgen"
+      }
+    }
+  ]
+}

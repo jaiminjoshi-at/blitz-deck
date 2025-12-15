@@ -34,3 +34,33 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Content Management
+
+The application loads content from `src/content/packs`. The structure is recursive:
+
+1.  **Packs**: Top-level folders (e.g., `german-basics`).
+2.  **Pathways**: Sub-folders (e.g., `intro-german`).
+3.  **Units**: Sub-folders (e.g., `unit-1`).
+4.  **Lessons**: JSON files (e.g., `lesson-1.json`).
+
+### Hierarchy & Ordering
+Ordering is strictly controlled by `metadata.json` files in each folder.
+
+**Folder Structure Example:**
+```
+src/content/packs/
+  └── german-basics/              # [Pack]
+      ├── metadata.json           # { "pathways": ["intro", ...] }
+      └── intro/                  # [Pathway]
+          ├── metadata.json       # { "units": ["unit-1", ...] }
+          └── unit-1/             # [Unit]
+              ├── metadata.json   # { "lessons": ["lesson-1", ...] }
+              └── lesson-1.json   # [Lesson Content]
+```
+
+### How to Add Content
+1.  **Create Folders**: Create the directory structure for your new content.
+2.  **Add Metadata**: create a `metadata.json` at each level (Pack, Pathway, Unit).
+    *   **Crucial**: You MUST add the child folder/file ID to the list in `metadata.json` (e.g., `"lessons": ["my-new-lesson"]`). Files not in the list will be ignored.
+3.  **Add Content**: Create your lesson JSON file.

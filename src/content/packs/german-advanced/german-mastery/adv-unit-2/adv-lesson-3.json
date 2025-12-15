@@ -1,0 +1,19 @@
+{
+  "id": "adv-lesson-3",
+  "title": "Office Vocabulary",
+  "description": "Common office items.",
+  "content": "Lesson content placeholder.",
+  "questions": [
+    {
+      "id": "adv-q3",
+      "type": "multiple-choice",
+      "prompt": "Das Büro",
+      "options": [
+        "The Office",
+        "The Bear",
+        "The Beer"
+      ],
+      "correctAnswer": "The Office"
+    }
+  ]
+}
