@@ -7,6 +7,7 @@ import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import { Question } from '@/lib/content/types';
 
 interface Props {
@@ -76,47 +77,95 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {
 
     return (
         <Box sx={{ mt: 2 }}>
-            <FormControl component="fieldset">
-                <FormLabel component="legend">{question.prompt}</FormLabel>
-                <RadioGroup
-                    aria-label="quiz"
-                    name="quiz"
-                    value={value}
-                    onChange={handleChange}
-                >
-                    {shuffledOptions.map((option) => (
-                        <FormControlLabel
-                            key={option}
-                            value={option}
-                            control={<Radio />}
-                            label={option}
-                            disabled={submitted && (isCorrect || isFailed)}
-                        />
-                    ))}
-                </RadioGroup>
+            <Typography variant="h6" gutterBottom>{question.prompt}</Typography>
+            <Grid container spacing={2}>
+                {shuffledOptions.map((option) => {
+                    const isSelected = value === option;
+                    const showCorrect = submitted && isCorrect && isSelected;
+                    const showIncorrect = submitted && !isCorrect && isSelected;
+                    // If failed, highlight the correct answer? Maybe later. 
+                    // For now, simple selection state.
+
+                    let borderColor = 'divider';
+                    let bgcolor = 'background.paper';
+
+                    if (isSelected) {
+                        borderColor = 'primary.main';
+                        bgcolor = 'action.selected';
+                    }
+                    if (showCorrect) {
+                        borderColor = 'success.main';
+                        bgcolor = 'success.light';
+                    }
+                    if (showIncorrect) {
+                        borderColor = 'error.main';
+                        bgcolor = 'error.light';
+                    }
+
+                    return (
+                        <Grid size={{ xs: 12 }} key={option}>
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                onClick={() => {
+                                    if (!submitted || (!isCorrect && !isFailed)) {
+                                        setValue(option);
+                                        setSubmitted(false);
+                                    }
+                                }}
+                                sx={{
+                                    justifyContent: 'flex-start',
+                                    textAlign: 'left',
+                                    p: 2,
+                                    textTransform: 'none',
+                                    borderColor: borderColor,
+                                    bgcolor: bgcolor,
+                                    borderWidth: isSelected ? 2 : 1,
+                                    '&:hover': {
+                                        borderColor: submitted ? borderColor : 'primary.main',
+                                        bgcolor: submitted ? bgcolor : 'action.hover',
+                                        borderWidth: 2
+                                    }
+                                }}
+                                disabled={submitted && (isCorrect || isFailed)}
+                            >
+                                <Typography variant="body1" color="text.primary">{option}</Typography>
+                            </Button>
+                        </Grid>
+                    );
+                })}
+            </Grid>
+
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
-                    sx={{ mt: 1, mr: 1 }}
-                    type="submit"
-                    variant="outlined"
+                    size="large"
+                    variant="contained"
                     onClick={handleSubmit}
+                    // Disable if no value selected.
+                    // Also disable if submitted AND (Correct OR Failed).
+                    // This means if submitted=true but NOT Correct and NOT Failed (i.e. retry state), it is Enabled.
                     disabled={!value || (submitted && (isCorrect || isFailed))}
+                    sx={{ minWidth: 120, py: 1.5 }}
                 >
-                    {submitted && isFailed ? 'Next' : 'Check Answer'}
+                    {submitted && isFailed ? 'Next' : (submitted && !isCorrect ? 'Try Again' : 'Check Answer')}
                 </Button>
-                {submitted && (
-                    <Box sx={{ mt: 2 }}>
-                        <Typography
-                            color={isCorrect ? 'success.main' : 'error.main'}
-                        >
-                            {isCorrect
-                                ? 'Correct!'
-                                : isFailed
-                                    ? `Incorrect. The correct answer was: ${question.correctAnswer}`
-                                    : 'Incorrect, try again.'}
-                        </Typography>
-                    </Box>
-                )}
-            </FormControl>
+            </Box>
+
+            {submitted && (
+                <Box sx={{ mt: 2 }}>
+                    <Typography
+                        variant="h6"
+                        color={isCorrect ? 'success.main' : 'error.main'}
+                        align="center"
+                    >
+                        {isCorrect
+                            ? 'Correct!'
+                            : isFailed
+                                ? `Incorrect. The correct answer was: ${question.correctAnswer}`
+                                : 'Incorrect, try again.'}
+                    </Typography>
+                </Box>
+            )}
         </Box>
     );
 }

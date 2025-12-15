@@ -14,9 +14,13 @@ test.describe('Profile Management', () => {
         // or manually click "Switch Profile" if we are logged in.
 
         // Try to find "Switch Profile" if we are logged in
-        const switchBtn = page.getByRole('button', { name: /switch account/i }); // Material UI avatar handling might vary
-        if (await switchBtn.isVisible()) {
-            await switchBtn.click();
+        // Try to find the Profile button (showing name or avatar)
+        // In the mock, the avatar is '😎'. We use this as it's always visible.
+        const profileBtn = page.getByRole('button', { name: '😎' });
+
+        if (await profileBtn.isVisible()) {
+            await profileBtn.click();
+            // Wait for drawer and click Switch Profile
             await page.getByText('Switch Profile').click();
         }
 
@@ -29,7 +33,7 @@ test.describe('Profile Management', () => {
         await page.evaluate(() => window.localStorage.clear());
         await page.reload();
 
-        await expect(page.getByText('Who is learning today?')).toBeVisible();
+        await expect(page.getByText('Build it. Deck it. Know it.')).toBeVisible();
         await expect(page.getByText('Add Profile')).toBeVisible();
     });
 });

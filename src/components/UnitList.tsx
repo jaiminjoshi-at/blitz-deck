@@ -33,8 +33,11 @@ export default function UnitList({ units }: UnitListProps) {
                 const progress = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
 
                 return (
-                    <Accordion key={unit.id} defaultExpanded sx={{ mb: 2 }}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Accordion key={unit.id} defaultExpanded sx={{ mb: 3, '&:before': { display: 'none' }, borderRadius: 2 }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{ minHeight: 64, '& .MuiAccordionSummary-content': { my: 2 } }}
+                        >
                             <Box sx={{ width: '100%', mr: 2 }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                                     <Typography variant="h6">{unit.title}</Typography>

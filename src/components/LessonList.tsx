@@ -32,36 +32,56 @@ export default function LessonList({ lessons }: LessonListProps) {
                 const bestScore = progress?.bestScore;
 
                 return (
-                    <ListItem key={lesson.id} disablePadding sx={{ mb: 1 }}>
-                        <ListItemText
-                            primary={
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    {lesson.title}
-                                    {status === 'completed' && (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+
+                    <ListItem key={lesson.id} disablePadding sx={{ mb: 2, display: 'block' }}>
+                        <Link href={`/lesson/${lesson.id}`} passHref style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                            <Box
+                                sx={{
+                                    p: 2,
+                                    border: 1,
+                                    borderColor: 'divider',
+                                    borderRadius: 2,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'background-color 0.2s',
+                                    '&:hover': { bgcolor: 'action.hover' },
+                                    bgcolor: 'background.paper'
+                                }}
+                            >
+                                <Box sx={{ flex: 1, mr: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                                        <Typography variant="subtitle1" fontWeight="medium">
+                                            {lesson.title}
+                                        </Typography>
+                                        {status === 'completed' && (
                                             <CheckCircleIcon color="success" fontSize="small" />
-                                            <Typography variant="caption" color="success.main" fontWeight="bold">
-                                                {bestScore}%
-                                            </Typography>
-                                        </Box>
-                                    )}
-                                    {status === 'in-progress' && (
-                                        <Typography variant="caption" color="primary" sx={{ fontStyle: 'italic' }}>
-                                            In Progress...
+                                        )}
+                                    </Box>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {lesson.description}
+                                    </Typography>
+                                </Box>
+
+                                <Box sx={{ textAlign: 'right' }}>
+                                    {status === 'completed' && (
+                                        <Typography variant="caption" display="block" color="success.main" fontWeight="bold" sx={{ mb: 0.5 }}>
+                                            {bestScore}%
                                         </Typography>
                                     )}
+                                    <Button
+                                        variant={status === 'completed' ? "text" : "contained"}
+                                        size="small"
+                                        color={status === 'completed' ? "success" : "primary"}
+                                        sx={{ minWidth: 80 }}
+                                        component="div" // Helper to avoid nested button issues if any, though standard Button inside Link is valid in Next.js usually, but we want the whole row clickable.
+                                    // Actually, if we wrap the whole thing in Link, we shouldn't have a Button inside. It's invalid HTML (button inside a).
+                                    // Let's use a "fake" button visual or just text.
+                                    >
+                                        {status === 'completed' ? "Review" : (status === 'in-progress' ? "Resume" : "Start")}
+                                    </Button>
                                 </Box>
-                            }
-                            secondary={lesson.description}
-                        />
-                        <Link href={`/lesson/${lesson.id}`} passHref style={{ textDecoration: 'none' }}>
-                            <Button
-                                variant={status === 'completed' ? "text" : "outlined"}
-                                size="small"
-                                color={status === 'completed' ? "success" : "primary"}
-                            >
-                                {status === 'completed' ? "Review" : (status === 'in-progress' ? "Resume" : "Start")}
-                            </Button>
+                            </Box>
                         </Link>
                     </ListItem>
                 );

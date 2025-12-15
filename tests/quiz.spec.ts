@@ -28,7 +28,7 @@ test.describe('Quiz Flow', () => {
 
         // Start first lesson
         const lessonItem = page.getByRole('listitem').filter({ hasText: 'Hallo!' });
-        await lessonItem.getByRole('button', { name: 'Start' }).click();
+        await lessonItem.click();
 
         // Verify Lesson Page
         await expect(page.getByRole('heading', { name: 'Hallo!' })).toBeVisible();

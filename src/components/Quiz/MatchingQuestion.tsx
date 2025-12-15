@@ -79,8 +79,14 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
                             sx={{
                                 p: 2,
                                 mb: 1,
+                                minHeight: 64,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 cursor: matches[item] ? 'default' : 'pointer',
-                                bgcolor: matches[item] ? 'success.light' : selectedLeft === item ? 'primary.light' : 'background.paper',
+                                bgcolor: matches[item] ? 'success.light' : selectedLeft === item ? 'action.selected' : 'background.paper',
+                                border: 1,
+                                borderColor: matches[item] ? 'success.main' : selectedLeft === item ? 'primary.main' : 'divider',
                             }}
                             onClick={() => handleLeftClick(item)}
                         >
@@ -97,8 +103,14 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
                                 sx={{
                                     p: 2,
                                     mb: 1,
+                                    minHeight: 64,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                     cursor: isMatched ? 'default' : 'pointer',
                                     bgcolor: isMatched ? 'success.light' : 'background.paper',
+                                    border: 1,
+                                    borderColor: isMatched ? 'success.main' : 'divider',
                                 }}
                                 onClick={() => handleRightClick(item)}
                             >
