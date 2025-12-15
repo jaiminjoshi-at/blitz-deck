@@ -108,15 +108,16 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {
                                 fullWidth
                                 variant="outlined"
                                 onClick={() => {
-                                    if (!submitted || (!isCorrect && !isFailed)) {
-                                        setValue(option);
-                                        setSubmitted(false);
-                                    }
+                                    // Logic simplified: If the button is clickable (not disabled),
+                                    // we simply set the value and clear submitted state.
+                                    // The disabled prop below handles the prevention logic.
+                                    setValue(option);
+                                    setSubmitted(false);
                                 }}
                                 sx={{
                                     justifyContent: 'flex-start',
                                     textAlign: 'left',
-                                    p: 2,
+                                    p: 1.5, // Reduced padding
                                     textTransform: 'none',
                                     borderColor: borderColor,
                                     bgcolor: bgcolor,
@@ -136,23 +137,27 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {
                 })}
             </Grid>
 
-            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                     size="large"
                     variant="contained"
                     onClick={handleSubmit}
-                    // Disable if no value selected.
-                    // Also disable if submitted AND (Correct OR Failed).
-                    // This means if submitted=true but NOT Correct and NOT Failed (i.e. retry state), it is Enabled.
                     disabled={!value || (submitted && (isCorrect || isFailed))}
-                    sx={{ minWidth: 120, py: 1.5 }}
+                    sx={{ minWidth: 120, py: 1 }}
                 >
                     {submitted && isFailed ? 'Next' : (submitted && !isCorrect ? 'Try Again' : 'Check Answer')}
                 </Button>
             </Box>
 
             {submitted && (
-                <Box sx={{ mt: 2 }}>
+                <Box
+                    sx={{ mt: 2, scrollMarginBottom: '20px' }}
+                    ref={(ref: HTMLElement | null) => {
+                        if (ref) {
+                            ref.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }}
+                >
                     <Typography
                         variant="h6"
                         color={isCorrect ? 'success.main' : 'error.main'}
