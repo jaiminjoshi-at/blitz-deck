@@ -3,8 +3,15 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Alert from '@mui/material/Alert';
 import { getAllContentPacks } from '@/lib/content/contentLoader';
 import PathwayCard from '@/components/PathwayCard';
+import { PATHS } from '@/lib/constants';
+
+// Force dynamic rendering to allow hot-reloading of content packs
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const packs = await getAllContentPacks();
@@ -27,15 +34,41 @@ export default async function Home() {
           Build it. Deck it. Know it.
         </Typography>
 
-        <Grid container spacing={2} sx={{ mt: 4 }}>
-          {packs.map((pack) => (
-            pack.pathways.map((pathway) => (
-              <Grid key={`${pack.id}-${pathway.id}`} size={{ xs: 12, sm: 6, md: 3 }}>
-                <PathwayCard pathway={pathway} packId={pack.id} />
-              </Grid>
-            ))
-          ))}
-        </Grid>
+        {packs.length === 0 ? (
+          <Card variant="outlined" sx={{ mt: 4, maxWidth: 600, width: '100%', borderColor: 'warning.main' }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom color="warning.main">
+                No Content Found
+              </Typography>
+              <Typography variant="body1" paragraph>
+                BlitzDeck could not find any content packs.
+              </Typography>
+
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Scanning Directory: <strong>{PATHS.CONTENT_DIR}</strong>
+              </Alert>
+
+              <Typography variant="subtitle2" gutterBottom>
+                Troubleshooting for Self-Hosted/Docker:
+              </Typography>
+              <Box component="ul" sx={{ pl: 2 }}>
+                <li>Ensure you have mounted a volume to <code>/app/content</code> (or the custom path above).</li>
+                <li>Check that your JSON files are valid and follow the naming convention (e.g. <code>*.json</code>).</li>
+                <li>If running locally, check if the folder exists and has files.</li>
+              </Box>
+            </CardContent>
+          </Card>
+        ) : (
+          <Grid container spacing={2} sx={{ mt: 4 }}>
+            {packs.map((pack) => (
+              pack.pathways.map((pathway) => (
+                <Grid key={`${pack.id}-${pathway.id}`} size={{ xs: 12, sm: 6, md: 3 }}>
+                  <PathwayCard pathway={pathway} packId={pack.id} />
+                </Grid>
+              ))
+            ))}
+          </Grid>
+        )}
       </Box>
     </Container>
   );
