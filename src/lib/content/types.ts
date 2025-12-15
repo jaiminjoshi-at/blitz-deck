@@ -48,8 +48,17 @@ export interface UserProfile {
     lastLoginDate: string;
 }
 
+export type LessonStatus = 'not-started' | 'in-progress' | 'completed';
+
+export interface LessonProgress {
+    status: LessonStatus;
+    bestScore?: number;
+    lastScore?: number;
+    currentQuestionIndex?: number;
+}
+
 export interface UserProgress {
     profiles: UserProfile[];
     activeProfileId: string | null;
-    lessonStatus: { [lessonId: string]: boolean };
+    lessonStatus: { [lessonId: string]: LessonProgress };
 }

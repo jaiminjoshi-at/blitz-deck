@@ -9,26 +9,27 @@ import Link from 'next/link';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Lesson } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 interface LessonListProps {
     lessons: Lesson[];
 }
 
 export default function LessonList({ lessons }: LessonListProps) {
-    // We use a hydration safe way to check store or just rely on client-side rendering
     const [hydrated, setHydrated] = React.useState(false);
 
     React.useEffect(() => {
         setHydrated(true);
     }, []);
 
-    const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
+    const getLessonProgress = useProgressStore((state) => state.getLessonProgress);
 
     return (
         <List>
             {lessons.map((lesson) => {
-                const completed = hydrated && isLessonCompleted(lesson.id);
+                const progress = hydrated ? getLessonProgress(lesson.id) : undefined;
+                const status = progress?.status || 'not-started';
+                const bestScore = progress?.bestScore;
 
                 return (
                     <ListItem key={lesson.id} disablePadding sx={{ mb: 1 }}>
@@ -36,8 +37,18 @@ export default function LessonList({ lessons }: LessonListProps) {
                             primary={
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     {lesson.title}
-                                    {completed && (
-                                        <CheckCircleIcon color="success" fontSize="small" />
+                                    {status === 'completed' && (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                            <CheckCircleIcon color="success" fontSize="small" />
+                                            <Typography variant="caption" color="success.main" fontWeight="bold">
+                                                {bestScore}%
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                    {status === 'in-progress' && (
+                                        <Typography variant="caption" color="primary" sx={{ fontStyle: 'italic' }}>
+                                            In Progress...
+                                        </Typography>
                                     )}
                                 </Box>
                             }
@@ -45,11 +56,11 @@ export default function LessonList({ lessons }: LessonListProps) {
                         />
                         <Link href={`/lesson/${lesson.id}`} passHref style={{ textDecoration: 'none' }}>
                             <Button
-                                variant={completed ? "text" : "outlined"}
+                                variant={status === 'completed' ? "text" : "outlined"}
                                 size="small"
-                                color={completed ? "success" : "primary"}
+                                color={status === 'completed' ? "success" : "primary"}
                             >
-                                {completed ? "Review" : "Start"}
+                                {status === 'completed' ? "Review" : (status === 'in-progress' ? "Resume" : "Start")}
                             </Button>
                         </Link>
                     </ListItem>
