@@ -28,16 +28,34 @@ export default function Quiz({ lesson, pathwayId }: Props) {
 
     if (showResult) {
         return (
-            <Paper sx={{ p: 4, textAlign: 'center' }}>
-                <Typography variant="h4" gutterBottom>
-                    {isPassed ? 'Lesson Completed!' : 'Keep Practicing!'}
-                </Typography>
-                <Typography variant="h5">
-                    You scored {score} out of {totalQuestions}
-                </Typography>
-                <Box sx={{ mt: 4 }}>
+            <Paper sx={{
+                p: 4,
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 3,
+                minHeight: '50vh' // Ensure it takes up some vertical space for a "full screen" feel
+            }}>
+                <Box>
+                    <Typography variant="h4" gutterBottom fontWeight="bold">
+                        {isPassed ? 'Lesson Completed! 🎉' : 'Keep Practicing! 💪'}
+                    </Typography>
+                    <Typography variant="h5" color="text.secondary">
+                        You scored {score} out of {totalQuestions}
+                    </Typography>
+                </Box>
+
+                <Box sx={{ mt: 2 }}>
                     <Link href={pathwayId ? `/pathway/${pathwayId}` : "/"} passHref style={{ textDecoration: 'none' }}>
-                        <Button variant="contained">{pathwayId ? "Back to Pathway" : "Back to Home"}</Button>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            sx={{ minWidth: 200, py: 1.5, fontSize: '1.2rem' }}
+                        >
+                            {pathwayId ? "Back to Pathway" : "Back to Home"}
+                        </Button>
                     </Link>
                 </Box>
             </Paper>
