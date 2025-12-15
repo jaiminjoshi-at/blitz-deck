@@ -115,8 +115,20 @@ export const useProgressStore = create<ProgressState>()(
             },
 
             addProfile: (name, avatar) => set((state) => {
+                // Determine ID generation method
+                const generateId = () => {
+                    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+                        return crypto.randomUUID();
+                    }
+                    // Fallback for non-secure contexts (http) where randomUUID is not available
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+                };
+
                 const newProfile: UserProfile = {
-                    id: crypto.randomUUID(),
+                    id: generateId(),
                     name,
                     avatar,
                     lastLoginDate: new Date().toISOString(),
@@ -145,3 +157,4 @@ export const useProgressStore = create<ProgressState>()(
         }
     )
 );
+
