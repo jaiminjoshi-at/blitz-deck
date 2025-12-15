@@ -63,20 +63,34 @@ export default function LessonList({ lessons }: LessonListProps) {
                                     </Typography>
                                 </Box>
 
-                                <Box sx={{ textAlign: 'right' }}>
-                                    {status === 'completed' && (
-                                        <Typography variant="caption" display="block" color="success.main" fontWeight="bold" sx={{ mb: 0.5 }}>
-                                            {bestScore}%
+                                {/* Middle Stats Section */}
+                                {status === 'completed' && (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        mx: 3,
+                                        minWidth: 100
+                                    }}>
+                                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                                            BEST / LAST
                                         </Typography>
-                                    )}
+                                        <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1 }}>
+                                            {bestScore}% <Typography component="span" variant="h6" color="text.secondary" fontWeight="regular">/ {progress?.lastScore ?? 0}%</Typography>
+                                        </Typography>
+                                    </Box>
+                                )}
+
+                                <Box sx={{ textAlign: 'right', minWidth: 100 }}>
                                     <Button
-                                        variant={status === 'completed' ? "text" : "contained"}
+                                        variant="contained" // Always contained as requested
                                         size="small"
                                         color={status === 'completed' ? "success" : "primary"}
-                                        sx={{ minWidth: 80 }}
-                                        component="div" // Helper to avoid nested button issues if any, though standard Button inside Link is valid in Next.js usually, but we want the whole row clickable.
-                                    // Actually, if we wrap the whole thing in Link, we shouldn't have a Button inside. It's invalid HTML (button inside a).
-                                    // Let's use a "fake" button visual or just text.
+                                        sx={{
+                                            minWidth: 90,
+                                            boxShadow: 2
+                                        }}
+                                        component="div"
                                     >
                                         {status === 'completed' ? "Review" : (status === 'in-progress' ? "Resume" : "Start")}
                                     </Button>
