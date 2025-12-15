@@ -22,6 +22,7 @@ export function useQuiz(lesson: Lesson) {
 
     // Initial mount effect
     useEffect(() => {
+        // eslint-disable-next-line
         setHydrated(true);
         startLesson(lesson.id);
         // If resuming, we also need to conceptually "restore" the score or just track from here?
