@@ -24,11 +24,11 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    # Run as root to avoid permission issues with reading NAS files
+    user: root
     environment:
       - NODE_ENV=production
       - CONTENT_DIR=/app/content
-      - PUID=1026 # Change to your NAS user ID (id -u)
-      - PGID=100  # Change to your NAS group ID (id -g)
     volumes:
       # You still need to provide the content files
       - ./packs:/app/content
