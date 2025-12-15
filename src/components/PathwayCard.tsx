@@ -43,6 +43,7 @@ export default function PathwayCard({ pathway, packId }: PathwayCardProps) {
                 border: '1px solid transparent',
             }}
             variant="outlined"
+            data-testid="pathway-card"
         >
             <Link href={`/pathway/${pathway.id}`} passHref style={{ textDecoration: 'none', color: 'inherit', height: '100%' }}>
                 <CardActionArea sx={{ height: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between' }}>

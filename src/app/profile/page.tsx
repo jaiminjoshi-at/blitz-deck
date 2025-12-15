@@ -130,7 +130,7 @@ export default function ProfilePage() {
                 <DialogTitle>Delete Profile?</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete this profile? All progress including completed lessons, XP, and streaks will be permanently lost.
+                        Are you sure you want to delete this profile? All progress including completed lessons will be permanently lost.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

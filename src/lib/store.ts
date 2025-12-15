@@ -94,30 +94,15 @@ export const useProgressStore = create<ProgressState>()(
                         }
                     },
                     profiles: state.profiles.map(p => {
-                        if (p.id !== activeProfileId) return p;
-
-                        // Only streak/xp update logic if not already completed/checked today? 
-                        // For simplicity, we award XP every completion for now, but streak only once per day.
-                        // Ideally we check if 'completed' was already true to avoid double XP for same lesson?
-                        // User prompt didn't specify XP logic details, keeping existing simple streak logic.
-
-                        let newStreak = p.streak;
-                        if (p.lastLoginDate !== today) {
-                            const lastDate = new Date(p.lastLoginDate);
-                            const diff = Math.floor((new Date().getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
-                            if (diff === 1) newStreak += 1;
-                            else if (diff > 1) newStreak = 1;
-                            else if (p.streak === 0) newStreak = 1;
+                        // Update profile stats (just lastLogin for now if needed, but really just save progress)
+                        // No gamification logic needed anymore.
+                        if (p.id === activeProfileId) {
+                            return {
+                                ...p,
+                                lastLoginDate: today
+                            };
                         }
-
-                        // Bonus XP logic could go here based on score
-
-                        return {
-                            ...p,
-                            xp: p.xp + 10, // Base XP
-                            streak: newStreak,
-                            lastLoginDate: today
-                        };
+                        return p;
                     })
                 }));
             },
@@ -134,9 +119,7 @@ export const useProgressStore = create<ProgressState>()(
                     id: crypto.randomUUID(),
                     name,
                     avatar,
-                    xp: 0,
-                    streak: 0,
-                    lastLoginDate: new Date().toISOString().split('T')[0]
+                    lastLoginDate: new Date().toISOString(),
                 };
                 return {
                     profiles: [...state.profiles, newProfile],

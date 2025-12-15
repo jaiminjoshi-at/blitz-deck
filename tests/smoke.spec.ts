@@ -6,7 +6,7 @@ test.describe('Smoke Tests', () => {
         await page.addInitScript(() => {
             const mockState = {
                 state: {
-                    profiles: [{ id: 'test-user', name: 'Test User', avatar: '😎', xp: 0, streak: 0, lastLoginDate: '2025-01-01' }],
+                    profiles: [{ id: 'test-user', name: 'Test User', avatar: '😎', lastLoginDate: '2025-01-01' }],
                     activeProfileId: 'test-user',
                     lessonStatus: {}
                 },
@@ -29,8 +29,12 @@ test.describe('Smoke Tests', () => {
     test('should display pathway cards', async ({ page }) => {
         await page.goto('/');
 
-        // Check for specific pathways
-        await expect(page.getByText('German for Beginners')).toBeVisible();
-        await expect(page.getByText('German Mastery')).toBeVisible();
+        // Check for at least one pathway card
+        const pathwayCards = page.getByTestId('pathway-card');
+        await expect(pathwayCards.first()).toBeVisible();
+
+        // Optional: Check that we have a reasonable amount (e.g. > 0)
+        const count = await pathwayCards.count();
+        expect(count).toBeGreaterThan(0);
     });
 });

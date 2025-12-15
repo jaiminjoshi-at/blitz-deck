@@ -43,8 +43,6 @@ export interface UserProfile {
     id: string;
     name: string;
     avatar: string;
-    xp: number;
-    streak: number;
     lastLoginDate: string;
 }
 
