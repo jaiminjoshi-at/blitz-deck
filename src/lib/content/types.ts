@@ -16,6 +16,12 @@ export interface Question {
     segments?: ClozeSegment[]; // For cloze
 }
 
+export interface ClozeQuestion extends Question {
+    type: 'cloze';
+    segments: ClozeSegment[];
+    options: string[];
+}
+
 export interface Lesson {
     id: string;
     title: string;
