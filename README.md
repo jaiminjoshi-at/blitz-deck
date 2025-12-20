@@ -78,3 +78,8 @@ Run End-to-End tests with Playwright:
 ```bash
 npm run test:e2e
 ```
+
+## 📜 License
+
+This project is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
