@@ -1,66 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BlitzDeck
 
-## Getting Started
+BlitzDeck is a modern, interactive learning platform built with Next.js and React. Designed for versatility, it supports quizzes and learning packs for any topic—from languages to technical skills.
 
-First, run the development server:
+## 🚀 Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+-   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+-   **UI Library**: [Material UI (MUI) v7](https://mui.com/)
+-   **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+-   **Testing**: [Playwright](https://playwright.dev/)
+-   **Language**: TypeScript
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-   **Universal Content Support**: Create learning packs for any subject using a simple JSON structure.
+-   **Dynamic Content Engine**: Seamlessly loads courses, pathways, and lessons.
+-   **Interactive Quizzes**: Engaging quiz interface to test knowledge retention.
+-   **Responsive Design**: Mobile-optimized UI/UX for tablets and phones.
+-   **Docker Ready**: Tailored for easy deployment (including NAS support).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Getting Started
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+-   Node.js 20+
+-   npm or yarn
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  Clone the repository:
+    ```bash
+    git clone <repository-url>
+    cd blitz-deck
+    ```
 
-## Deploy on Vercel
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-## Content Management
+## 📦 Content Management
 
-The application loads content from `src/content/packs`. The structure is recursive:
+The application loads content recursively from `src/content/packs`.
 
+**Structure:**
 1.  **Packs**: Top-level folders (e.g., `german-basics`).
 2.  **Pathways**: Sub-folders (e.g., `intro-german`).
 3.  **Units**: Sub-folders (e.g., `unit-1`).
 4.  **Lessons**: JSON files (e.g., `lesson-1.json`).
 
-### Hierarchy & Ordering
-Ordering is strictly controlled by `metadata.json` files in each folder.
+**Important**:
+Ordering and visibility are strictly controlled by `metadata.json` files at each folder level. You must refer to your child folders/files in this metadata file for them to appear in the app.
 
-**Folder Structure Example:**
-```
-src/content/packs/
-  └── german-basics/              # [Pack]
-      ├── metadata.json           # { "pathways": ["intro", ...] }
-      └── intro/                  # [Pathway]
-          ├── metadata.json       # { "units": ["unit-1", ...] }
-          └── unit-1/             # [Unit]
-              ├── metadata.json   # { "lessons": ["lesson-1", ...] }
-              └── lesson-1.json   # [Lesson Content]
+## 🐳 Deployment
+
+### Docker
+
+To run the application using Docker Compose:
+
+```bash
+docker-compose up -d --build
 ```
 
-### How to Add Content
-1.  **Create Folders**: Create the directory structure for your new content.
-2.  **Add Metadata**: create a `metadata.json` at each level (Pack, Pathway, Unit).
-    *   **Crucial**: You MUST add the child folder/file ID to the list in `metadata.json` (e.g., `"lessons": ["my-new-lesson"]`). Files not in the list will be ignored.
-3.  **Add Content**: Create your lesson JSON file.
+### NAS Deployment
+For specific instructions on deploying to a NAS (e.g., Synology), please refer to [deploy_nas.md](./deploy_nas.md).
+
+## 🧪 Testing
+
+Run End-to-End tests with Playwright:
+
+```bash
+npm run test:e2e
+```
