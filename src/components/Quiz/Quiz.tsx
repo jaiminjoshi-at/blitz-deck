@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Lesson } from '@/lib/content/types';
 import MultipleChoiceQuestion from './MultipleChoiceQuestion';
 import MatchingQuestion from './MatchingQuestion';
+import ClozeQuestion from './ClozeQuestion';
 import { useQuiz } from '@/hooks/useQuiz';
 
 interface Props {
@@ -80,6 +81,14 @@ export default function Quiz({ lesson, pathwayId }: Props) {
                 <MatchingQuestion
                     key={currentQuestion.id}
                     question={currentQuestion}
+                    onAnswer={handleAnswer}
+                />
+            )}
+
+            {currentQuestion.type === 'cloze' && (
+                <ClozeQuestion
+                    key={currentQuestion.id}
+                    question={currentQuestion as any}
                     onAnswer={handleAnswer}
                 />
             )}

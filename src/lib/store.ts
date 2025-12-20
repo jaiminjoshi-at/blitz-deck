@@ -5,7 +5,7 @@ import { UserProfile, UserProgress, LessonProgress } from './content/types';
 
 interface ProgressState extends UserProgress {
     startLesson: (lessonId: string) => void;
-    updateProgress: (lessonId: string, questionIndex: number) => void;
+    updateProgress: (lessonId: string, questionIndex: number, currentScore: number) => void;
     completeLesson: (lessonId: string, score: number) => void;
     isLessonCompleted: (lessonId: string) => boolean;
     getLessonProgress: (lessonId: string) => LessonProgress | undefined;
@@ -13,6 +13,7 @@ interface ProgressState extends UserProgress {
     selectProfile: (profileId: string) => void;
     updateActiveProfile: (updates: Partial<UserProfile>) => void;
     deleteProfile: (profileId: string) => void;
+    syncWithServer: () => Promise<void>;
 }
 
 export const useProgressStore = create<ProgressState>()(
@@ -46,14 +47,15 @@ export const useProgressStore = create<ProgressState>()(
                             [key]: {
                                 ...current,
                                 status: 'in-progress',
-                                currentQuestionIndex: current?.currentQuestionIndex || 0
+                                currentQuestionIndex: current?.currentQuestionIndex || 0,
+                                currentScore: current?.currentScore || 0
                             }
                         }
                     }));
                 }
             },
 
-            updateProgress: (lessonId, questionIndex) => {
+            updateProgress: (lessonId, questionIndex, currentScore) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
@@ -65,7 +67,8 @@ export const useProgressStore = create<ProgressState>()(
                         ...state.lessonStatus,
                         [key]: {
                             ...(current || { status: 'in-progress' }), // Ensure fallback if missing
-                            currentQuestionIndex: questionIndex
+                            currentQuestionIndex: questionIndex,
+                            currentScore: currentScore
                         }
                     }
                 }));
@@ -151,6 +154,23 @@ export const useProgressStore = create<ProgressState>()(
                 profiles: state.profiles.filter(p => p.id !== profileId),
                 activeProfileId: state.activeProfileId === profileId ? null : state.activeProfileId
             })),
+
+            syncWithServer: async () => {
+                try {
+                    const response = await fetch('/api/sync', { cache: 'no-store' });
+                    if (!response.ok) return;
+                    const serverData = await response.json();
+
+                    if (serverData && (serverData.profiles || serverData.lessonStatus)) {
+                        set((state) => ({
+                            ...state,
+                            ...serverData
+                        }));
+                    }
+                } catch (error) {
+                    console.error('Failed to sync with server:', error);
+                }
+            },
         }),
         {
             name: STORAGE_KEYS.PROGRESS,

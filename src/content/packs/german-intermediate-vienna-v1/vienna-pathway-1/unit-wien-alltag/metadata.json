@@ -4,6 +4,24 @@
   "description": "Wichtige Situationen in der Stadt meistern: Von den Öffis bis zur Höflichkeit.",
   "lessons": [
     "lesson-oeffis",
-    "lesson-kulinarik"
+    "lesson-kulinarik",
+    "mock-lesson-1",
+    "mock-lesson-2",
+    "mock-lesson-3",
+    "mock-lesson-4",
+    "mock-lesson-5",
+    "mock-lesson-6",
+    "mock-lesson-7",
+    "mock-lesson-8",
+    "mock-lesson-9",
+    "mock-lesson-10",
+    "mock-lesson-11",
+    "mock-lesson-12",
+    "mock-lesson-13",
+    "mock-lesson-14",
+    "mock-lesson-15",
+    "mock-lesson-16",
+    "mock-lesson-17",
+    "mock-lesson-18"
   ]
 }

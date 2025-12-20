@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import Link from 'next/link';
 import { loadContentPack, getAllContentPacks } from '@/lib/content/contentLoader';
 import { notFound } from 'next/navigation';
-import LessonList from '@/components/LessonList';
 import UnitList from '@/components/UnitList';
 
 interface Props {

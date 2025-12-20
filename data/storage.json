@@ -1,0 +1,64 @@
+{
+  "profiles": [
+    {
+      "id": "7e2ed973-5542-4a10-bbcf-5c241ddeab9b",
+      "name": "Jaimin",
+      "avatar": "🐶",
+      "lastLoginDate": "2025-12-20T15:28:38.860Z"
+    }
+  ],
+  "activeProfileId": "7e2ed973-5542-4a10-bbcf-5c241ddeab9b",
+  "lessonStatus": {
+    "9addb3ed-a3a8-4649-9e00-d05d7ed09733:adv-lesson-4": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "lastScore": 100,
+      "bestScore": 100
+    },
+    "9addb3ed-a3a8-4649-9e00-d05d7ed09733:adv-lesson-3": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "lastScore": 100,
+      "bestScore": 100
+    },
+    "9addb3ed-a3a8-4649-9e00-d05d7ed09733:lesson-1": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "lastScore": 50,
+      "bestScore": 100
+    },
+    "9addb3ed-a3a8-4649-9e00-d05d7ed09733:lesson-oeffis": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "lastScore": 95,
+      "bestScore": 95
+    },
+    "9086c380-48a4-4fac-8370-6873030fbb00:lesson-1": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "lastScore": 50,
+      "bestScore": 50
+    },
+    "test-user:lesson-oeffis": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "lastScore": 100,
+      "bestScore": 100,
+      "currentScore": 4
+    },
+    "test-user:lesson-1": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "currentScore": 2,
+      "lastScore": 100,
+      "bestScore": 133
+    },
+    "test-user:lesson-kulinarik": {
+      "status": "completed",
+      "currentQuestionIndex": 0,
+      "currentScore": 4,
+      "lastScore": 100,
+      "bestScore": 100
+    }
+  }
+}

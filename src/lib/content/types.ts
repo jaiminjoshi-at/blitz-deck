@@ -1,4 +1,10 @@
-export type QuestionType = 'multiple-choice' | 'matching' | 'fill-in-the-blank';
+export type QuestionType = 'multiple-choice' | 'matching' | 'fill-in-the-blank' | 'cloze';
+
+export interface ClozeSegment {
+    text: string;
+    isBlank: boolean;
+    id: string;
+}
 
 export interface Question {
     id: string;
@@ -7,6 +13,7 @@ export interface Question {
     options?: string[];
     correctAnswer: string | string[];
     pairs?: { [key: string]: string }; // For matching
+    segments?: ClozeSegment[]; // For cloze
 }
 
 export interface Lesson {
@@ -53,6 +60,7 @@ export interface LessonProgress {
     bestScore?: number;
     lastScore?: number;
     currentQuestionIndex?: number;
+    currentScore?: number;
 }
 
 export interface UserProgress {
