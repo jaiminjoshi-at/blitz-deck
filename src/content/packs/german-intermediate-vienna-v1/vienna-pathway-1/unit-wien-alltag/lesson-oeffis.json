@@ -63,6 +63,99 @@
         "den"
       ],
       "correctAnswer": "der"
+    },
+    {
+      "id": "q-ordering-stations",
+      "type": "ordering",
+      "prompt": "Arrange these U-Bahn stations on the U1 line from South to North.",
+      "items": [
+        {
+          "id": "1",
+          "text": "Oberlaa (Terminus South)"
+        },
+        {
+          "id": "2",
+          "text": "Hauptbahnhof"
+        },
+        {
+          "id": "3",
+          "text": "Stephansplatz"
+        },
+        {
+          "id": "4",
+          "text": "Leopoldau (Terminus North)"
+        }
+      ],
+      "correctOrder": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correctAnswer": "Check order"
+    },
+    {
+      "id": "q-multi-valid-tickets",
+      "type": "multiple-response",
+      "prompt": "Which of these are valid ticket types in Vienna?",
+      "options": [
+        "Jahreskarte (Annual Pass)",
+        "24-Stunden-Karte (24h Ticket)",
+        "Einzelfahrt (Single Ride)",
+        "Schwarzfahren (Free Ride)",
+        "Schnitzel-Ticket"
+      ],
+      "correctAnswers": [
+        "Jahreskarte (Annual Pass)",
+        "24-Stunden-Karte (24h Ticket)",
+        "Einzelfahrt (Single Ride)"
+      ],
+      "correctAnswer": "Jahreskarte, 24-Stunden-Karte, Einzelfahrt"
+    },
+    {
+      "id": "q-cat-transport",
+      "type": "categorize",
+      "prompt": "Categorize these transport lines.",
+      "items": [
+        {
+          "id": "u1",
+          "text": "U1"
+        },
+        {
+          "id": "u4",
+          "text": "U4"
+        },
+        {
+          "id": "13a",
+          "text": "13A"
+        },
+        {
+          "id": "48a",
+          "text": "48A"
+        },
+        {
+          "id": "d",
+          "text": "D-Wagen"
+        },
+        {
+          "id": "1",
+          "text": "Linie 1"
+        }
+      ],
+      "categories": [
+        "U-Bahn",
+        "Bus",
+        "Tram"
+      ],
+      "correctMapping": {
+        "u1": "U-Bahn",
+        "u4": "U-Bahn",
+        "13a": "Bus",
+        "48a": "Bus",
+        "d": "Tram",
+        "1": "Tram"
+      },
+      "correctAnswer": "Categorize U-Bahn, Bus, Tram"
     }
   ]
 }

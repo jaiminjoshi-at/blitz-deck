@@ -16,9 +16,13 @@ export async function ensureDataDir() {
     }
 }
 
-export async function saveState(state: any) {
-    await ensureDataDir();
-    await fs.writeFile(STORAGE_FILE, JSON.stringify(state, null, 2), 'utf-8');
+export async function saveState(state: unknown) {
+    try {
+        await ensureDataDir();
+        await fs.writeFile(STORAGE_FILE, JSON.stringify(state, null, 2), 'utf-8');
+    } catch (error: unknown) {
+        console.error('Failed to save state:', error);
+    }
 }
 
 export async function loadState() {
@@ -26,8 +30,9 @@ export async function loadState() {
         await ensureDataDir();
         const content = await fs.readFile(STORAGE_FILE, 'utf-8');
         return JSON.parse(content);
-    } catch (error: any) {
-        if (error.code === 'ENOENT') {
+    } catch (error: unknown) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((error as any).code === 'ENOENT') {
             return null;
         }
         throw error;

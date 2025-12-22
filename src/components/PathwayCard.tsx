@@ -11,10 +11,9 @@ import CardActionArea from '@mui/material/CardActionArea';
 
 interface PathwayCardProps {
     pathway: Pathway;
-    packId: string;
 }
 
-export default function PathwayCard({ pathway, packId }: PathwayCardProps) {
+export default function PathwayCard({ pathway }: PathwayCardProps) {
     const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
     const [hydrated, setHydrated] = React.useState(false);
 

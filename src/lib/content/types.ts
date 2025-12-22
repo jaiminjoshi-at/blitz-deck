@@ -1,4 +1,4 @@
-export type QuestionType = 'multiple-choice' | 'matching' | 'fill-in-the-blank' | 'cloze';
+export type QuestionType = 'multiple-choice' | 'matching' | 'fill-in-the-blank' | 'cloze' | 'ordering' | 'multiple-response' | 'categorize';
 
 export interface ClozeSegment {
     text: string;
@@ -14,12 +14,36 @@ export interface Question {
     correctAnswer: string | string[];
     pairs?: { [key: string]: string }; // For matching
     segments?: ClozeSegment[]; // For cloze
+    items?: { id: string; text: string }[]; // For ordering and categorize
+    correctOrder?: string[]; // For ordering
+    correctAnswers?: string[]; // For multiple-response
+    categories?: string[]; // For categorize
+    correctMapping?: { [itemId: string]: string }; // For categorize
 }
 
 export interface ClozeQuestion extends Question {
     type: 'cloze';
     segments: ClozeSegment[];
     options: string[];
+}
+
+export interface OrderingQuestion extends Question {
+    type: 'ordering';
+    items: { id: string; text: string }[];
+    correctOrder: string[]; // Array of item IDs in correct order
+}
+
+export interface MultipleResponseQuestion extends Question {
+    type: 'multiple-response';
+    options: string[];
+    correctAnswers: string[]; // Array of correct option strings
+}
+
+export interface CategorizeQuestion extends Question {
+    type: 'categorize';
+    items: { id: string; text: string }[];
+    categories: string[];
+    correctMapping: { [itemId: string]: string }; // ItemId -> CategoryName
 }
 
 export interface Lesson {

@@ -75,12 +75,12 @@ export const useProgressStore = create<ProgressState>()(
             },
 
             completeLesson: (lessonId, score) => {
-                const { activeProfileId, lessonStatus, profiles } = get();
+                const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
                 const key = `${activeProfileId}:${lessonId}`;
                 const current = lessonStatus[key];
-                const activeProfile = profiles.find(p => p.id === activeProfileId);
+
                 const today = new Date().toISOString().split('T')[0];
 
                 const bestScore = Math.max(current?.bestScore || 0, score);

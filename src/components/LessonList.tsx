@@ -3,7 +3,7 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

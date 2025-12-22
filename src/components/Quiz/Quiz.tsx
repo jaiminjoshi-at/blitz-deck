@@ -5,10 +5,13 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Link from 'next/link';
-import { Lesson } from '@/lib/content/types';
+import { Lesson, ClozeQuestion as ClozeType, OrderingQuestion as OrderingType, MultipleResponseQuestion as MultipleResponseType, CategorizeQuestion as CategorizeType } from '@/lib/content/types';
 import MultipleChoiceQuestion from './MultipleChoiceQuestion';
 import MatchingQuestion from './MatchingQuestion';
 import ClozeQuestion from './ClozeQuestion';
+import OrderingQuestion from './OrderingQuestion';
+import MultipleResponseQuestion from './MultipleResponseQuestion';
+import CategorizeQuestion from './CategorizeQuestion';
 import { useQuiz } from '@/hooks/useQuiz';
 
 interface Props {
@@ -88,7 +91,31 @@ export default function Quiz({ lesson, pathwayId }: Props) {
             {currentQuestion.type === 'cloze' && (
                 <ClozeQuestion
                     key={currentQuestion.id}
-                    question={currentQuestion as any}
+                    question={currentQuestion as ClozeType}
+                    onAnswer={handleAnswer}
+                />
+            )}
+
+            {currentQuestion.type === 'ordering' && (
+                <OrderingQuestion
+                    key={currentQuestion.id}
+                    question={currentQuestion as OrderingType}
+                    onAnswer={handleAnswer}
+                />
+            )}
+
+            {currentQuestion.type === 'multiple-response' && (
+                <MultipleResponseQuestion
+                    key={currentQuestion.id}
+                    question={currentQuestion as MultipleResponseType}
+                    onAnswer={handleAnswer}
+                />
+            )}
+
+            {currentQuestion.type === 'categorize' && (
+                <CategorizeQuestion
+                    key={currentQuestion.id}
+                    question={currentQuestion as CategorizeType}
                     onAnswer={handleAnswer}
                 />
             )}

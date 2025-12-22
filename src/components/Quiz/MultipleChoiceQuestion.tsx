@@ -1,9 +1,5 @@
 import * as React from 'react';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
+
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -38,10 +34,7 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {
         setAttempts(0);
     }, [question]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue((event.target as HTMLInputElement).value);
-        setSubmitted(false);
-    };
+
 
     const handleSubmit = () => {
         const correct = value === question.correctAnswer;

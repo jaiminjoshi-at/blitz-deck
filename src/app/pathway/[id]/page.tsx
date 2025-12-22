@@ -2,16 +2,7 @@ import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
-import Link from 'next/link';
-import { loadContentPack, getAllContentPacks } from '@/lib/content/contentLoader';
+import { getAllContentPacks } from '@/lib/content/contentLoader';
 import { notFound } from 'next/navigation';
 import UnitList from '@/components/UnitList';
 

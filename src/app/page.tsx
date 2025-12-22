@@ -63,7 +63,7 @@ export default async function Home() {
             {packs.map((pack) => (
               pack.pathways.map((pathway) => (
                 <Grid key={`${pack.id}-${pathway.id}`} size={{ xs: 12, sm: 6, md: 3 }}>
-                  <PathwayCard pathway={pathway} packId={pack.id} />
+                  <PathwayCard pathway={pathway} />
                 </Grid>
               ))
             ))}
