@@ -67,6 +67,7 @@ export interface Pathway {
     description: string;
     icon?: string; // Emoji or URL
     units: Unit[];
+    status?: 'draft' | 'published';
 }
 
 export interface ContentPack {

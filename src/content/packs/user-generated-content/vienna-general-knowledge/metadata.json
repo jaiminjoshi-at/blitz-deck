@@ -1,0 +1,9 @@
+{
+  "id": "vienna-general-knowledge",
+  "title": "Vienna General Knowledge",
+  "description": "General Knowledge of Vienna, Austria",
+  "status": "published",
+  "units": [
+    "unit-1"
+  ]
+}

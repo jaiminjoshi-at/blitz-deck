@@ -1,0 +1,81 @@
+{
+  "title": "Geography",
+  "description": "Identify continents, oceans, and capitals of the world.",
+  "content": "Geography is the study of our planet Earth. We live on large pieces of land called continents and are surrounded by massive bodies of water called oceans. Let's explore our world!",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "Which is the largest continent on Earth?",
+      "correctAnswer": "Asia",
+      "options": [
+        "Africa",
+        "Asia",
+        "Europe",
+        "Antarctica"
+      ],
+      "id": "q_0_1766439755811"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match these famous landmarks to their countries.",
+      "pairs": {
+        "Eiffel Tower": "France",
+        "Great Wall": "China",
+        "Pyramids": "Egypt",
+        "Colosseum": "Italy"
+      },
+      "id": "q_1_1766439755811"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Which of the following are names of Oceans?",
+      "options": [
+        "Pacific",
+        "Amazon",
+        "Atlantic",
+        "Indian",
+        "Sahara"
+      ],
+      "correctAnswers": [
+        "Pacific",
+        "Atlantic",
+        "Indian"
+      ],
+      "id": "q_2_1766439755811"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Is it a Country or a Continent?",
+      "items": [
+        {
+          "id": "geo_1",
+          "text": "Australia"
+        },
+        {
+          "id": "geo_2",
+          "text": "Brazil"
+        },
+        {
+          "id": "geo_3",
+          "text": "Africa"
+        },
+        {
+          "id": "geo_4",
+          "text": "Japan"
+        }
+      ],
+      "categories": [
+        "Country",
+        "Continent"
+      ],
+      "correctMapping": {
+        "geo_1": "Continent",
+        "geo_2": "Country",
+        "geo_3": "Continent",
+        "geo_4": "Country"
+      },
+      "id": "q_3_1766439755811"
+    }
+  ],
+  "id": "geography"
+}

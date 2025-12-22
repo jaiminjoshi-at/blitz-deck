@@ -1,0 +1,146 @@
+{
+  "title": "Lesson 1: Our Amazing Planet",
+  "description": "To test and expand the student's knowledge of Earth's systems and geography.",
+  "content": "Welcome, Explorer! Today we are testing your knowledge about the Earth. We will cover everything from the deep oceans to the high mountains, and even the stars above. Pay close attention to the details!",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "Which layer of the Earth is the only one that is liquid?",
+      "correctAnswer": "Outer Core",
+      "options": [
+        "Crust",
+        "Mantle",
+        "Outer Core",
+        "Inner Core"
+      ],
+      "id": "q_0_1766437750640"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the continent to its famous landmark.",
+      "pairs": {
+        "Africa": "The Great Sphinx",
+        "Europe": "The Colosseum",
+        "South America": "Machu Picchu",
+        "Australia": "Sydney Opera House"
+      },
+      "id": "q_1_1766437750640"
+    },
+    {
+      "type": "fill-in-the-blank",
+      "prompt": "What is the name of the imaginary line that divides the Earth into the Northern and Southern Hemispheres?",
+      "correctAnswer": "Equator",
+      "id": "q_2_1766437750640"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about the water cycle.",
+      "segments": [
+        {
+          "text": "When water turns into gas and rises into the air, it is called ",
+          "isBlank": false,
+          "id": "c1"
+        },
+        {
+          "text": "evaporation",
+          "isBlank": true,
+          "id": "c2"
+        },
+        {
+          "text": ", but when it cools down to form clouds, it is called ",
+          "isBlank": false,
+          "id": "c3"
+        },
+        {
+          "text": "condensation",
+          "isBlank": true,
+          "id": "c4"
+        }
+      ],
+      "options": [
+        "evaporation",
+        "condensation",
+        "precipitation"
+      ],
+      "id": "q_3_1766437750640"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order these planets from closest to the Sun to furthest away.",
+      "items": [
+        {
+          "id": "p1",
+          "text": "Mars"
+        },
+        {
+          "id": "p2",
+          "text": "Venus"
+        },
+        {
+          "id": "p3",
+          "text": "Mercury"
+        },
+        {
+          "id": "p4",
+          "text": "Earth"
+        }
+      ],
+      "correctOrder": [
+        "p3",
+        "p2",
+        "p4",
+        "p1"
+      ],
+      "id": "q_4_1766437750641"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Which of these are considered 'Renewable Energy' sources? (Select all that apply)",
+      "options": [
+        "Solar",
+        "Coal",
+        "Wind",
+        "Natural Gas"
+      ],
+      "correctAnswers": [
+        "Solar",
+        "Wind"
+      ],
+      "id": "q_5_1766437750641"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Sort these animals into their correct classes.",
+      "items": [
+        {
+          "id": "a1",
+          "text": "Frog"
+        },
+        {
+          "id": "a2",
+          "text": "Whale"
+        },
+        {
+          "id": "a3",
+          "text": "Salamander"
+        },
+        {
+          "id": "a4",
+          "text": "Elephant"
+        }
+      ],
+      "categories": [
+        "Mammal",
+        "Amphibian"
+      ],
+      "correctMapping": {
+        "a1": "Amphibian",
+        "a2": "Mammal",
+        "a3": "Amphibian",
+        "a4": "Mammal"
+      },
+      "id": "q_6_1766437750641"
+    }
+  ],
+  "id": "lesson-1-our-amazing-planet"
+}

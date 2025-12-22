@@ -156,6 +156,15 @@
         "1": "Tram"
       },
       "correctAnswer": "Categorize U-Bahn, Bus, Tram"
+    },
+    {
+      "id": "q-fitb-u4-color",
+      "type": "fill-in-the-blank",
+      "prompt": "Which color is the U4 subway line? (Type Green or Grün)",
+      "correctAnswer": [
+        "Green",
+        "Grün"
+      ]
     }
   ]
 }

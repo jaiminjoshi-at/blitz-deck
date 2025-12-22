@@ -1,0 +1,16 @@
+src/app/creator/create/page.tsx(149,50): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.
+    Property 'component' is missing in type '{ children: Element; item: true; key: string; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, "div">>): Element | null', gave the following error.
+    Type '{ children: Element; item: true; key: string; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.
+      Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.
+src/app/creator/page.tsx(45,26): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.
+    Property 'component' is missing in type '{ children: Element; item: true; xs: number; sm: number; md: number; lg: number; key: string; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.
+  Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, "div">>): Element | null', gave the following error.
+    Type '{ children: Element; item: true; xs: number; sm: number; md: number; lg: number; key: string; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.
+      Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.
+src/components/Creator/JsonImporter.tsx(26,60): error TS2339: Property 'errors' does not exist on type 'ZodError<{ id: string; title: string; description: string; units: { id: string; title: string; description: string; lessons: { id: string; title: string; description: string; content: string; questions: ({ id: string; prompt: string; correctAnswer: string | string[]; type: "multiple-choice"; options: string[]; } | ....'.
+src/components/Creator/JsonImporter.tsx(26,71): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/lib/content/schemas.ts(27,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/content/schemas.ts(58,23): error TS2554: Expected 2-3 arguments, but got 1.

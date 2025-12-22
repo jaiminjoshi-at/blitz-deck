@@ -1,0 +1,8 @@
+{
+  "id": "unit-1",
+  "title": "Unit 1",
+  "description": "Unit 1 Description",
+  "lessons": [
+    "lesson-1"
+  ]
+}

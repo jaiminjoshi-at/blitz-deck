@@ -1,0 +1,75 @@
+{
+  "title": "Science",
+  "description": "Understand basic scientific concepts like states of matter and the solar system.",
+  "content": "Science helps us understand how the world works, from the tiny atoms that make up everything to the giant planets in our Solar System.",
+  "questions": [
+    {
+      "type": "ordering",
+      "prompt": "Order these planets starting from the one closest to the Sun.",
+      "items": [
+        {
+          "id": "p1",
+          "text": "Venus"
+        },
+        {
+          "id": "p2",
+          "text": "Mercury"
+        },
+        {
+          "id": "p3",
+          "text": "Earth"
+        },
+        {
+          "id": "p4",
+          "text": "Mars"
+        }
+      ],
+      "correctOrder": [
+        "p2",
+        "p1",
+        "p3",
+        "p4"
+      ],
+      "id": "q_0_1766439755819"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about the states of matter.",
+      "segments": [
+        {
+          "text": "When water freezes, it turns from a liquid into a ",
+          "isBlank": false,
+          "id": "s1"
+        },
+        {
+          "text": "solid",
+          "isBlank": true,
+          "id": "s2"
+        },
+        {
+          "text": ". When it boils, it becomes a ",
+          "isBlank": false,
+          "id": "s3"
+        },
+        {
+          "text": "gas",
+          "isBlank": true,
+          "id": "s4"
+        }
+      ],
+      "options": [
+        "solid",
+        "gas",
+        "plasma"
+      ],
+      "id": "q_1_1766439755819"
+    },
+    {
+      "type": "fill-in-the-blank",
+      "prompt": "What is the name of the force that pulls objects toward the center of the Earth?",
+      "correctAnswer": "Gravity",
+      "id": "q_2_1766439755819"
+    }
+  ],
+  "id": "science"
+}

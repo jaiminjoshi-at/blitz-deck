@@ -1,0 +1,9 @@
+{
+  "id": "general-knowledge-explorer",
+  "title": "General Knowledge Explorer",
+  "description": "General knowledge on different topics, basic level",
+  "status": "published",
+  "units": [
+    "unit-1"
+  ]
+}

@@ -44,7 +44,7 @@ export default async function PathwayPage(props: Props) {
                 </Typography>
 
                 <Box sx={{ mt: 4 }}>
-                    <UnitList units={units} />
+                    <UnitList units={units} pathwayId={params.id} />
                 </Box>
             </Box>
         </Container>

@@ -1,0 +1,9 @@
+{
+  "id": "world-capitals",
+  "title": "World Capitals",
+  "description": "World capitals",
+  "status": "published",
+  "units": [
+    "unit-1"
+  ]
+}

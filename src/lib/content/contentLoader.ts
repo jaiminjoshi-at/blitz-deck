@@ -19,7 +19,7 @@ async function readJson<T>(filePath: string): Promise<T | null> {
     }
 }
 
-export async function getAllContentPacks(): Promise<ContentPack[]> {
+export async function getAllContentPacks(options: { includeDrafts?: boolean } = {}): Promise<ContentPack[]> {
     const contentDir = path.isAbsolute(PATHS.CONTENT_DIR)
         ? PATHS.CONTENT_DIR
         : path.join(process.cwd(), PATHS.CONTENT_DIR);
@@ -52,10 +52,13 @@ export async function getAllContentPacks(): Promise<ContentPack[]> {
             if (!fs.existsSync(pathwayPath)) continue;
 
             const pathwayMetadata = await readJson<{
-                id: string; title: string; description: string; icon?: string; units: string[]
+                id: string; title: string; description: string; icon?: string; units: string[]; status?: 'draft' | 'published'
             }>(path.join(pathwayPath, 'metadata.json'));
 
             if (!pathwayMetadata) continue;
+
+            // Filter out drafts unless explicitly included
+            if (pathwayMetadata.status === 'draft' && !options.includeDrafts) continue;
 
             const units: Unit[] = [];
 
@@ -88,12 +91,15 @@ export async function getAllContentPacks(): Promise<ContentPack[]> {
             });
         }
 
-        packs.push({
-            id: packMetadata.id,
-            version: packMetadata.version,
-            language: packMetadata.language,
-            pathways
-        });
+        // Only add pack if it has pathways (after filtering)
+        if (pathways.length > 0) {
+            packs.push({
+                id: packMetadata.id,
+                version: packMetadata.version,
+                language: packMetadata.language,
+                pathways
+            });
+        }
     }
 
     return packs;

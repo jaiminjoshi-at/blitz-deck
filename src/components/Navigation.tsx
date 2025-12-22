@@ -79,6 +79,18 @@ export default function Navigation() {
                         <ListItemText primary="Switch Profile" />
                     </ListItemButton>
                 </ListItem>
+                <Divider />
+                <ListItem key="creator" disablePadding>
+                    <ListItemButton onClick={() => {
+                        router.push('/creator');
+                        setDrawerOpen(false);
+                    }}>
+                        <ListItemIcon>
+                            <Typography variant="h6">🎨</Typography>
+                        </ListItemIcon>
+                        <ListItemText primary="Creator Studio" />
+                    </ListItemButton>
+                </ListItem>
             </List>
         </Box>
     );

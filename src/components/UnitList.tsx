@@ -14,9 +14,10 @@ import { useProgressStore } from '@/lib/store';
 
 interface UnitListProps {
     units: Unit[];
+    pathwayId: string;
 }
 
-export default function UnitList({ units }: UnitListProps) {
+export default function UnitList({ units, pathwayId }: UnitListProps) {
     const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
 
     // Hydration check
@@ -29,7 +30,7 @@ export default function UnitList({ units }: UnitListProps) {
         <>
             {units.map((unit) => {
                 const totalLessons = unit.lessons.length;
-                const completedCount = unit.lessons.filter(l => hydrated && isLessonCompleted(l.id)).length;
+                const completedCount = unit.lessons.filter(l => hydrated && isLessonCompleted(l.id, pathwayId)).length;
                 const progress = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
 
                 return (
@@ -52,7 +53,7 @@ export default function UnitList({ units }: UnitListProps) {
                             <Typography variant="body2" color="text.secondary" paragraph>
                                 {unit.description}
                             </Typography>
-                            <LessonList lessons={unit.lessons} />
+                            <LessonList lessons={unit.lessons} pathwayId={pathwayId} />
                         </AccordionDetails>
                     </Accordion>
                 );

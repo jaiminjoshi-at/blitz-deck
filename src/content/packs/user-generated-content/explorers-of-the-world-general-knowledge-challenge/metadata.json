@@ -1,0 +1,9 @@
+{
+  "id": "explorers-of-the-world-general-knowledge-challenge",
+  "title": "Explorers of the World: General Knowledge Challenge",
+  "description": "General knowledge on various topics, should be somewhat challenging.",
+  "status": "published",
+  "units": [
+    "unit-1-the-world-around-us"
+  ]
+}

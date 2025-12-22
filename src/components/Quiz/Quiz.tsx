@@ -12,6 +12,7 @@ import ClozeQuestion from './ClozeQuestion';
 import OrderingQuestion from './OrderingQuestion';
 import MultipleResponseQuestion from './MultipleResponseQuestion';
 import CategorizeQuestion from './CategorizeQuestion';
+import FillInTheBlankQuestion from './FillInTheBlankQuestion';
 import { useQuiz } from '@/hooks/useQuiz';
 
 interface Props {
@@ -28,7 +29,7 @@ export default function Quiz({ lesson, pathwayId }: Props) {
         handleAnswer,
         totalQuestions,
         isPassed
-    } = useQuiz(lesson);
+    } = useQuiz(lesson, pathwayId);
 
     if (showResult) {
         return (
@@ -116,6 +117,14 @@ export default function Quiz({ lesson, pathwayId }: Props) {
                 <CategorizeQuestion
                     key={currentQuestion.id}
                     question={currentQuestion as CategorizeType}
+                    onAnswer={handleAnswer}
+                />
+            )}
+
+            {currentQuestion.type === 'fill-in-the-blank' && (
+                <FillInTheBlankQuestion
+                    key={currentQuestion.id}
+                    question={currentQuestion}
                     onAnswer={handleAnswer}
                 />
             )}

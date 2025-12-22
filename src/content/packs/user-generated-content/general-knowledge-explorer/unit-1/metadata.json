@@ -1,0 +1,9 @@
+{
+  "id": "unit-1",
+  "title": "Unit 1",
+  "description": "General Knowledge",
+  "lessons": [
+    "geography",
+    "science"
+  ]
+}

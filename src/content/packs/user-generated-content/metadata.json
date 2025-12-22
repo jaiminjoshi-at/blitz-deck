@@ -1,0 +1,11 @@
+{
+  "id": "user-generated-content",
+  "version": "0.0.1",
+  "language": "en",
+  "pathways": [
+    "world-capitals",
+    "vienna-general-knowledge",
+    "explorers-of-the-world-general-knowledge-challenge",
+    "general-knowledge-explorer"
+  ]
+}
