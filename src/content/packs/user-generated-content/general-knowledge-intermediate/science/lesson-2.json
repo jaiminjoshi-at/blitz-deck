@@ -1,0 +1,216 @@
+{
+  "title": "Lesson 2",
+  "description": "Exploring forces, states of matter, and the solar system.",
+  "content": "In this final lesson, we'll look at the stars, gravity, and the different forms things take, like ice and steam!",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "Which planet is known as the 'Red Planet'?",
+      "correctAnswer": "Mars",
+      "options": [
+        "Venus",
+        "Mars",
+        "Jupiter"
+      ],
+      "id": "q_0_1766442702410"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about gravity.",
+      "segments": [
+        {
+          "text": "The force that pulls objects toward the Earth is called ",
+          "isBlank": false,
+          "id": "g1"
+        },
+        {
+          "text": "gravity",
+          "isBlank": true,
+          "id": "g2"
+        },
+        {
+          "text": ".",
+          "isBlank": false,
+          "id": "g3"
+        }
+      ],
+      "options": [
+        "gravity",
+        "magnetism",
+        "friction"
+      ],
+      "id": "q_1_1766442702410"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Sort these into States of Matter.",
+      "items": [
+        {
+          "id": "m1",
+          "text": "Ice"
+        },
+        {
+          "id": "m2",
+          "text": "Water Vapor"
+        },
+        {
+          "id": "m3",
+          "text": "Orange Juice"
+        },
+        {
+          "id": "m4",
+          "text": "Rock"
+        }
+      ],
+      "categories": [
+        "Solid",
+        "Liquid",
+        "Gas"
+      ],
+      "correctMapping": {
+        "m1": "Solid",
+        "m2": "Gas",
+        "m3": "Liquid",
+        "m4": "Solid"
+      },
+      "id": "q_2_1766442702410"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the scientific tool to what it measures.",
+      "pairs": {
+        "Thermometer": "Temperature",
+        "Ruler": "Length",
+        "Scale": "Weight"
+      },
+      "id": "q_3_1766442702410"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order the planets starting from the one closest to the Sun.",
+      "items": [
+        {
+          "id": "p1",
+          "text": "Venus"
+        },
+        {
+          "id": "p2",
+          "text": "Mercury"
+        },
+        {
+          "id": "p3",
+          "text": "Earth"
+        },
+        {
+          "id": "p4",
+          "text": "Mars"
+        }
+      ],
+      "correctOrder": [
+        "p2",
+        "p1",
+        "p3",
+        "p4"
+      ],
+      "id": "q_4_1766442702410"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Which of these are sources of light?",
+      "options": [
+        "The Sun",
+        "The Moon",
+        "A Flashlight",
+        "A Mirror",
+        "A Fire"
+      ],
+      "correctAnswers": [
+        "The Sun",
+        "A Flashlight",
+        "A Fire"
+      ],
+      "id": "q_5_1766442702410"
+    },
+    {
+      "type": "multiple-choice",
+      "prompt": "What is the center of our solar system?",
+      "correctAnswer": "The Sun",
+      "options": [
+        "Earth",
+        "The Sun",
+        "The Moon"
+      ],
+      "id": "q_6_1766442702410"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about water freezing.",
+      "segments": [
+        {
+          "text": "Water freezes at ",
+          "isBlank": false,
+          "id": "temp1"
+        },
+        {
+          "text": "0",
+          "isBlank": true,
+          "id": "temp2"
+        },
+        {
+          "text": " degrees Celsius.",
+          "isBlank": false,
+          "id": "temp3"
+        }
+      ],
+      "options": [
+        "0",
+        "32",
+        "100"
+      ],
+      "id": "q_7_1766442702410"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Is the material a Conductor or an Insulator of electricity?",
+      "items": [
+        {
+          "id": "mat1",
+          "text": "Copper Wire"
+        },
+        {
+          "id": "mat2",
+          "text": "Rubber Band"
+        },
+        {
+          "id": "mat3",
+          "text": "Plastic Spoon"
+        },
+        {
+          "id": "mat4",
+          "text": "Iron Nail"
+        }
+      ],
+      "categories": [
+        "Conductor",
+        "Insulator"
+      ],
+      "correctMapping": {
+        "mat1": "Conductor",
+        "mat2": "Insulator",
+        "mat3": "Insulator",
+        "mat4": "Conductor"
+      },
+      "id": "q_8_1766442702410"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the Earth's movement to its result.",
+      "pairs": {
+        "Rotation (Spinning)": "Day and Night",
+        "Revolution (Orbiting Sun)": "The Seasons"
+      },
+      "id": "q_9_1766442702410"
+    }
+  ],
+  "id": "lesson-2"
+}

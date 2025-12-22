@@ -1,0 +1,9 @@
+{
+  "id": "science",
+  "title": "Science",
+  "description": "Test your science knowledge",
+  "lessons": [
+    "lesson-1",
+    "lesson-2"
+  ]
+}

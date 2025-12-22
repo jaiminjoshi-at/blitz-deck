@@ -1,0 +1,213 @@
+{
+  "title": "Lesson 1",
+  "description": "Mastering the world's continents, oceans, and major landmarks.",
+  "content": "Welcome to Geography Lesson 1! Today we are exploring the huge continents and deep oceans that make up our planet Earth.",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "How many continents are there on Earth?",
+      "correctAnswer": "7",
+      "options": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "id": "q_0_1766442702357"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about the world's largest desert.",
+      "segments": [
+        {
+          "text": "The ",
+          "isBlank": false,
+          "id": "s1"
+        },
+        {
+          "text": "Sahara",
+          "isBlank": true,
+          "id": "s2"
+        },
+        {
+          "text": " Desert is the largest hot desert in the world.",
+          "isBlank": false,
+          "id": "s3"
+        }
+      ],
+      "options": [
+        "Sahara",
+        "Gobi",
+        "Mojave"
+      ],
+      "id": "q_1_1766442702357"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Sort these places into the correct Hemisphere.",
+      "items": [
+        {
+          "id": "i1",
+          "text": "United States"
+        },
+        {
+          "id": "i2",
+          "text": "Australia"
+        },
+        {
+          "id": "i3",
+          "text": "United Kingdom"
+        },
+        {
+          "id": "i4",
+          "text": "Brazil"
+        }
+      ],
+      "categories": [
+        "Northern Hemisphere",
+        "Southern Hemisphere"
+      ],
+      "correctMapping": {
+        "i1": "Northern Hemisphere",
+        "i2": "Southern Hemisphere",
+        "i3": "Northern Hemisphere",
+        "i4": "Southern Hemisphere"
+      },
+      "id": "q_2_1766442702358"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order these continents from largest to smallest land area.",
+      "items": [
+        {
+          "id": "o1",
+          "text": "Africa"
+        },
+        {
+          "id": "o2",
+          "text": "Asia"
+        },
+        {
+          "id": "o3",
+          "text": "Europe"
+        }
+      ],
+      "correctOrder": [
+        "o2",
+        "o1",
+        "o3"
+      ],
+      "id": "q_3_1766442702358"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the famous landmark to its country.",
+      "pairs": {
+        "Eiffel Tower": "France",
+        "Great Wall": "China",
+        "Taj Mahal": "India",
+        "Statue of Liberty": "USA"
+      },
+      "id": "q_4_1766442702358"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Select all the oceans of the world from this list.",
+      "options": [
+        "Pacific",
+        "Mediterranean",
+        "Indian",
+        "Arctic",
+        "Caribbean"
+      ],
+      "correctAnswers": [
+        "Pacific",
+        "Indian",
+        "Arctic"
+      ],
+      "id": "q_5_1766442702358"
+    },
+    {
+      "type": "multiple-choice",
+      "prompt": "What is the name of the imaginary line that divides the Earth into North and South?",
+      "correctAnswer": "Equator",
+      "options": [
+        "Prime Meridian",
+        "Equator",
+        "Tropic of Cancer"
+      ],
+      "id": "q_6_1766442702358"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Fill in the blank for the longest river.",
+      "segments": [
+        {
+          "text": "The ",
+          "isBlank": false,
+          "id": "r1"
+        },
+        {
+          "text": "Nile",
+          "isBlank": true,
+          "id": "r2"
+        },
+        {
+          "text": " is traditionally considered the longest river in the world.",
+          "isBlank": false,
+          "id": "r3"
+        }
+      ],
+      "options": [
+        "Nile",
+        "Amazon",
+        "Mississippi"
+      ],
+      "id": "q_7_1766442702358"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Is it a Country or a Continent?",
+      "items": [
+        {
+          "id": "c1",
+          "text": "Canada"
+        },
+        {
+          "id": "c2",
+          "text": "Antarctica"
+        },
+        {
+          "id": "c3",
+          "text": "Japan"
+        },
+        {
+          "id": "c4",
+          "text": "Africa"
+        }
+      ],
+      "categories": [
+        "Country",
+        "Continent"
+      ],
+      "correctMapping": {
+        "c1": "Country",
+        "c2": "Continent",
+        "c3": "Country",
+        "c4": "Continent"
+      },
+      "id": "q_8_1766442702358"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the direction to its opposite on a compass.",
+      "pairs": {
+        "North": "South",
+        "East": "West",
+        "Northeast": "Southwest"
+      },
+      "id": "q_9_1766442702358"
+    }
+  ],
+  "id": "lesson-1"
+}

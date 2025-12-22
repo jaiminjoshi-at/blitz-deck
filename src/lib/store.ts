@@ -4,11 +4,11 @@ import { STORAGE_KEYS } from './constants';
 import { UserProfile, UserProgress, LessonProgress } from './content/types';
 
 interface ProgressState extends UserProgress {
-    startLesson: (lessonId: string, pathwayId?: string) => void;
-    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, pathwayId?: string) => void;
-    completeLesson: (lessonId: string, score: number, pathwayId?: string) => void;
-    isLessonCompleted: (lessonId: string, pathwayId?: string) => boolean;
-    getLessonProgress: (lessonId: string, pathwayId?: string) => LessonProgress | undefined;
+    startLesson: (lessonId: string, pathwayId?: string, unitId?: string) => void;
+    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, pathwayId?: string, unitId?: string) => void;
+    completeLesson: (lessonId: string, score: number, pathwayId?: string, unitId?: string) => void;
+    isLessonCompleted: (lessonId: string, pathwayId?: string, unitId?: string) => boolean;
+    getLessonProgress: (lessonId: string, pathwayId?: string, unitId?: string) => LessonProgress | undefined;
     addProfile: (name: string, avatar: string) => void;
     selectProfile: (profileId: string) => void;
     updateActiveProfile: (updates: Partial<UserProfile>) => void;
@@ -23,21 +23,30 @@ export const useProgressStore = create<ProgressState>()(
             activeProfileId: null,
             lessonStatus: {},
 
-            getLessonProgress: (lessonId, pathwayId) => {
+            getLessonProgress: (lessonId, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return undefined;
-                // Try specific key first, then fallback to generic (legacy)
-                const specificKey = pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : null;
-                const genericKey = `${activeProfileId}:${lessonId}`;
 
-                return specificKey ? (lessonStatus[specificKey] || lessonStatus[genericKey]) : lessonStatus[genericKey];
+                const keys: string[] = [];
+                if (pathwayId && unitId) keys.push(`${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`);
+                if (pathwayId) keys.push(`${activeProfileId}:${pathwayId}:${lessonId}`);
+                keys.push(`${activeProfileId}:${lessonId}`);
+
+                for (const key of keys) {
+                    if (lessonStatus[key]) return lessonStatus[key];
+                }
+                return undefined;
             },
 
-            startLesson: (lessonId, pathwayId) => {
+            startLesson: (lessonId, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
-                const key = pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`;
+                // Create key with unitId if available, otherwise fallback to pathwayId or just lessonId
+                const key = (pathwayId && unitId)
+                    ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
+                    : (pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`);
+
                 const current = lessonStatus[key];
 
                 // If already completed, do not reset status to in-progress
@@ -59,11 +68,14 @@ export const useProgressStore = create<ProgressState>()(
                 }
             },
 
-            updateProgress: (lessonId, questionIndex, currentScore, pathwayId) => {
+            updateProgress: (lessonId, questionIndex, currentScore, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
-                const key = pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`;
+                const key = (pathwayId && unitId)
+                    ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
+                    : (pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`);
+
                 const current = lessonStatus[key];
 
                 set((state) => ({
@@ -78,11 +90,14 @@ export const useProgressStore = create<ProgressState>()(
                 }));
             },
 
-            completeLesson: (lessonId, score, pathwayId) => {
+            completeLesson: (lessonId, score, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
-                const key = pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`;
+                const key = (pathwayId && unitId)
+                    ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
+                    : (pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`);
+
                 const current = lessonStatus[key];
 
                 const today = new Date().toISOString().split('T')[0];
@@ -114,15 +129,19 @@ export const useProgressStore = create<ProgressState>()(
                 }));
             },
 
-            isLessonCompleted: (lessonId, pathwayId) => {
+            isLessonCompleted: (lessonId, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return false;
 
-                const specificKey = pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : null;
-                const genericKey = `${activeProfileId}:${lessonId}`;
+                const keys: string[] = [];
+                if (pathwayId && unitId) keys.push(`${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`);
+                if (pathwayId) keys.push(`${activeProfileId}:${pathwayId}:${lessonId}`);
+                keys.push(`${activeProfileId}:${lessonId}`);
 
-                const progress = specificKey ? (lessonStatus[specificKey] || lessonStatus[genericKey]) : lessonStatus[genericKey];
-                return progress?.status === 'completed';
+                for (const key of keys) {
+                    if (lessonStatus[key]?.status === 'completed') return true;
+                }
+                return false;
             },
 
             addProfile: (name, avatar) => set((state) => {

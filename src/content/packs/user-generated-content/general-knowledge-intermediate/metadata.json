@@ -1,0 +1,10 @@
+{
+  "id": "general-knowledge-intermediate",
+  "title": "General Knowledge - Intermediate",
+  "description": "General Knowledge on different topics- Intermediate Level",
+  "status": "published",
+  "units": [
+    "geography",
+    "science"
+  ]
+}

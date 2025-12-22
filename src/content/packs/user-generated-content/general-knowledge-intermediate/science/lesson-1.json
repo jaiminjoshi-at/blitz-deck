@@ -1,0 +1,217 @@
+{
+  "title": "Lesson 1",
+  "description": "Learning about living things, plants, and life cycles.",
+  "content": "Welcome to Science Lesson 1! We are going to learn how plants grow, what animals eat, and how life cycles work.",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "What process do plants use to make their own food using sunlight?",
+      "correctAnswer": "Photosynthesis",
+      "options": [
+        "Respiration",
+        "Photosynthesis",
+        "Evaporation"
+      ],
+      "id": "q_0_1766442702401"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about baby animals.",
+      "segments": [
+        {
+          "text": "A baby frog is called a ",
+          "isBlank": false,
+          "id": "f1"
+        },
+        {
+          "text": "tadpole",
+          "isBlank": true,
+          "id": "f2"
+        },
+        {
+          "text": ".",
+          "isBlank": false,
+          "id": "f3"
+        }
+      ],
+      "options": [
+        "tadpole",
+        "caterpillar",
+        "cub"
+      ],
+      "id": "q_1_1766442702401"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Sort these animals by what they eat.",
+      "items": [
+        {
+          "id": "a1",
+          "text": "Lion"
+        },
+        {
+          "id": "a2",
+          "text": "Cow"
+        },
+        {
+          "id": "a3",
+          "text": "Wolf"
+        },
+        {
+          "id": "a4",
+          "text": "Elephant"
+        }
+      ],
+      "categories": [
+        "Herbivore",
+        "Carnivore"
+      ],
+      "correctMapping": {
+        "a1": "Carnivore",
+        "a2": "Herbivore",
+        "a3": "Carnivore",
+        "a4": "Herbivore"
+      },
+      "id": "q_2_1766442702401"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the animal to its habitat.",
+      "pairs": {
+        "Polar Bear": "Arctic",
+        "Camel": "Desert",
+        "Monkey": "Rainforest",
+        "Shark": "Ocean"
+      },
+      "id": "q_3_1766442702401"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order the stages of a butterfly's life cycle.",
+      "items": [
+        {
+          "id": "b1",
+          "text": "Pupa (Chrysalis)"
+        },
+        {
+          "id": "b2",
+          "text": "Larva (Caterpillar)"
+        },
+        {
+          "id": "b3",
+          "text": "Egg"
+        },
+        {
+          "id": "b4",
+          "text": "Adult Butterfly"
+        }
+      ],
+      "correctOrder": [
+        "b3",
+        "b2",
+        "b1",
+        "b4"
+      ],
+      "id": "q_4_1766442702401"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Which of these are required for a plant to grow?",
+      "options": [
+        "Water",
+        "Sunlight",
+        "Juice",
+        "Soil",
+        "Soda"
+      ],
+      "correctAnswers": [
+        "Water",
+        "Sunlight",
+        "Soil"
+      ],
+      "id": "q_5_1766442702401"
+    },
+    {
+      "type": "multiple-choice",
+      "prompt": "Which organ in the human body pumps blood?",
+      "correctAnswer": "Heart",
+      "options": [
+        "Lungs",
+        "Heart",
+        "Stomach"
+      ],
+      "id": "q_6_1766442702401"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about mammals.",
+      "segments": [
+        {
+          "text": "Mammals are ",
+          "isBlank": false,
+          "id": "w1"
+        },
+        {
+          "text": "warm-blooded",
+          "isBlank": true,
+          "id": "w2"
+        },
+        {
+          "text": " animals that usually have hair or fur.",
+          "isBlank": false,
+          "id": "w3"
+        }
+      ],
+      "options": [
+        "warm-blooded",
+        "cold-blooded"
+      ],
+      "id": "q_7_1766442702401"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Classify these as Vertebrates (with backbones) or Invertebrates (no backbone).",
+      "items": [
+        {
+          "id": "v1",
+          "text": "Dog"
+        },
+        {
+          "id": "v2",
+          "text": "Butterfly"
+        },
+        {
+          "id": "v3",
+          "text": "Fish"
+        },
+        {
+          "id": "v4",
+          "text": "Spider"
+        }
+      ],
+      "categories": [
+        "Vertebrate",
+        "Invertebrate"
+      ],
+      "correctMapping": {
+        "v1": "Vertebrate",
+        "v2": "Invertebrate",
+        "v3": "Vertebrate",
+        "v4": "Invertebrate"
+      },
+      "id": "q_8_1766442702401"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the plant part to its job.",
+      "pairs": {
+        "Roots": "Absorb water",
+        "Leaves": "Make food",
+        "Stem": "Support the plant",
+        "Flower": "Make seeds"
+      },
+      "id": "q_9_1766442702401"
+    }
+  ],
+  "id": "lesson-1"
+}

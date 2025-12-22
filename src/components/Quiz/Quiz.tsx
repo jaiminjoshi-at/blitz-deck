@@ -18,9 +18,10 @@ import { useQuiz } from '@/hooks/useQuiz';
 interface Props {
     lesson: Lesson;
     pathwayId?: string;
+    unitId?: string;
 }
 
-export default function Quiz({ lesson, pathwayId }: Props) {
+export default function Quiz({ lesson, pathwayId, unitId }: Props) {
     const {
         currentQuestionIndex,
         currentQuestion,
@@ -29,7 +30,7 @@ export default function Quiz({ lesson, pathwayId }: Props) {
         handleAnswer,
         totalQuestions,
         isPassed
-    } = useQuiz(lesson, pathwayId);
+    } = useQuiz(lesson, pathwayId, unitId);
 
     if (showResult) {
         return (

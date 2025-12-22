@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Lesson } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 
-export function useQuiz(lesson: Lesson, pathwayId?: string) {
+export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     const {
         startLesson,
         completeLesson,
@@ -12,7 +12,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string) {
     } = useProgressStore();
 
     // Initialize state from potential checkpoint
-    const savedProgress = getLessonProgress(lesson.id, pathwayId);
+    const savedProgress = getLessonProgress(lesson.id, pathwayId, unitId);
     const startQuestionIndex = savedProgress?.currentQuestionIndex || 0;
     // CRITICAL FIX: Restore previous score ONLY if resuming mid-lesson. If index is 0, score must be 0.
     const startScore = startQuestionIndex === 0 ? 0 : (savedProgress?.currentScore || 0);
@@ -26,8 +26,8 @@ export function useQuiz(lesson: Lesson, pathwayId?: string) {
     useEffect(() => {
         // eslint-disable-next-line
         setHydrated(true);
-        startLesson(lesson.id, pathwayId);
-    }, [lesson.id, pathwayId, startLesson]);
+        startLesson(lesson.id, pathwayId, unitId);
+    }, [lesson.id, pathwayId, unitId, startLesson]);
 
     const handleAnswer = useCallback((isCorrect: boolean) => {
         let newScore = score;
@@ -41,12 +41,12 @@ export function useQuiz(lesson: Lesson, pathwayId?: string) {
             if (nextIndex < lesson.questions.length) {
                 setCurrentQuestionIndex(nextIndex);
                 // Persist both index AND score
-                updateProgress(lesson.id, nextIndex, newScore, pathwayId);
+                updateProgress(lesson.id, nextIndex, newScore, pathwayId, unitId);
             } else {
                 setShowResult(true);
             }
         }, 1500);
-    }, [currentQuestionIndex, lesson.questions.length, lesson.id, pathwayId, updateProgress, score]);
+    }, [currentQuestionIndex, lesson.questions.length, lesson.id, pathwayId, unitId, updateProgress, score]);
 
     useEffect(() => {
         if (showResult) {
@@ -58,9 +58,9 @@ export function useQuiz(lesson: Lesson, pathwayId?: string) {
             // The constraint "re-attempt... preserving previous scores" is met.
 
             const percentage = Math.round((score / lesson.questions.length) * 100);
-            completeLesson(lesson.id, percentage, pathwayId);
+            completeLesson(lesson.id, percentage, pathwayId, unitId);
         }
-    }, [showResult, score, lesson.questions.length, lesson.id, pathwayId, completeLesson]);
+    }, [showResult, score, lesson.questions.length, lesson.id, pathwayId, unitId, completeLesson]);
 
     if (!hydrated) return {
         currentQuestionIndex: 0,

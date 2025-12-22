@@ -30,7 +30,7 @@ export default function UnitList({ units, pathwayId }: UnitListProps) {
         <>
             {units.map((unit) => {
                 const totalLessons = unit.lessons.length;
-                const completedCount = unit.lessons.filter(l => hydrated && isLessonCompleted(l.id, pathwayId)).length;
+                const completedCount = unit.lessons.filter(l => hydrated && isLessonCompleted(l.id, pathwayId, unit.id)).length;
                 const progress = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
 
                 return (
@@ -53,7 +53,7 @@ export default function UnitList({ units, pathwayId }: UnitListProps) {
                             <Typography variant="body2" color="text.secondary" paragraph>
                                 {unit.description}
                             </Typography>
-                            <LessonList lessons={unit.lessons} pathwayId={pathwayId} />
+                            <LessonList lessons={unit.lessons} pathwayId={pathwayId} unitId={unit.id} />
                         </AccordionDetails>
                     </Accordion>
                 );

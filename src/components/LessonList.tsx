@@ -14,9 +14,10 @@ import { Box, Typography } from '@mui/material';
 interface LessonListProps {
     lessons: Lesson[];
     pathwayId: string;
+    unitId: string;
 }
 
-export default function LessonList({ lessons, pathwayId }: LessonListProps) {
+export default function LessonList({ lessons, pathwayId, unitId }: LessonListProps) {
     const [hydrated, setHydrated] = React.useState(false);
 
     React.useEffect(() => {
@@ -28,14 +29,14 @@ export default function LessonList({ lessons, pathwayId }: LessonListProps) {
     return (
         <List>
             {lessons.map((lesson) => {
-                const progress = hydrated ? getLessonProgress(lesson.id, pathwayId) : undefined;
+                const progress = hydrated ? getLessonProgress(lesson.id, pathwayId, unitId) : undefined;
                 const status = progress?.status || 'not-started';
                 const bestScore = progress?.bestScore;
 
                 return (
 
                     <ListItem key={lesson.id} disablePadding sx={{ mb: 2, display: 'block' }}>
-                        <Link href={`/pathway/${pathwayId}/lesson/${lesson.id}`} passHref style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                        <Link href={`/pathway/${pathwayId}/unit/${unitId}/lesson/${lesson.id}`} passHref style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                             <Box
                                 sx={{
                                     p: 2,

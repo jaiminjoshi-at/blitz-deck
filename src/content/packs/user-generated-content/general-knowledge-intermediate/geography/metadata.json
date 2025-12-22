@@ -1,0 +1,9 @@
+{
+  "id": "geography",
+  "title": "Geography",
+  "description": "Test your geography knowledge",
+  "lessons": [
+    "lesson-1",
+    "lesson-2"
+  ]
+}

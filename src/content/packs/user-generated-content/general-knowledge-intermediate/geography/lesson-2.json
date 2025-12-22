@@ -1,0 +1,212 @@
+{
+  "title": "Lesson 2",
+  "description": "Understanding physical landscapes and cultural geography.",
+  "content": "In Lesson 2, we dive deeper into the Earth's surface, looking at mountains, rivers, and how people live across the globe.",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "Which mountain is the highest in the world?",
+      "correctAnswer": "Mount Everest",
+      "options": [
+        "K2",
+        "Mount Everest",
+        "Mount Kilimanjaro"
+      ],
+      "id": "q_0_1766442702371"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the fact about the Amazon.",
+      "segments": [
+        {
+          "text": "The Amazon Rainforest is located on the continent of ",
+          "isBlank": false,
+          "id": "am1"
+        },
+        {
+          "text": "South America",
+          "isBlank": true,
+          "id": "am2"
+        },
+        {
+          "text": ".",
+          "isBlank": false,
+          "id": "am3"
+        }
+      ],
+      "options": [
+        "Africa",
+        "South America",
+        "Asia"
+      ],
+      "id": "q_1_1766442702371"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Classify these as 'Island Countries' or 'Landlocked Countries'.",
+      "items": [
+        {
+          "id": "l1",
+          "text": "Switzerland"
+        },
+        {
+          "id": "l2",
+          "text": "Australia"
+        },
+        {
+          "id": "l3",
+          "text": "Japan"
+        },
+        {
+          "id": "l4",
+          "text": "Mongolia"
+        }
+      ],
+      "categories": [
+        "Island",
+        "Landlocked"
+      ],
+      "correctMapping": {
+        "l1": "Landlocked",
+        "l2": "Island",
+        "l3": "Island",
+        "l4": "Landlocked"
+      },
+      "id": "q_2_1766442702371"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the country to the language most commonly spoken there.",
+      "pairs": {
+        "Brazil": "Portuguese",
+        "Mexico": "Spanish",
+        "Egypt": "Arabic",
+        "Italy": "Italian"
+      },
+      "id": "q_3_1766442702371"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order these layers of the Earth from the outside to the inside.",
+      "items": [
+        {
+          "id": "la1",
+          "text": "Mantle"
+        },
+        {
+          "id": "la2",
+          "text": "Crust"
+        },
+        {
+          "id": "la3",
+          "text": "Core"
+        }
+      ],
+      "correctOrder": [
+        "la2",
+        "la1",
+        "la3"
+      ],
+      "id": "q_4_1766442702371"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Which of these are types of precipitation?",
+      "options": [
+        "Rain",
+        "Snow",
+        "Wind",
+        "Hail",
+        "Cloud"
+      ],
+      "correctAnswers": [
+        "Rain",
+        "Snow",
+        "Hail"
+      ],
+      "id": "q_5_1766442702371"
+    },
+    {
+      "type": "multiple-choice",
+      "prompt": "Which of these is a large body of salt water that is smaller than an ocean?",
+      "correctAnswer": "Sea",
+      "options": [
+        "River",
+        "Sea",
+        "Pond"
+      ],
+      "id": "q_6_1766442702371"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence about the Earth's spinning.",
+      "segments": [
+        {
+          "text": "The Earth ",
+          "isBlank": false,
+          "id": "rot1"
+        },
+        {
+          "text": "rotates",
+          "isBlank": true,
+          "id": "rot2"
+        },
+        {
+          "text": " on its axis once every 24 hours.",
+          "isBlank": false,
+          "id": "rot3"
+        }
+      ],
+      "options": [
+        "rotates",
+        "revolves",
+        "slides"
+      ],
+      "id": "q_7_1766442702371"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Categorize these landmarks as 'Natural' or 'Man-made'.",
+      "items": [
+        {
+          "id": "m1",
+          "text": "Grand Canyon"
+        },
+        {
+          "id": "m2",
+          "text": "Pyramids of Giza"
+        },
+        {
+          "id": "m3",
+          "text": "Mount Fuji"
+        },
+        {
+          "id": "m4",
+          "text": "Colosseum"
+        }
+      ],
+      "categories": [
+        "Natural",
+        "Man-made"
+      ],
+      "correctMapping": {
+        "m1": "Natural",
+        "m2": "Man-made",
+        "m3": "Natural",
+        "m4": "Man-made"
+      },
+      "id": "q_8_1766442702371"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the European country to its capital city.",
+      "pairs": {
+        "Germany": "Berlin",
+        "Spain": "Madrid",
+        "United Kingdom": "London"
+      },
+      "id": "q_9_1766442702371"
+    }
+  ],
+  "id": "lesson-2"
+}
