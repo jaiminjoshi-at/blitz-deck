@@ -22,9 +22,19 @@ export default function PathwayCard({ pathway }: PathwayCardProps) {
     }, []);
 
     // Calculate Progress
-    const allLessons = pathway.units.flatMap(u => u.lessons);
-    const totalLessons = allLessons.length;
-    const completedCount = allLessons.filter(l => hydrated && isLessonCompleted(l.id)).length;
+    // Calculate Progress
+    let totalLessons = 0;
+    let completedCount = 0;
+
+    pathway.units.forEach(unit => {
+        unit.lessons.forEach(lesson => {
+            totalLessons++;
+            if (hydrated && isLessonCompleted(lesson.id, pathway.id, unit.id)) {
+                completedCount++;
+            }
+        });
+    });
+
     const progress = totalLessons > 0 ? (completedCount / totalLessons) * 100 : 0;
 
     return (
