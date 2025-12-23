@@ -2,7 +2,7 @@ import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/GridLegacy';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Alert from '@mui/material/Alert';
@@ -62,7 +62,7 @@ export default async function Home() {
           <Grid container spacing={2} sx={{ mt: 4 }}>
             {packs.map((pack) => (
               pack.pathways.map((pathway) => (
-                <Grid key={`${pack.id}-${pathway.id}`} size={{ xs: 12, sm: 6, md: 3 }}>
+                <Grid item xs={12} sm={6} md={3} key={`${pack.id}-${pathway.id}`}>
                   <PathwayCard pathway={pathway} />
                 </Grid>
               ))

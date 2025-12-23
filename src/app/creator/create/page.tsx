@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/GridLegacy';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -25,6 +25,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Snackbar from '@mui/material/Snackbar';
+import { copyToClipboard } from '@/lib/utils';
 
 // Updated Steps
 const steps = ['Details', 'Structure', 'Configuration', 'Generate', 'Import', 'Preview'];
@@ -303,7 +304,7 @@ export default function WorkflowWizard() {
                                         </Typography>
                                         <Grid container spacing={1}>
                                             {Object.keys(QuestionTypeRegistry).map((type) => (
-                                                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={type}>
+                                                <Grid item xs={12} sm={6} md={4} key={type}>
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
@@ -335,7 +336,14 @@ export default function WorkflowWizard() {
                             InputProps={{ readOnly: true }}
                             sx={{ fontFamily: 'monospace' }}
                         />
-                        <Button variant="outlined" onClick={() => navigator.clipboard.writeText(generatedPrompt)}>
+                        <Button variant="outlined" onClick={async () => {
+                            const success = await copyToClipboard(generatedPrompt);
+                            if (success) {
+                                showError('Copied to clipboard!');
+                            } else {
+                                showError('Failed to copy to clipboard.');
+                            }
+                        }}>
                             Copy to Clipboard
                         </Button>
                     </Box>
