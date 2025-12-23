@@ -5,10 +5,10 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/GridLegacy';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Link from 'next/link';
 import { getAllContentPacks } from '@/lib/content/contentLoader';
 import PathwayCard from '@/components/PathwayCard';
-import { PATHS } from '@/lib/constants';
 
 // Force dynamic rendering to allow hot-reloading of content packs
 export const dynamic = 'force-dynamic';
@@ -35,27 +35,19 @@ export default async function Home() {
         </Typography>
 
         {packs.length === 0 ? (
-          <Card variant="outlined" sx={{ mt: 4, maxWidth: 600, width: '100%', borderColor: 'warning.main' }}>
+          <Card variant="outlined" sx={{ mt: 4, maxWidth: 600, width: '100%', textAlign: 'center', p: 4 }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom color="warning.main">
-                No Content Found
+              <Typography variant="h4" gutterBottom>
+                Welcome to BlitzDeck
               </Typography>
-              <Typography variant="body1" paragraph>
-                BlitzDeck could not find any content packs.
+              <Typography variant="body1" paragraph color="text.secondary" sx={{ mb: 4 }}>
+                Your library is empty. Start by creating your first learning pathway in the Creator Studio.
               </Typography>
-
-              <Alert severity="info" sx={{ mb: 2 }}>
-                Scanning Directory: <strong>{PATHS.CONTENT_DIR}</strong>
-              </Alert>
-
-              <Typography variant="subtitle2" gutterBottom>
-                Troubleshooting for Self-Hosted/Docker:
-              </Typography>
-              <Box component="ul" sx={{ pl: 2 }}>
-                <li>Ensure you have mounted a volume to <code>/app/content</code> (or the custom path above).</li>
-                <li>Check that your JSON files are valid and follow the naming convention (e.g. <code>*.json</code>).</li>
-                <li>If running locally, check if the folder exists and has files.</li>
-              </Box>
+              <Link href="/creator" passHref>
+                <Button variant="contained" size="large">
+                  Open Creator Studio
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ) : (
