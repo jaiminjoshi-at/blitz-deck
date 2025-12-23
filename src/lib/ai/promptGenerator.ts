@@ -10,37 +10,37 @@ export const QuestionTypeRegistry: Record<QuestionType, QuestionTypeConfigEntry>
     'multiple-choice': {
         description: "Standard multiple choice question.",
         schemaDescription: "Requires 'options' (array of strings) and 'correctAnswer' (string which must match one of the options).",
-        example: `{ "type": "multiple-choice", "prompt": "What is 2+2?", "options": ["3", "4", "5"], "correctAnswer": "4" }`
+        example: `{ "type": "multiple-choice", "prompt": "What is 2+2?", "options": ["3", "4", "5"], "correctAnswer": "4", "explanation": "2 plus 2 equals 4. Basic arithmetic." }`
     },
     'matching': {
         description: "Match keys to values.",
         schemaDescription: "Requires 'pairs' (object where keys vary and values are matches).",
-        example: `{ "type": "matching", "prompt": "Match the capitals", "pairs": { "France": "Paris", "Germany": "Berlin" } }`
+        example: `{ "type": "matching", "prompt": "Match the capitals", "pairs": { "France": "Paris", "Germany": "Berlin" }, "explanation": "Paris is the capital of France, Berlin is the capital of Germany." }`
     },
     'fill-in-the-blank': {
         description: "User must type the answer manually. Good for vocabulary or specific terms.",
         schemaDescription: "Requires 'correctAnswer' (string or array of acceptable strings).",
-        example: `{ "type": "fill-in-the-blank", "prompt": "What is the capital of France?", "correctAnswer": "Paris" }`
+        example: `{ "type": "fill-in-the-blank", "prompt": "What is the capital of France?", "correctAnswer": "Paris", "explanation": "Paris is the capital and most populous city of France." }`
     },
     'cloze': {
         description: "Fill in the blanks within a sentence.",
         schemaDescription: "Requires 'segments' (array of objects with 'text', 'isBlank', 'id').",
-        example: `{ "type": "cloze", "prompt": "Complete the sentence regarding the sky.", "segments": [{ "text": "The sky is ", "isBlank": false, "id": "1" }, { "text": "blue", "isBlank": true, "id": "2" }], "options": ["blue", "green"] }`
+        example: `{ "type": "cloze", "prompt": "Complete the sentence regarding the sky.", "segments": [{ "text": "The sky is ", "isBlank": false, "id": "1" }, { "text": "blue", "isBlank": true, "id": "2" }], "options": ["blue", "green"], "explanation": "The sky appears blue due to Rayleigh scattering." }`
     },
     'ordering': {
         description: "Arrange items in correct sequence.",
         schemaDescription: "Requires 'items' (array with ids and text) and 'correctOrder' (array of ids).",
-        example: `{ "type": "ordering", "prompt": "Order the meals of the day", "items": [{ "id": "1", "text": "Dinner" }, { "id": "2", "text": "Breakfast" }], "correctOrder": ["2", "1"] }`
+        example: `{ "type": "ordering", "prompt": "Order the meals of the day", "items": [{ "id": "1", "text": "Dinner" }, { "id": "2", "text": "Breakfast" }], "correctOrder": ["2", "1"], "explanation": "Breakfast comes first in the morning, followed by Dinner in the evening." }`
     },
     'multiple-response': {
         description: "Select all correct options.",
         schemaDescription: "Requires 'options' and 'correctAnswers' (array).",
-        example: `{ "type": "multiple-response", "prompt": "Select primary colors", "options": ["Red", "Green", "Blue", "Yellow"], "correctAnswers": ["Red", "Blue", "Yellow"] }`
+        example: `{ "type": "multiple-response", "prompt": "Select primary colors", "options": ["Red", "Green", "Blue", "Yellow"], "correctAnswers": ["Red", "Blue", "Yellow"], "explanation": "Red, Blue, and Yellow are the three primary pigment colors." }`
     },
     'categorize': {
         description: "Sort items into categories.",
         schemaDescription: "Requires 'items', 'categories', and 'correctMapping' (itemId -> category).",
-        example: `{ "type": "categorize", "prompt": "Sort animals", "items": [{ "id": "1", "text": "Cat" }, { "id": "2", "text": "Eagle" }], "categories": ["Mammal", "Bird"], "correctMapping": { "1": "Mammal", "2": "Bird" } }`
+        example: `{ "type": "categorize", "prompt": "Sort animals", "items": [{ "id": "1", "text": "Cat" }, { "id": "2", "text": "Eagle" }], "categories": ["Mammal", "Bird"], "correctMapping": { "1": "Mammal", "2": "Bird" }, "explanation": "Cats are mammals, Eagles are birds." }`
     }
 };
 
@@ -86,7 +86,7 @@ interface PathwayImport {
       title: string;
       description: string; // Brief pedagogical goal
       content: string; // Short introductory text/markdown for the lesson
-      questions: Question[]; // See Question Types below
+      questions: Question[]; // See Question Types below. All questions should include an "explanation".
     }[];
   }[];
 }
@@ -118,7 +118,7 @@ interface PathwayImport {
         }
     });
 
-    prompt += `\n\n**CRITICAL INSTRUCTIONS**:\n1. Return ONLY the JSON object. No markdown formatting (like \`\`\`json). \n2. Ensure all IDs (unit keys, lesson keys, question ids) are unique strings.\n3. The content must be pedagogical, accurate, and suitable for the defined audience.`;
+    prompt += `\n\n**CRITICAL INSTRUCTIONS**:\n1. Return ONLY the JSON object. No markdown formatting (like \`\`\`json). \n2. Ensure all IDs (unit keys, lesson keys, question ids) are unique strings.\n3. The content must be pedagogical, accurate, and suitable for the defined audience.\n4. **Mandatory**: Include a concise "explanation" field for every question explaining why the answer is correct.`;
 
     return prompt;
 }

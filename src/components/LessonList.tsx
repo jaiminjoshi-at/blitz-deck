@@ -24,7 +24,15 @@ export default function LessonList({ lessons, pathwayId, unitId }: LessonListPro
         setHydrated(true);
     }, []);
 
+    // Subscribe to lessonStatus to ensure re-renders when progress updates
+    const lessonStatus = useProgressStore((state) => state.lessonStatus);
     const getLessonProgress = useProgressStore((state) => state.getLessonProgress);
+    // const activeProfileId = useProgressStore((state) => state.activeProfileId); // Removed debug
+
+    // Dummy usage to satisfy linter while maintaining subscription
+    React.useEffect(() => {
+        void lessonStatus;
+    }, [lessonStatus]);
 
     return (
         <List>
@@ -70,15 +78,22 @@ export default function LessonList({ lessons, pathwayId, unitId }: LessonListPro
                                     <Box sx={{
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        alignItems: 'center',
+                                        justifyContent: 'center',
                                         mx: 3,
-                                        minWidth: 100
+                                        minWidth: 140,
+                                        gap: 0.5
                                     }}>
-                                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
-                                            BEST / LAST
+                                        <Typography variant="body2" sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '0.8rem' }}>
+                                            <Box component="span" color="text.secondary">Best:</Box>
+                                            <Box component="span" fontWeight="medium">
+                                                {bestScore}% <Typography component="span" variant="caption" color="text.secondary">({progress?.bestTime ? `${Math.floor(progress.bestTime / 60)}m ${Math.round(progress.bestTime % 60)}s` : '-'})</Typography>
+                                            </Box>
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="bold" sx={{ lineHeight: 1 }}>
-                                            {bestScore}% <Typography component="span" variant="h6" color="text.secondary" fontWeight="regular">/ {progress?.lastScore ?? 0}%</Typography>
+                                        <Typography variant="body2" sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '0.8rem' }}>
+                                            <Box component="span" color="text.secondary">Last:</Box>
+                                            <Box component="span">
+                                                {progress?.lastScore ?? 0}% <Typography component="span" variant="caption" color="text.secondary">({progress?.lastTime ? `${Math.floor(progress.lastTime / 60)}m ${Math.round(progress.lastTime % 60)}s` : '-'})</Typography>
+                                            </Box>
                                         </Typography>
                                     </Box>
                                 )}
@@ -94,7 +109,10 @@ export default function LessonList({ lessons, pathwayId, unitId }: LessonListPro
                                         }}
                                         component="div"
                                     >
-                                        {status === 'completed' ? "Review" : (status === 'in-progress' ? "Resume" : "Start")}
+                                        {/* Show Resume if in-progress OR if completed but attempting retake (index > 0) */}
+                                        {(status === 'in-progress' || (status === 'completed' && (progress?.currentQuestionIndex || 0) > 0))
+                                            ? "Resume"
+                                            : (status === 'completed' ? "Review" : "Start")}
                                     </Button>
                                 </Box>
                             </Box>

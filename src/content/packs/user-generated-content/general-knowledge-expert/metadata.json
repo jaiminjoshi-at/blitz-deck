@@ -1,0 +1,10 @@
+{
+  "id": "general-knowledge-expert",
+  "title": "General Knowledge - Expert",
+  "description": "General knowledge on different topics challenging young minds",
+  "status": "published",
+  "units": [
+    "unit-1",
+    "unit-2-ancient-civilizations"
+  ]
+}

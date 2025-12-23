@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { useProgressStore } from '@/lib/store';
 import LandingPage from './LandingPage';
-import Box from '@mui/material/Box';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
     const activeProfileId = useProgressStore((state) => state.activeProfileId);

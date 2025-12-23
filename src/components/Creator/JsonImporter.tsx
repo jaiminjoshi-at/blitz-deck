@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { Box, TextField, Button, Typography, Alert, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography, Alert } from '@mui/material';
 import { PathwayImportSchema } from '@/lib/content/schemas';
 import { z } from 'zod';
 
@@ -22,9 +22,9 @@ export default function JsonImporter({ onImport, defaultValue = '' }: JsonImport
             if (result.success) {
                 onImport(result.data);
             } else {
-                setError(`Validation Error: ${result.error.issues.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ')}`);
+                setError(`Validation Error: ${result.error.issues.map((e) => `${e.path.join('.')}: ${e.message}`).join(', ')}`);
             }
-        } catch (e: any) {
+        } catch (e: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             setError(`Invalid JSON syntax: ${e.message}`);
         }
     };
@@ -49,7 +49,7 @@ export default function JsonImporter({ onImport, defaultValue = '' }: JsonImport
                             const parsed = JSON.parse(jsonInput);
                             setJsonInput(JSON.stringify(parsed, null, 2));
                         }
-                    } catch (e) {
+                    } catch {
                         // Ignore formatting errors if invalid JSON, it will be caught by validate
                     }
                 }}

@@ -1,0 +1,63 @@
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\app\creator\create\page.tsx
+   15:8   warning  'IconButton' is defined but never used                           @typescript-eslint/no-unused-vars
+   16:8   warning  'DeleteIcon' is defined but never used                           @typescript-eslint/no-unused-vars
+   36:12  warning  'pathwayId' is assigned a value but never used                   @typescript-eslint/no-unused-vars
+   36:23  warning  'setPathwayId' is assigned a value but never used                @typescript-eslint/no-unused-vars
+   53:58  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  141:40  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  163:60  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  173:85  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  363:57  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  368:65  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  378:80  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  410:72  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  410:83  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  435:44  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  435:60  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\app\creator\page.tsx
+  8:8  warning  'CardActions' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\app\pathway\[id]\lesson\[lessonId]\page.tsx
+  22:9  error  'pathwayId' is never reassigned. Use 'const' instead  prefer-const
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\app\pathway\[id]\unit\[unitId]\lesson\[lessonId]\page.tsx
+  23:9  error  'pathwayId' is never reassigned. Use 'const' instead  prefer-const
+  24:9  error  'unitId' is never reassigned. Use 'const' instead     prefer-const
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\components\Auth\AuthGuard.tsx
+  6:8  warning  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\components\Auth\LandingPage.tsx
+  8:8  warning  'CardContent' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\components\Creator\JsonImporter.tsx
+   3:53  warning  'Paper' is defined but never used         @typescript-eslint/no-unused-vars
+  25:75  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  52:30  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\hooks\useQuiz.ts
+   35:9   warning  Unused eslint-disable directive (no problems were reported)
+  108:74  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\hooks\useQuiz.ts:108:74
+  106 |
+  107 |     // Current total time for display (approximate)
+> 108 |     const currentTotalTime = (prevTimeSpent || 0) + (sessionStartTime ? (Date.now() - sessionStartTime) / 1000 : 0);
+      |                                                                          ^^^^^^^^^^ Cannot call impure function
+  109 |
+  110 |     return {
+  111 |         currentQuestionIndex,  react-hooks/purity
+
+C:\Users\jaimi\.gemini\antigravity\scratch\blitz-deck\src\lib\content\contentManager.ts
+   1:31  warning  'LessonImportSchema' is defined but never used  @typescript-eslint/no-unused-vars
+   7:6   warning  'PathwayImport' is defined but never used       @typescript-eslint/no-unused-vars
+  33:40  error    Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+
+✖ 30 problems (18 errors, 12 warnings)
+  3 errors and 1 warning potentially fixable with the `--fix` option.
+

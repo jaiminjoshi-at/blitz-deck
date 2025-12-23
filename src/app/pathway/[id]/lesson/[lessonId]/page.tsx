@@ -19,7 +19,7 @@ export default async function LessonPage(props: Props) {
     // Scoped Lookup: Find pathway first, then lesson
     const packs = await getAllContentPacks();
     let lesson = null;
-    let pathwayId = params.id;
+    const pathwayId = params.id;
 
     // Search across packs for the SPECIFIC pathway
     for (const pack of packs) {

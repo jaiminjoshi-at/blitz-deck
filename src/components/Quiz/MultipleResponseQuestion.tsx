@@ -95,12 +95,9 @@ export default function MultipleResponseQuestion({ question, onAnswer }: Props) 
                     let bgcolor = 'background.paper';
                     let borderColor = 'divider';
 
-                    if (submitted) {
+                    if (submitted && (isCorrect || isFailed)) {
                         if (isCorrectAnswer) {
                             if (isCorrect || isFailed) {
-                                borderColor = 'success.main';
-                                bgcolor = 'success.light';
-                            } else if (isSelected) {
                                 borderColor = 'success.main';
                                 bgcolor = 'success.light';
                             }

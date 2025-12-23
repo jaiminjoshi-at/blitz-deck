@@ -12,8 +12,6 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/GridLegacy';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
 import { generateSystemPrompt, PromptStructure, QuestionTypeRegistry } from '@/lib/ai/promptGenerator';
@@ -26,6 +24,10 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Snackbar from '@mui/material/Snackbar';
 import { copyToClipboard } from '@/lib/utils';
+import { PathwayImportSchema } from '@/lib/content/schemas';
+import { z } from 'zod';
+
+type PathwayImport = z.infer<typeof PathwayImportSchema>;
 
 // Updated Steps
 const steps = ['Details', 'Structure', 'Configuration', 'Generate', 'Import', 'Preview'];
@@ -33,7 +35,6 @@ const steps = ['Details', 'Structure', 'Configuration', 'Generate', 'Import', 'P
 export default function WorkflowWizard() {
     const router = useRouter();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [pathwayId, setPathwayId] = React.useState<string | null>(null);
 
     // Form State
     const [details, setDetails] = React.useState({
@@ -50,7 +51,7 @@ export default function WorkflowWizard() {
     const [generatedPrompt, setGeneratedPrompt] = React.useState('');
 
     // Validated Data for Preview
-    const [previewData, setPreviewData] = React.useState<any>(null);
+    const [previewData, setPreviewData] = React.useState<PathwayImport | null>(null);
     const [isSaving, setIsSaving] = React.useState(false);
 
     // Error State
@@ -138,7 +139,7 @@ export default function WorkflowWizard() {
 
     const handleBack = () => setActiveStep((prev) => prev - 1);
 
-    const handleImportPreview = (data: any) => {
+    const handleImportPreview = (data: PathwayImport) => {
         setPreviewData(data);
         setActiveStep(5); // Move to Preview Step
     };
@@ -160,7 +161,7 @@ export default function WorkflowWizard() {
 
     // --- Helper for Structure Step ---
     const addUnit = () => setUnits([...units, { title: `Unit ${units.length + 1}`, description: '', lessons: [] }]);
-    const updateUnit = (idx: number, field: string, value: any) => {
+    const updateUnit = (idx: number, field: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         const newUnits = [...units];
         newUnits[idx] = { ...newUnits[idx], [field]: value };
         setUnits(newUnits);
@@ -170,7 +171,7 @@ export default function WorkflowWizard() {
         newUnits[unitIdx].lessons.push({ title: `Lesson ${newUnits[unitIdx].lessons.length + 1}`, types: [] });
         setUnits(newUnits);
     };
-    const updateLesson = (unitIdx: number, lessonIdx: number, field: string, value: any) => {
+    const updateLesson = (unitIdx: number, lessonIdx: number, field: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         const newUnits = [...units];
         newUnits[unitIdx].lessons[lessonIdx] = { ...newUnits[unitIdx].lessons[lessonIdx], [field]: value };
         setUnits(newUnits);
@@ -360,22 +361,22 @@ export default function WorkflowWizard() {
                         <Typography variant="h6" gutterBottom>Preview: {previewData?.title}</Typography>
                         <Typography variant="body2" color="text.secondary" paragraph>{previewData?.description}</Typography>
 
-                        {previewData?.units?.map((unit: any, i: number) => (
+                        {previewData?.units?.map((unit, i) => (
                             <Box key={i} sx={{ mb: 4 }}>
                                 <Typography variant="subtitle1" fontWeight="bold">{unit.title}</Typography>
                                 <Typography variant="body2" gutterBottom>{unit.description}</Typography>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    {unit.lessons?.map((lesson: any, j: number) => (
+                                    {unit.lessons?.map((lesson, j) => (
                                         <Card key={j} variant="outlined">
                                             <CardContent>
                                                 <Typography variant="h6" fontSize="1rem" gutterBottom>{lesson.title}</Typography>
                                                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                                                    {lesson.content ? (lesson.content.length > 100 ? lesson.content.substring(0, 100) + '...' : lesson.content) : 'No intro content'}
+                                                    {'content' in lesson && lesson.content ? (lesson.content.length > 100 ? lesson.content.substring(0, 100) + '...' : lesson.content) : 'No intro content'}
                                                 </Typography>
 
                                                 <Typography variant="caption" sx={{ mt: 1, display: 'block', fontWeight: 'bold' }}>Questions:</Typography>
                                                 <Box component="ul" sx={{ pl: 2, mt: 0.5 }}>
-                                                    {lesson.questions?.map((q: any, k: number) => (
+                                                    {lesson.questions?.map((q: any, k: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
                                                         <li key={k} style={{ marginBottom: '8px' }}>
                                                             <Typography variant="body2" component="div">
                                                                 <Chip label={q.type} size="small" sx={{ mr: 1, height: '20px', fontSize: '0.7rem' }} />
@@ -388,7 +389,7 @@ export default function WorkflowWizard() {
                                                             )}
                                                             {q.type === 'matching' && (
                                                                 <Typography variant="caption" color="text.secondary" display="block" sx={{ ml: 1 }}>
-                                                                    Pairs: {Object.entries(q.pairs || {}).map(([k, v]) => `${k} -> ${v}`).join(', ')}
+                                                                    Pairs: {Object.entries(q.pairs || {}).map(([k, v]) => `${k} -&gt; ${v}`).join(', ')}
                                                                 </Typography>
                                                             )}
                                                             {q.type === 'fill-in-the-blank' && (
@@ -407,7 +408,7 @@ export default function WorkflowWizard() {
                         ))}
 
                         <Alert severity="info" sx={{ mt: 2, mb: 2 }}>
-                            This content is currently in memory. Click "Save Draft" to write it to your library.
+                            This content is currently in memory. Click &quot;Save Draft&quot; to write it to your library.
                         </Alert>
 
                         <Button
@@ -432,7 +433,7 @@ export default function WorkflowWizard() {
         return (
             <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <Typography variant="h5" gutterBottom color="success.main">Success!</Typography>
-                <Typography mb={2}>Pathway "{details.topic}" has been saved as a Draft.</Typography>
+                <Typography mb={2}>Pathway &quot;{details.topic}&quot; has been saved as a Draft.</Typography>
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
                     <Button variant="contained" onClick={() => router.push('/creator')}>Go to Dashboard</Button>
                     <Button variant="outlined" onClick={() => router.push(`/creator`)}>Preview (via Dashboard)</Button>

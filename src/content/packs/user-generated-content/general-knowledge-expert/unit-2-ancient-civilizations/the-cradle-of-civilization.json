@@ -1,0 +1,151 @@
+{
+  "title": "The Cradle of Civilization",
+  "description": "Exploring the foundations of human society and ancient innovations.",
+  "content": "In this lesson, we travel back in time to investigate the ingenious civilizations of Mesopotamia, Egypt, and the Indus Valley. We will explore how their architecture, laws, and inventions shaped the modern world.",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "Which ancient civilization is credited with inventing the earliest known writing system, called Cuneiform?",
+      "correctAnswer": "The Sumerians",
+      "explanation": "The Sumerians of Mesopotamia developed Cuneiform around 3200 BCE, using wedge-shaped marks on clay tablets.",
+      "options": [
+        "Ancient Egyptians",
+        "The Sumerians",
+        "The Aztecs",
+        "The Phoenicians"
+      ],
+      "id": "q_0_1766522004567"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the facts about Ancient Egypt.",
+      "explanation": "Khufu (known as Cheops to the Greeks) commissioned the Great Pyramid, the largest of the three Giza pyramids.",
+      "segments": [
+        {
+          "text": "The Great Pyramid of Giza was built as a tomb for the Pharaoh ",
+          "isBlank": false,
+          "id": "eg1"
+        },
+        {
+          "text": "Khufu",
+          "isBlank": true,
+          "id": "eg2"
+        },
+        {
+          "text": " and remained the tallest man-made structure for over 3,800 years.",
+          "isBlank": false,
+          "id": "eg3"
+        }
+      ],
+      "options": [
+        "Khufu",
+        "Tutankhamun"
+      ],
+      "id": "q_1_1766522004567"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Sort these ancient wonders and landmarks into their respective regions.",
+      "explanation": "The Hanging Gardens were in Babylon (Mesopotamia), the Parthenon in Athens (Greece), the Colosseum in Rome, and the Sphinx in Giza (Egypt).",
+      "items": [
+        {
+          "id": "reg1",
+          "text": "The Hanging Gardens"
+        },
+        {
+          "id": "reg2",
+          "text": "The Parthenon"
+        },
+        {
+          "id": "reg3",
+          "text": "The Colosseum"
+        },
+        {
+          "id": "reg4",
+          "text": "The Sphinx"
+        }
+      ],
+      "categories": [
+        "Mesopotamia",
+        "Greece",
+        "Rome",
+        "Egypt"
+      ],
+      "correctMapping": {
+        "reg1": "Mesopotamia",
+        "reg2": "Greece",
+        "reg3": "Rome",
+        "reg4": "Egypt"
+      },
+      "id": "q_2_1766522004567"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order these historical periods from the earliest to the most recent.",
+      "explanation": "Human history generally progressed from the Stone Age (lithic tools) to the Bronze Age (alloyed metals), the Iron Age, and finally the Middle Ages.",
+      "items": [
+        {
+          "id": "time1",
+          "text": "Bronze Age"
+        },
+        {
+          "id": "time2",
+          "text": "Stone Age"
+        },
+        {
+          "id": "time3",
+          "text": "Iron Age"
+        },
+        {
+          "id": "time4",
+          "text": "Middle Ages"
+        }
+      ],
+      "correctOrder": [
+        "time2",
+        "time1",
+        "time3",
+        "time4"
+      ],
+      "id": "q_3_1766522004567"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the ancient deity to their role in mythology.",
+      "explanation": "In Greek mythology, these four powerful siblings and children of Cronus ruled over specific domains of the cosmos.",
+      "pairs": {
+        "Zeus": "God of the Sky",
+        "Poseidon": "God of the Sea",
+        "Athena": "Goddess of Wisdom",
+        "Hades": "God of the Underworld"
+      },
+      "id": "q_4_1766522004567"
+    },
+    {
+      "type": "fill-in-the-blank",
+      "prompt": "What was the name of the stone found in 1799 that allowed historians to finally decipher Egyptian hieroglyphs?",
+      "correctAnswer": "Rosetta Stone",
+      "explanation": "The Rosetta Stone contained the same decree in three scripts: Hieroglyphic, Demotic, and Ancient Greek, providing the key to translation.",
+      "id": "q_5_1766522004567"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Select all of the following that were significant engineering achievements of the Roman Empire.",
+      "explanation": "Romans were masters of civil engineering, creating vast networks of roads, water-carrying aqueducts, and durable concrete. The Great Wall is Chinese, and the Compass was also a Chinese invention.",
+      "options": [
+        "Aqueducts",
+        "The Great Wall",
+        "Concrete (Opus Caementicium)",
+        "Paved Roads",
+        "The Compass"
+      ],
+      "correctAnswers": [
+        "Aqueducts",
+        "Concrete (Opus Caementicium)",
+        "Paved Roads"
+      ],
+      "id": "q_6_1766522004567"
+    }
+  ],
+  "id": "the-cradle-of-civilization"
+}

@@ -5,14 +5,15 @@ import { UserProfile, UserProgress, LessonProgress } from './content/types';
 
 interface ProgressState extends UserProgress {
     startLesson: (lessonId: string, pathwayId?: string, unitId?: string) => void;
-    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, pathwayId?: string, unitId?: string) => void;
-    completeLesson: (lessonId: string, score: number, pathwayId?: string, unitId?: string) => void;
+    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, history: { questionId: string; isCorrect: boolean }[], timeSpent: number, pathwayId?: string, unitId?: string) => void;
+    completeLesson: (lessonId: string, score: number, timeTaken: number, pathwayId?: string, unitId?: string) => void;
     isLessonCompleted: (lessonId: string, pathwayId?: string, unitId?: string) => boolean;
     getLessonProgress: (lessonId: string, pathwayId?: string, unitId?: string) => LessonProgress | undefined;
     addProfile: (name: string, avatar: string) => void;
     selectProfile: (profileId: string) => void;
     updateActiveProfile: (updates: Partial<UserProfile>) => void;
     deleteProfile: (profileId: string) => void;
+    resetLesson: (lessonId: string, pathwayId?: string, unitId?: string) => void;
     syncWithServer: () => Promise<void>;
 }
 
@@ -61,14 +62,16 @@ export const useProgressStore = create<ProgressState>()(
                                 ...current,
                                 status: 'in-progress',
                                 currentQuestionIndex: current?.currentQuestionIndex || 0,
-                                currentScore: current?.currentScore || 0
+                                currentScore: current?.currentScore || 0,
+                                currentHistory: [],
+                                currentTimeSpent: 0
                             }
                         }
                     }));
                 }
             },
 
-            updateProgress: (lessonId, questionIndex, currentScore, pathwayId, unitId) => {
+            updateProgress: (lessonId, questionIndex, currentScore, history, timeSpent, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
@@ -84,13 +87,15 @@ export const useProgressStore = create<ProgressState>()(
                         [key]: {
                             ...(current || { status: 'in-progress' }), // Ensure fallback if missing
                             currentQuestionIndex: questionIndex,
-                            currentScore: currentScore
+                            currentScore: currentScore,
+                            currentHistory: history,
+                            currentTimeSpent: timeSpent
                         }
                     }
                 }));
             },
 
-            completeLesson: (lessonId, score, pathwayId, unitId) => {
+            completeLesson: (lessonId, score, timeTaken, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
                 if (!activeProfileId) return;
 
@@ -104,6 +109,14 @@ export const useProgressStore = create<ProgressState>()(
 
                 const bestScore = Math.max(current?.bestScore || 0, score);
 
+                // Calculate best time logic:
+                let bestTime = current?.bestTime;
+                if (score > (current?.bestScore || 0)) {
+                    bestTime = timeTaken;
+                } else if (score === (current?.bestScore || 0)) {
+                    bestTime = Math.min(current?.bestTime || timeTaken, timeTaken);
+                }
+
                 set((state) => ({
                     lessonStatus: {
                         ...state.lessonStatus,
@@ -112,12 +125,15 @@ export const useProgressStore = create<ProgressState>()(
                             status: 'completed',
                             lastScore: score,
                             bestScore: bestScore,
-                            currentQuestionIndex: 0 // Reset for next fresh attempt
+                            lastTime: timeTaken,
+                            bestTime: bestTime,
+                            currentQuestionIndex: 0, // Reset for next fresh attempt
+                            currentHistory: [],
+                            currentTimeSpent: 0
                         }
                     },
                     profiles: state.profiles.map(p => {
-                        // Update profile stats (just lastLogin for now if needed, but really just save progress)
-                        // No gamification logic needed anymore.
+                        // Update profile stats
                         if (p.id === activeProfileId) {
                             return {
                                 ...p,
@@ -181,6 +197,36 @@ export const useProgressStore = create<ProgressState>()(
                 profiles: state.profiles.filter(p => p.id !== profileId),
                 activeProfileId: state.activeProfileId === profileId ? null : state.activeProfileId
             })),
+
+            resetLesson: (lessonId, pathwayId, unitId) => {
+                const { activeProfileId, lessonStatus } = get();
+                if (!activeProfileId) return;
+
+                const key = (pathwayId && unitId)
+                    ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
+                    : (pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`);
+
+                // Keep bestScore/bestTime but reset current progress
+                const current = lessonStatus[key];
+
+                // CRITICAL FIX: Preserve 'completed' status to avoid losing the checkmark
+                const newStatus = current?.status === 'completed' ? 'completed' : 'not-started';
+
+                set((state) => ({
+                    lessonStatus: {
+                        ...state.lessonStatus,
+                        [key]: {
+                            ...current,
+                            status: newStatus,
+                            currentQuestionIndex: 0,
+                            currentScore: 0,
+                            currentHistory: [],
+                            currentTimeSpent: 0
+                            // keep bestScore, lastScore, bestTime, lastTime
+                        }
+                    }
+                }));
+            },
 
             syncWithServer: async () => {
                 try {

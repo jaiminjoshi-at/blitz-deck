@@ -31,7 +31,8 @@
         "Tee mit Zitrone",
         "Heiße Schokolade"
       ],
-      "correctAnswer": "Kaffee mit milch und Milchschaum"
+      "correctAnswer": "Kaffee mit milch und Milchschaum",
+      "explanation": "Die Wiener Melange (frz. mélange „Mischung“) ist eine Kaffeespezialität, die aus einem Teil Espresso und einem Teil Milch sowie einer Haube aus Milchschaum besteht."
     },
     {
       "id": "q3-grammar",

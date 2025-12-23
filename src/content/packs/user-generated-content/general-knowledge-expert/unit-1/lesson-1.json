@@ -1,0 +1,150 @@
+{
+  "title": "Lesson 1",
+  "description": "Mastering complex concepts across diverse fields of study.",
+  "content": "Welcome to the Expert Knowledge Challenge. In this lesson, we will test your understanding of science, geography, history, and the arts. These questions are designed to challenge your critical thinking and recall of specific, high-level facts about the world around us.",
+  "questions": [
+    {
+      "type": "multiple-choice",
+      "prompt": "In which layer of the Earth's atmosphere is the Ozone Layer located?",
+      "correctAnswer": "Stratosphere",
+      "explanation": "The stratosphere sits above the troposphere and contains the ozone layer, which absorbs and scatters the solar ultraviolet radiation.",
+      "options": [
+        "Troposphere",
+        "Stratosphere",
+        "Mesosphere",
+        "Exosphere"
+      ],
+      "id": "q_0_1766522004526"
+    },
+    {
+      "type": "cloze",
+      "prompt": "Complete the sentence regarding biological energy production.",
+      "explanation": "Photosynthesis is the specific process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll.",
+      "segments": [
+        {
+          "text": "The process of ",
+          "isBlank": false,
+          "id": "c1"
+        },
+        {
+          "text": "photosynthesis",
+          "isBlank": true,
+          "id": "c2"
+        },
+        {
+          "text": " allows plants to convert light energy into chemical energy.",
+          "isBlank": false,
+          "id": "c3"
+        }
+      ],
+      "options": [
+        "photosynthesis",
+        "respiration"
+      ],
+      "id": "q_1_1766522004526"
+    },
+    {
+      "type": "categorize",
+      "prompt": "Sort these animals into their biological classes.",
+      "explanation": "Blue Whales and Platypuses are mammals (the latter being a monotreme), Sharks are cartilaginous fish, and Penguins are flightless birds.",
+      "items": [
+        {
+          "id": "a1",
+          "text": "Blue Whale"
+        },
+        {
+          "id": "a2",
+          "text": "Great White Shark"
+        },
+        {
+          "id": "a3",
+          "text": "Emperor Penguin"
+        },
+        {
+          "id": "a4",
+          "text": "Platypus"
+        }
+      ],
+      "categories": [
+        "Mammal",
+        "Fish",
+        "Bird"
+      ],
+      "correctMapping": {
+        "a1": "Mammal",
+        "a2": "Fish",
+        "a3": "Bird",
+        "a4": "Mammal"
+      },
+      "id": "q_2_1766522004526"
+    },
+    {
+      "type": "ordering",
+      "prompt": "Order these planets by their proximity to the Sun, starting with the closest.",
+      "explanation": "Mercury is the closest to the Sun, followed by Venus, Earth (not listed), Mars, and then Jupiter.",
+      "items": [
+        {
+          "id": "p1",
+          "text": "Mars"
+        },
+        {
+          "id": "p2",
+          "text": "Venus"
+        },
+        {
+          "id": "p3",
+          "text": "Jupiter"
+        },
+        {
+          "id": "p4",
+          "text": "Mercury"
+        }
+      ],
+      "correctOrder": [
+        "p4",
+        "p2",
+        "p1",
+        "p3"
+      ],
+      "id": "q_3_1766522004527"
+    },
+    {
+      "type": "matching",
+      "prompt": "Match the famous artist to their masterpiece.",
+      "explanation": "These pairings represent iconic works from the High Renaissance, Post-Impressionism, the Dutch Golden Age, and Regionalism.",
+      "pairs": {
+        "Leonardo da Vinci": "Mona Lisa",
+        "Vincent van Gogh": "The Starry Night",
+        "Johannes Vermeer": "Girl with a Pearl Earring",
+        "Grant Wood": "American Gothic"
+      },
+      "id": "q_4_1766522004527"
+    },
+    {
+      "type": "fill-in-the-blank",
+      "prompt": "What is the chemical symbol for the element Gold?",
+      "correctAnswer": "Au",
+      "explanation": "The symbol Au is derived from the Latin word for gold, 'aurum'.",
+      "id": "q_5_1766522004527"
+    },
+    {
+      "type": "multiple-response",
+      "prompt": "Select all of the following that are considered Greenhouse Gases.",
+      "explanation": "Carbon Dioxide, Methane, and Water Vapor trap heat in the atmosphere. Oxygen and Nitrogen make up the bulk of the atmosphere but do not contribute to the greenhouse effect.",
+      "options": [
+        "Carbon Dioxide",
+        "Methane",
+        "Oxygen",
+        "Nitrogen",
+        "Water Vapor"
+      ],
+      "correctAnswers": [
+        "Carbon Dioxide",
+        "Methane",
+        "Water Vapor"
+      ],
+      "id": "q_6_1766522004527"
+    }
+  ],
+  "id": "lesson-1"
+}

@@ -18,13 +18,16 @@ interface UnitListProps {
 }
 
 export default function UnitList({ units, pathwayId }: UnitListProps) {
+    // Subscribe to lessonStatus to ensure re-renders
+    const lessonStatus = useProgressStore((state) => state.lessonStatus);
     const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
 
     // Hydration check
     const [hydrated, setHydrated] = React.useState(false);
     React.useEffect(() => {
         setHydrated(true);
-    }, []);
+        void lessonStatus; // Subscribe to updates
+    }, [lessonStatus]);
 
     return (
         <>

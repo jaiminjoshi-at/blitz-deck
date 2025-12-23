@@ -12,6 +12,7 @@ export interface Question {
     prompt: string;
     options?: string[];
     correctAnswer: string | string[];
+    explanation?: string; // Optional explanation
     pairs?: { [key: string]: string }; // For matching
     segments?: ClozeSegment[]; // For cloze
     items?: { id: string; text: string }[]; // For ordering and categorize
@@ -20,6 +21,9 @@ export interface Question {
     categories?: string[]; // For categorize
     correctMapping?: { [itemId: string]: string }; // For categorize
 }
+
+
+
 
 export interface ClozeQuestion extends Question {
     type: 'cloze';
@@ -92,6 +96,10 @@ export interface LessonProgress {
     lastScore?: number;
     currentQuestionIndex?: number;
     currentScore?: number;
+    currentTimeSpent?: number;
+    currentHistory?: { questionId: string; isCorrect: boolean }[];
+    bestTime?: number;
+    lastTime?: number;
 }
 
 export interface UserProgress {

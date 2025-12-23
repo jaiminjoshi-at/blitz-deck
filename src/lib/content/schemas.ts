@@ -15,6 +15,7 @@ export const BaseQuestionSchema = z.object({
     type: QuestionTypeSchema,
     prompt: z.string(),
     correctAnswer: z.union([z.string(), z.array(z.string())]),
+    explanation: z.string().optional(),
 });
 
 // Import version of Question - ID is optional
@@ -23,6 +24,7 @@ export const BaseQuestionImportSchema = z.object({
     type: QuestionTypeSchema,
     prompt: z.string(),
     correctAnswer: z.union([z.string(), z.array(z.string())]).optional(), // Made optional for types that don't use it
+    explanation: z.string().optional(),
 });
 
 export const MultipleChoiceQuestionSchema = BaseQuestionSchema.extend({

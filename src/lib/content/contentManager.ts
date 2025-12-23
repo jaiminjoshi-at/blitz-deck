@@ -1,10 +1,7 @@
-import { PathwayImportSchema, LessonImportSchema } from './schemas';
-import { z } from 'zod';
+import { PathwayImportSchema } from './schemas';
 import * as fs from 'fs';
 import * as path from 'path';
 import { PATHS } from '../constants';
-
-type PathwayImport = z.infer<typeof PathwayImportSchema>;
 
 export class ContentManager {
     private contentDir: string;
@@ -30,7 +27,8 @@ export class ContentManager {
         return Math.random().toString(36).substring(2, 9);
     }
 
-    async saveDraftPathway(importData: any, packId: string = 'user-generated-content'): Promise<string> {
+
+    async saveDraftPathway(importData: unknown, packId: string = 'user-generated-content'): Promise<string> {
         // 1. Validate Schema
         const validated = PathwayImportSchema.parse(importData);
 

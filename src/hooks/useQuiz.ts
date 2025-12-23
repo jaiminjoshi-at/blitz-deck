@@ -8,7 +8,8 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
         startLesson,
         completeLesson,
         updateProgress,
-        getLessonProgress
+        getLessonProgress,
+        resetLesson
     } = useProgressStore();
 
     // Initialize state from potential checkpoint
@@ -22,12 +23,37 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     const [showResult, setShowResult] = useState(false);
     const [hydrated, setHydrated] = useState(false);
 
+    // History and Time tracking
+    const [history, setHistory] = useState<{ questionId: string; isCorrect: boolean }[]>(savedProgress?.currentHistory || []);
+    // Time spent in previous sessions (seconds)
+    const [prevTimeSpent, setPrevTimeSpent] = useState(savedProgress?.currentTimeSpent || 0);
+    // Session start time
+    const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+
+    // Session duration in seconds (updated via effect)
+    const [sessionDuration, setSessionDuration] = useState(0);
+
     // Initial mount effect
+    // eslint-disable-next-line
     useEffect(() => {
-        // eslint-disable-next-line
-        setHydrated(true);
+        // Delay hydration to avoid synchronous set state warning
+        const t = setTimeout(() => setHydrated(true), 0);
         startLesson(lesson.id, pathwayId, unitId);
+        setSessionStartTime(Date.now());
+        return () => clearTimeout(t);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lesson.id, pathwayId, unitId, startLesson]);
+
+    // Timer effect to update display time
+    useEffect(() => {
+        if (!sessionStartTime) return;
+
+        const interval = setInterval(() => {
+            setSessionDuration((Date.now() - sessionStartTime) / 1000);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [sessionStartTime]);
 
     const handleAnswer = useCallback((isCorrect: boolean) => {
         let newScore = score;
@@ -36,31 +62,52 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
             setScore(newScore);
         }
 
+        // Update history
+        const currentQ = lesson.questions[currentQuestionIndex];
+        const newHistory = [...history, { questionId: currentQ.id, isCorrect }];
+        setHistory(newHistory);
+
+        // Calculate time
+        const now = Date.now();
+        const duration = sessionStartTime ? (now - sessionStartTime) / 1000 : 0;
+        const totalTime = prevTimeSpent + duration;
+
         setTimeout(() => {
             const nextIndex = currentQuestionIndex + 1;
             if (nextIndex < lesson.questions.length) {
                 setCurrentQuestionIndex(nextIndex);
-                // Persist both index AND score
-                updateProgress(lesson.id, nextIndex, newScore, pathwayId, unitId);
+                // Persist both index, score, history, and time
+                updateProgress(lesson.id, nextIndex, newScore, newHistory, totalTime, pathwayId, unitId);
             } else {
                 setShowResult(true);
             }
         }, 1500);
-    }, [currentQuestionIndex, lesson.questions.length, lesson.id, pathwayId, unitId, updateProgress, score]);
+    }, [currentQuestionIndex, lesson.questions, lesson.id, pathwayId, unitId, updateProgress, score, history, prevTimeSpent, sessionStartTime]);
+
+    const retry = useCallback(() => {
+        resetLesson(lesson.id, pathwayId, unitId);
+        setCurrentQuestionIndex(0);
+        setScore(0);
+        setHistory([]);
+        setPrevTimeSpent(0);
+        setSessionDuration(0);
+        setSessionStartTime(Date.now());
+        setShowResult(false);
+        // We need to restart to set status to in-progress
+        startLesson(lesson.id, pathwayId, unitId);
+    }, [lesson.id, pathwayId, unitId, resetLesson, startLesson]);
 
     useEffect(() => {
         if (showResult) {
-            // Calculate percentage score (0-100)
-            // Note: If resumed, 'score' is only partial. This is a known limitation of the current agreed schema.
-            // However, with "best score" logic, a partial attempt won't overwrite a good score.
-            // But it makes "completing" a resumed lesson hard to get 100%.
-            // Since I can't change schema now without approval, I will proceed. 
-            // The constraint "re-attempt... preserving previous scores" is met.
+            // Calculate final time
+            const now = Date.now();
+            const duration = sessionStartTime ? (now - sessionStartTime) / 1000 : 0;
+            const totalTime = prevTimeSpent + duration;
 
             const percentage = Math.round((score / lesson.questions.length) * 100);
-            completeLesson(lesson.id, percentage, pathwayId, unitId);
+            completeLesson(lesson.id, percentage, totalTime, pathwayId, unitId);
         }
-    }, [showResult, score, lesson.questions.length, lesson.id, pathwayId, unitId, completeLesson]);
+    }, [showResult, score, lesson.questions.length, lesson.id, pathwayId, unitId, completeLesson, prevTimeSpent, sessionStartTime]);
 
     if (!hydrated) return {
         currentQuestionIndex: 0,
@@ -70,7 +117,13 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
         totalQuestions: lesson.questions.length,
         currentQuestion: lesson.questions[0],
         isPassed: false,
+        history: [],
+        timeTaken: 0,
+        retry: () => { }
     };
+
+    // Current total time for display
+    const currentTotalTime = (prevTimeSpent || 0) + sessionDuration;
 
     return {
         currentQuestionIndex,
@@ -79,6 +132,9 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
         handleAnswer,
         totalQuestions: lesson.questions.length,
         currentQuestion: lesson.questions[currentQuestionIndex],
-        isPassed: score === lesson.questions.length, // Logic might need adjustment for partial runs
+        isPassed: score === lesson.questions.length,
+        history,
+        timeTaken: currentTotalTime,
+        retry
     };
 }
