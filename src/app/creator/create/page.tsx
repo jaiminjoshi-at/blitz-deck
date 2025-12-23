@@ -64,11 +64,15 @@ export default function WorkflowWizard() {
     // Snackbar State
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = React.useState<'success' | 'info' | 'warning' | 'error'>('error');
 
-    const showError = (msg: string) => {
+    const showSnackbar = (msg: string, severity: 'success' | 'info' | 'warning' | 'error' = 'error') => {
         setSnackbarMessage(msg);
+        setSnackbarSeverity(severity);
         setSnackbarOpen(true);
     };
+
+    const showError = (msg: string) => showSnackbar(msg, 'error');
 
     const handleCloseSnackbar = () => setSnackbarOpen(false);
 
@@ -339,7 +343,7 @@ export default function WorkflowWizard() {
                         <Button variant="outlined" onClick={async () => {
                             const success = await copyToClipboard(generatedPrompt);
                             if (success) {
-                                showError('Copied to clipboard!');
+                                showSnackbar('Copied to clipboard!', 'success');
                             } else {
                                 showError('Failed to copy to clipboard.');
                             }
@@ -472,7 +476,7 @@ export default function WorkflowWizard() {
                 autoHideDuration={6000}
                 onClose={handleCloseSnackbar}
             >
-                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
