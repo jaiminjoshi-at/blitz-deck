@@ -43,3 +43,12 @@ next-env.d.ts
 
 # local data
 /data/
+
+# temporary
+/tmp/
+/playwright-report/
+error.log
+lint.json
+*_log.txt
+test_output.txt
+*.log
