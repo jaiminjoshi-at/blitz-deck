@@ -7,7 +7,7 @@ import { Question } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
 }
 
 export default function FillInTheBlankQuestion({ question, onAnswer }: Props) {
@@ -41,14 +41,14 @@ export default function FillInTheBlankQuestion({ question, onAnswer }: Props) {
         setIsCorrect(correct);
 
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, value);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
             if (newAttempts >= 2) {
                 // Auto-advance on second failure
-                onAnswer(false);
+                onAnswer(false, value);
             }
         }
     };

@@ -97,7 +97,7 @@ export interface LessonProgress {
     currentQuestionIndex?: number;
     currentScore?: number;
     currentTimeSpent?: number;
-    currentHistory?: { questionId: string; isCorrect: boolean }[];
+    currentHistory?: { questionId: string; isCorrect: boolean; userAnswer: any }[];
     bestTime?: number;
     lastTime?: number;
 }

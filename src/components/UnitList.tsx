@@ -20,6 +20,7 @@ interface UnitListProps {
 export default function UnitList({ units, pathwayId }: UnitListProps) {
     // Subscribe to lessonStatus to ensure re-renders
     const lessonStatus = useProgressStore((state) => state.lessonStatus);
+    const activeProfileId = useProgressStore((state) => state.activeProfileId); // Force re-render on profile load
     const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
 
     // Hydration check

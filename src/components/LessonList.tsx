@@ -26,8 +26,8 @@ export default function LessonList({ lessons, pathwayId, unitId }: LessonListPro
 
     // Subscribe to lessonStatus to ensure re-renders when progress updates
     const lessonStatus = useProgressStore((state) => state.lessonStatus);
+    const activeProfileId = useProgressStore((state) => state.activeProfileId); // Force re-render on profile load
     const getLessonProgress = useProgressStore((state) => state.getLessonProgress);
-    // const activeProfileId = useProgressStore((state) => state.activeProfileId); // Removed debug
 
     // Dummy usage to satisfy linter while maintaining subscription
     React.useEffect(() => {

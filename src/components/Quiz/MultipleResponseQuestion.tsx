@@ -12,10 +12,11 @@ import Paper from '@mui/material/Paper';
 
 interface Props {
     question: MultipleResponseQuestionType;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
 }
 
 export default function MultipleResponseQuestion({ question, onAnswer }: Props) {
+    // ... state ...
     const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
     const [submitted, setSubmitted] = React.useState(false);
     const [isCorrect, setIsCorrect] = React.useState(false);
@@ -70,12 +71,12 @@ export default function MultipleResponseQuestion({ question, onAnswer }: Props) 
         setIsCorrect(correct);
 
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, selectedOptions);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
             if (newAttempts >= 2) {
-                onAnswer(false);
+                onAnswer(false, selectedOptions);
             }
         }
     };

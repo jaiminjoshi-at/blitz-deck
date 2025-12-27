@@ -153,7 +153,7 @@ export default function WorkflowWizard() {
                 showError('Failed to save: ' + result.error);
                 setIsSaving(false);
             }
-            // On success, the server action redirects to /creator
+            // On success, the server action redirects to /admin/content
         } catch (e) {
             console.error(e);
         }
@@ -199,35 +199,38 @@ export default function WorkflowWizard() {
         switch (step) {
             case 0: // Details
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <TextField
-                            label="Topic" fullWidth value={details.topic}
-                            onChange={e => {
-                                setDetails({ ...details, topic: e.target.value });
-                                setDetailsErrors({ ...detailsErrors, topic: '' });
-                            }}
-                            error={!!detailsErrors.topic}
-                            helperText={detailsErrors.topic}
-                        />
-                        <TextField
-                            label="Target Audience" fullWidth value={details.audience}
-                            onChange={e => {
-                                setDetails({ ...details, audience: e.target.value });
-                                setDetailsErrors({ ...detailsErrors, audience: '' });
-                            }}
-                            error={!!detailsErrors.audience}
-                            helperText={detailsErrors.audience}
-                        />
-                        <TextField
-                            label="Description" fullWidth multiline rows={3} value={details.description}
-                            onChange={e => {
-                                setDetails({ ...details, description: e.target.value });
-                                setDetailsErrors({ ...detailsErrors, description: '' });
-                            }}
-                            error={!!detailsErrors.description}
-                            helperText={detailsErrors.description}
-                        />
-                    </Box>
+                    <Paper sx={{ p: 4 }}>
+                        <Typography variant="h6" gutterBottom>Pathway Details</Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            <TextField
+                                label="Topic" fullWidth value={details.topic}
+                                onChange={e => {
+                                    setDetails({ ...details, topic: e.target.value });
+                                    setDetailsErrors({ ...detailsErrors, topic: '' });
+                                }}
+                                error={!!detailsErrors.topic}
+                                helperText={detailsErrors.topic}
+                            />
+                            <TextField
+                                label="Target Audience" fullWidth value={details.audience}
+                                onChange={e => {
+                                    setDetails({ ...details, audience: e.target.value });
+                                    setDetailsErrors({ ...detailsErrors, audience: '' });
+                                }}
+                                error={!!detailsErrors.audience}
+                                helperText={detailsErrors.audience}
+                            />
+                            <TextField
+                                label="Description" fullWidth multiline rows={3} value={details.description}
+                                onChange={e => {
+                                    setDetails({ ...details, description: e.target.value });
+                                    setDetailsErrors({ ...detailsErrors, description: '' });
+                                }}
+                                error={!!detailsErrors.description}
+                                helperText={detailsErrors.description}
+                            />
+                        </Box>
+                    </Paper>
                 );
             case 1: // Structure
                 return (
@@ -435,8 +438,8 @@ export default function WorkflowWizard() {
                 <Typography variant="h5" gutterBottom color="success.main">Success!</Typography>
                 <Typography mb={2}>Pathway &quot;{details.topic}&quot; has been saved as a Draft.</Typography>
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-                    <Button variant="contained" onClick={() => router.push('/creator')}>Go to Dashboard</Button>
-                    <Button variant="outlined" onClick={() => router.push(`/creator`)}>Preview (via Dashboard)</Button>
+                    <Button variant="contained" onClick={() => router.push('/admin/content')}>Go to Dashboard</Button>
+                    <Button variant="outlined" onClick={() => router.push(`/admin/content`)}>Preview (via Dashboard)</Button>
                 </Box>
             </Paper>
         );

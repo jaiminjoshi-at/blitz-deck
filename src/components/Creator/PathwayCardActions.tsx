@@ -51,7 +51,7 @@ export default function PathwayCardActions({ packId, pathwayId, status }: Pathwa
 
     return (
         <CardActions>
-            <Button size="small">Edit</Button>
+            {/* Edit button removed as requested */}
             <Button
                 size="small"
                 color="error"

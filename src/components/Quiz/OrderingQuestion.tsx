@@ -26,50 +26,10 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 interface Props {
     question: OrderingQuestionType;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
 }
 
-function SortableItem(props: { id: string; text: string; disabled: boolean; isCorrect?: boolean; isIncorrect?: boolean }) {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-    } = useSortable({ id: props.id, disabled: props.disabled });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-    };
-
-    let bgcolor = 'background.paper';
-    if (props.isCorrect) bgcolor = 'success.light';
-    if (props.isIncorrect) bgcolor = 'error.light';
-
-    return (
-        <Paper
-            ref={setNodeRef}
-            style={style}
-            sx={{
-                p: 1.5,
-                mb: 1,
-                display: 'flex',
-                alignItems: 'center',
-                bgcolor: bgcolor,
-                cursor: props.disabled ? 'default' : 'grab',
-                '&:active': { cursor: props.disabled ? 'default' : 'grabbing' },
-                border: 1,
-                borderColor: 'divider'
-            }}
-            {...attributes}
-            {...listeners}
-        >
-            <DragIndicatorIcon sx={{ mr: 2, color: 'text.secondary' }} />
-            <Typography>{props.text}</Typography>
-        </Paper>
-    );
-}
+// ... SortableItem ...
 
 export default function OrderingQuestion({ question, onAnswer }: Props) {
     const [items, setItems] = React.useState<{ id: string; text: string }[]>([]);
@@ -129,12 +89,12 @@ export default function OrderingQuestion({ question, onAnswer }: Props) {
         setIsCorrect(correct);
 
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, currentOrderIds);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
             if (newAttempts >= 2) {
-                onAnswer(false);
+                onAnswer(false, currentOrderIds);
             }
         }
     };
