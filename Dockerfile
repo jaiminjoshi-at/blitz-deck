@@ -46,6 +46,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/scripts/seed.js ./scripts/seed.js
 # Copy content packs for seeding
 COPY --from=builder /app/src/content/packs ./src/content/packs
+# Copy public assets (Logo, etc) - REQUIRED for standalone mode
+COPY --from=builder /app/public ./public
 # Copy Drizzle migrations
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
