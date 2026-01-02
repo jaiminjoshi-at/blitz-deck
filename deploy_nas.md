@@ -30,6 +30,8 @@ services:
       # To generate a good secret, run `openssl rand -base64 32` in your terminal
       # or use a password manager to generate a long random string.
       - AUTH_SECRET=change_me_to_a_long_random_string
+      # TRUST PROXY/HOST: Required when running behind reverse proxy or via IP
+      - AUTH_TRUST_HOST=true
     depends_on:
       - postgres
 

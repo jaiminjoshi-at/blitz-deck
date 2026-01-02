@@ -26,3 +26,10 @@ Before pushing any changes to git, you MUST ensure the following checks pass:
 3.  **Build**: Run `npm run build` to verify the project builds successfully.
 4.  **Tests**: Run relevant tests (e.g., unit tests or playwright tests) to ensure no regressions.
 5.  **Clean State**: Ensure no temporary files (like logs) are included in the commit.
+
+## Safe Refactoring
+1.  **Context Check**: When using `replace_file_content`, ALWAYS verify the context. Ensure you are not accidentally overwriting variable declarations or imports.
+2.  **Read After Write**: Read the file content *after* the edit if the change was complex.
+
+## Deployment Constraints
+1.  **Lean Images**: Production Docker images must be lean. Do not rely on `devDependencies` (like `tsx`, `eslint`) in the production container.
