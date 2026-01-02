@@ -55,6 +55,16 @@ docker-compose up -d
 ```
 (Or use your NAS's "Container Manager" to create a project from this YAML).
 
+
+### Step 3: Initialize Database (One-time setup)
+The database starts empty. You need to run the seed script to create the `admin` and `learner` users and load the content.
+
+Run this command (replace `blitz-deck` with your container name if different):
+```bash
+docker exec blitz-deck npm run seed
+```
+*(If checking database schema updates is needed in the future, you can also run `docker exec blitz-deck npm run db:push`)*
+
 ### How to Update
 When you push new code to GitHub, the image will automatically rebuild. To update your NAS:
 1.  Navigate to your project folder.
