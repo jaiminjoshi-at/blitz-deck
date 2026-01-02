@@ -11,7 +11,6 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         const session = await auth();
-        console.log('[API/Sync] GET request. Session User ID:', session?.user?.id);
 
         if (!session?.user?.id) {
             console.warn('[API/Sync] Unauthorized - No session user ID');
@@ -19,7 +18,6 @@ export async function GET() {
         }
 
         const progressRecords = await db.select().from(userProgress).where(eq(userProgress.userId, session.user.id));
-        console.log(`[API/Sync] Found ${progressRecords.length} records for user ${session.user.id}`);
 
         // Transform DB records back to store format if needed, or Store adapts.
         // Store expects a map of lessonId -> Progress.
@@ -57,8 +55,8 @@ export async function POST(request: Request) {
         }
 
         // Helper to safely convert numbers to integers
-        const safeInt = (val: any) => typeof val === 'number' ? Math.round(val) : undefined;
-        const safeIntDefault = (val: any, def = 0) => typeof val === 'number' ? Math.round(val) : def;
+        const safeInt = (val: unknown) => typeof val === 'number' ? Math.round(val) : undefined;
+        const safeIntDefault = (val: unknown, def = 0) => typeof val === 'number' ? Math.round(val) : def;
 
         // Upsert progress
         await db.insert(userProgress).values({

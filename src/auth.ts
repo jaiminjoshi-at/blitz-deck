@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 // until we add a proper registration flow with hashing.
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    adapter: DrizzleAdapter(db) as any, // Temporary cast until adapter types are aligned
+    adapter: DrizzleAdapter(db) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     session: { strategy: "jwt" },
     pages: {
         signIn: '/login',

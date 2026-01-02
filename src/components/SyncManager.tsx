@@ -19,7 +19,7 @@ export default function SyncManager() {
         if (!activeProfileId) return;
 
         const init = async () => {
-            console.log('[SyncManager] Syncing active profile:', activeProfileId);
+
             // We can maybe add error handling here? 
             // If sync fails, do we enable saving? 
             // Yes, if offline, we should still allow local work.

@@ -11,7 +11,6 @@ export default function StoreInitializer({ userId, userName, userAvatar }: { use
         // Enforce sync if store is empty or mismatches current session
         // This handles cases where rehydration wipes the state or user switches
         if (userId && activeProfileId !== userId) {
-            console.log('[StoreInitializer] Syncing User Session:', userId);
             syncUserSession(userId, userName, userAvatar);
         }
     }, [userId, userName, userAvatar, syncUserSession, activeProfileId]);

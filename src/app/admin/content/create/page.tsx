@@ -15,7 +15,7 @@ import Checkbox from '@mui/material/Checkbox';
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
 import { generateSystemPrompt, PromptStructure, QuestionTypeRegistry } from '@/lib/ai/promptGenerator';
-import { QuestionType } from '@/lib/content/types';
+import { QuestionType, Question } from '@/lib/content/types';
 import JsonImporter from '@/components/Creator/JsonImporter';
 import { saveDraftPathway } from '@/app/actions/content';
 import { useRouter } from 'next/navigation';
@@ -24,10 +24,13 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Snackbar from '@mui/material/Snackbar';
 import { copyToClipboard } from '@/lib/utils';
-import { PathwayImportSchema } from '@/lib/content/schemas';
+import { PathwayImportSchema, QuestionImportSchema } from '@/lib/content/schemas';
 import { z } from 'zod';
 
 type PathwayImport = z.infer<typeof PathwayImportSchema>;
+type QuestionImport = z.infer<typeof QuestionImportSchema>;
+
+
 
 // Updated Steps
 const steps = ['Details', 'Structure', 'Configuration', 'Generate', 'Import', 'Preview'];
@@ -161,7 +164,7 @@ export default function WorkflowWizard() {
 
     // --- Helper for Structure Step ---
     const addUnit = () => setUnits([...units, { title: `Unit ${units.length + 1}`, description: '', lessons: [] }]);
-    const updateUnit = (idx: number, field: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    const updateUnit = (idx: number, field: string, value: string) => {
         const newUnits = [...units];
         newUnits[idx] = { ...newUnits[idx], [field]: value };
         setUnits(newUnits);
@@ -171,7 +174,7 @@ export default function WorkflowWizard() {
         newUnits[unitIdx].lessons.push({ title: `Lesson ${newUnits[unitIdx].lessons.length + 1}`, types: [] });
         setUnits(newUnits);
     };
-    const updateLesson = (unitIdx: number, lessonIdx: number, field: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    const updateLesson = (unitIdx: number, lessonIdx: number, field: string, value: string) => {
         const newUnits = [...units];
         newUnits[unitIdx].lessons[lessonIdx] = { ...newUnits[unitIdx].lessons[lessonIdx], [field]: value };
         setUnits(newUnits);
@@ -379,7 +382,7 @@ export default function WorkflowWizard() {
 
                                                 <Typography variant="caption" sx={{ mt: 1, display: 'block', fontWeight: 'bold' }}>Questions:</Typography>
                                                 <Box component="ul" sx={{ pl: 2, mt: 0.5 }}>
-                                                    {lesson.questions?.map((q: any, k: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+                                                    {lesson.questions?.map((q: QuestionImport, k: number) => (
                                                         <li key={k} style={{ marginBottom: '8px' }}>
                                                             <Typography variant="body2" component="div">
                                                                 <Chip label={q.type} size="small" sx={{ mr: 1, height: '20px', fontSize: '0.7rem' }} />

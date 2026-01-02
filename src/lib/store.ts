@@ -44,7 +44,6 @@ export const useProgressStore = create<ProgressState>()(
                 const { activeProfileId, lessonStatus } = get();
                 // console.log('[Store] startLesson', { lessonId, activeProfileId });
                 if (!activeProfileId) {
-                    console.warn('[Store] startLesson ignored - No Active Profile');
                     return;
                 }
 
@@ -60,7 +59,7 @@ export const useProgressStore = create<ProgressState>()(
 
                 // Else, mark as in-progress (initializing if needed)
                 if (current?.status !== 'in-progress') {
-                    console.log('[Store] Setting status to in-progress', key);
+
                     set((state) => ({
                         lessonStatus: {
                             ...state.lessonStatus,
@@ -81,7 +80,6 @@ export const useProgressStore = create<ProgressState>()(
                 const { activeProfileId, lessonStatus } = get();
                 // console.log('[Store] updateProgress', { lessonId, index: questionIndex, activeProfileId });
                 if (!activeProfileId) {
-                    console.error('[Store] updateProgress FAILED - No Active Profile');
                     return;
                 }
 
@@ -166,7 +164,7 @@ export const useProgressStore = create<ProgressState>()(
                         bestTime,
                         lastTime: timeTaken
                     })
-                }).catch(err => console.error("Failed to sync progress", err));
+                }).catch(() => { });
             },
 
             isLessonCompleted: (lessonId, pathwayId, unitId) => {
@@ -299,7 +297,7 @@ export const useProgressStore = create<ProgressState>()(
                         });
                     }
                 } catch (error) {
-                    console.error('Failed to sync with server:', error);
+
                 }
             },
 

@@ -35,7 +35,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     const [sessionDuration, setSessionDuration] = useState(0);
 
     // Initial mount effect
-    // eslint-disable-next-line
+     
     useEffect(() => {
         // Delay hydration to avoid synchronous set state warning
         const t = setTimeout(() => setHydrated(true), 0);
@@ -46,7 +46,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
 
         setSessionStartTime(Date.now());
         return () => clearTimeout(t);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [lesson.id, pathwayId, unitId, startLesson, activeProfileId]); // added activeProfileId
 
     // Timer effect to update display time
