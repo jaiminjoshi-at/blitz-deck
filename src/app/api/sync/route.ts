@@ -56,25 +56,29 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
         }
 
+        // Helper to safely convert numbers to integers
+        const safeInt = (val: any) => typeof val === 'number' ? Math.round(val) : undefined;
+        const safeIntDefault = (val: any, def = 0) => typeof val === 'number' ? Math.round(val) : def;
+
         // Upsert progress
         await db.insert(userProgress).values({
             userId: session.user.id,
             lessonId: lessonId,
-            score: score || 0,
-            bestScore: bestScore,
-            lastScore: lastScore,
-            bestTime: bestTime,
-            lastTime: lastTime,
+            score: safeIntDefault(score),
+            bestScore: safeInt(bestScore),
+            lastScore: safeInt(lastScore),
+            bestTime: safeInt(bestTime),
+            lastTime: safeInt(lastTime),
             completedAt: new Date(),
         })
             .onConflictDoUpdate({
                 target: [userProgress.userId, userProgress.lessonId],
                 set: {
-                    score: score || 0,
-                    bestScore: bestScore,
-                    lastScore: lastScore,
-                    bestTime: bestTime,
-                    lastTime: lastTime,
+                    score: safeIntDefault(score),
+                    bestScore: safeInt(bestScore),
+                    lastScore: safeInt(lastScore),
+                    bestTime: safeInt(bestTime),
+                    lastTime: safeInt(lastTime),
                     completedAt: new Date()
                 }
             });
