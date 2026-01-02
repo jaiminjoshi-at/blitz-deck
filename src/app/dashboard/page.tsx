@@ -12,6 +12,9 @@ import PathwayCard from "@/components/PathwayCard";
 import Alert from '@mui/material/Alert';
 
 export default async function LearnerDashboard() {
+    const session = await auth();
+    const userId = session?.user?.id;
+
     if (!userId) {
         // Fallback if middleware fails
         redirect('/login');
