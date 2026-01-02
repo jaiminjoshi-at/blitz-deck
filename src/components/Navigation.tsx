@@ -38,8 +38,9 @@ export default function Navigation() {
         setDrawerOpen(open);
     };
 
-    const handleSignOut = () => {
-        signOut({ callbackUrl: '/login' });
+    const handleSignOut = async () => {
+        await signOut({ redirect: false });
+        router.push('/login');
         setDrawerOpen(false);
     };
 
