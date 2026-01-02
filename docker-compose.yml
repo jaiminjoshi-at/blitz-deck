@@ -9,11 +9,6 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - CONTENT_DIR=/app/content 
-    volumes:
-      # Mount the local content packs directory to the container
-      # Admin can update JSON files here to update content
-      - ./src/content/packs:/app/content
 
   postgres:
     image: postgres:15-alpine
@@ -30,4 +25,5 @@ services:
 
 volumes:
   postgres_data:
+
 
