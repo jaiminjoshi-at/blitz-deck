@@ -10,13 +10,13 @@ import { eq } from "drizzle-orm";
 // until we add a proper registration flow with hashing.
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    adapter: DrizzleAdapter(db),
+    adapter: DrizzleAdapter(db) as any, // Temporary cast until adapter types are aligned
     session: { strategy: "jwt" },
     pages: {
         signIn: '/login',
     },
     callbacks: {
-        jwt({ token, user, trigger, session }) {
+        jwt({ token, user }) {
             if (user) {
                 token.role = user.role;
                 token.id = user.id;
@@ -26,9 +26,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         session({ session, token }) {
             if (session.user) {
-                session.user.role = token.role;
+                session.user.role = (token.role as string) || 'learner';
                 session.user.id = token.id as string;
-                session.user.assignedAdminId = token.assignedAdminId;
+                session.user.assignedAdminId = token.assignedAdminId as string | null;
             }
             return session;
         }
@@ -49,7 +49,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 });
 
                 if (!user) {
-                    // No user found, so failure
                     return null;
                 }
 
@@ -58,7 +57,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return null;
                 }
 
-                return user;
+                // Ensure strict type match for Drizzle enum role -> string
+                return {
+                    ...user,
+                    role: user.role as string // Explicit cast to satisfy 'string' type
+                };
             },
         }),
     ],

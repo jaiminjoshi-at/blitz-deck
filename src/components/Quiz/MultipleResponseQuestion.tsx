@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { MultipleResponseQuestion as MultipleResponseQuestionType } from '@/lib/content/types';
+import { MultipleResponseQuestion as MultipleResponseQuestionType, UserAnswer } from '@/lib/content/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -12,7 +12,7 @@ import Paper from '@mui/material/Paper';
 
 interface Props {
     question: MultipleResponseQuestionType;
-    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function MultipleResponseQuestion({ question, onAnswer }: Props) {

@@ -12,9 +12,14 @@ export default function SyncManager() {
     // CRITICAL: Prevent saving until we have successfully pulled from server
     const isSyncedRef = useRef(false);
 
+    const activeProfileId = useProgressStore((state) => state.activeProfileId);
+
     useEffect(() => {
-        // 1. Initial Pull on mount
+        // 1. Initial Pull on mount (wait for profile)
+        if (!activeProfileId) return;
+
         const init = async () => {
+            console.log('[SyncManager] Syncing active profile:', activeProfileId);
             // We can maybe add error handling here? 
             // If sync fails, do we enable saving? 
             // Yes, if offline, we should still allow local work.
@@ -25,6 +30,7 @@ export default function SyncManager() {
             isSyncedRef.current = true;
         };
         init();
+
 
         // 2. Subscribe to changes for Push
         const unsubscribe = useProgressStore.subscribe((state) => {

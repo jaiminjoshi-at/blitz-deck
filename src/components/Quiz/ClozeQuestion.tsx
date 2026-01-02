@@ -8,11 +8,11 @@ import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import Fade from '@mui/material/Fade';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { ClozeQuestion as ClozeQuestionType } from '@/lib/content/types';
+import { ClozeQuestion as ClozeQuestionType, UserAnswer } from '@/lib/content/types';
 
 interface ClozeQuestionProps {
     question: ClozeQuestionType;
-    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function ClozeQuestion({ question, onAnswer }: ClozeQuestionProps) {

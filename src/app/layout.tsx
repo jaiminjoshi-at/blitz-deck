@@ -4,6 +4,7 @@ import Navigation from '@/components/Navigation';
 import SessionProvider from '@/components/Auth/SessionProvider';
 import { auth } from "@/auth";
 import StoreInitializer from "@/components/StoreInitializer";
+import SyncManager from '@/components/SyncManager';
 
 export const metadata: Metadata = {
   title: 'BlitzDeck',
@@ -23,11 +24,14 @@ export default async function RootLayout({
         <ThemeRegistry>
           <SessionProvider>
             {session?.user && (
-              <StoreInitializer
-                userId={session.user.id || ''}
-                userName={session.user.name || 'User'}
-                userAvatar={session.user.image || ''}
-              />
+              <>
+                <StoreInitializer
+                  userId={session.user.id || ''}
+                  userName={session.user.name || 'User'}
+                  userAvatar={session.user.image || ''}
+                />
+                <SyncManager />
+              </>
             )}
             <Navigation />
             {children}

@@ -3,11 +3,11 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
-import { Question } from '@/lib/content/types';
+import { Question, UserAnswer } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    userResult: { isCorrect: boolean; userAnswer: any } | undefined;
+    userResult: { isCorrect: boolean; userAnswer: UserAnswer } | undefined;
     index: number;
 }
 
@@ -17,7 +17,7 @@ export default function QuestionReview({ question, userResult, index }: Props) {
 
     // Helper to render specific answer comparison based on type
     const renderAnswerDetails = () => {
-        if (!userAnswer && userAnswer !== 0 && userAnswer !== false) {
+        if (!userAnswer && userAnswer !== 0) {
             return <Typography color="text.secondary" fontStyle="italic">No answer recorded.</Typography>;
         }
 

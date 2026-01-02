@@ -35,7 +35,7 @@ export default async function AdminDashboard() {
 
             <Grid container spacing={3}>
                 {/* Stats Cards */}
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ height: '100%', bgcolor: 'primary.light', color: 'primary.contrastText' }}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>Total Learners</Typography>
@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ height: '100%', bgcolor: 'secondary.light', color: 'secondary.contrastText' }}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>My Pathways</Typography>
@@ -57,19 +57,19 @@ export default async function AdminDashboard() {
                 </Grid>
 
                 {/* Quick Actions */}
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                     <Card sx={{ height: '100%' }}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>Quick Actions</Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid size={{ xs: 6 }}>
                                     <Link href="/admin/content" passHref>
                                         <Button variant="contained" fullWidth size="large" sx={{ height: '100%' }}>
                                             Creator Studio
                                         </Button>
                                     </Link>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid size={{ xs: 6 }}>
                                     <Button variant="outlined" fullWidth size="large" disabled sx={{ height: '100%' }}>
                                         Manage Users (Soon)
                                     </Button>

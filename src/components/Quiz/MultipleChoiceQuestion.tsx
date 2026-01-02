@@ -4,11 +4,11 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { Question } from '@/lib/content/types';
+import { Question, UserAnswer } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {

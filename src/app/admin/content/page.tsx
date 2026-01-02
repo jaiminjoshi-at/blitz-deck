@@ -49,7 +49,7 @@ export default async function CreatorStudio() {
                     border: '2px dashed',
                     borderColor: 'divider'
                 }}>
-                    <Typography color="text.secondary">You haven't created any pathways yet.</Typography>
+                    <Typography color="text.secondary">You haven&apos;t created any pathways yet.</Typography>
                 </Box>
             ) : (
                 <Grid container spacing={3}>

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Lesson } from '@/lib/content/types';
+import { Lesson, UserAnswer } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 
 export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
@@ -25,7 +25,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     const [hydrated, setHydrated] = useState(false);
 
     // History and Time tracking
-    const [history, setHistory] = useState<{ questionId: string; isCorrect: boolean; userAnswer: any }[]>(savedProgress?.currentHistory || []);
+    const [history, setHistory] = useState<{ questionId: string; isCorrect: boolean; userAnswer: UserAnswer }[]>(savedProgress?.currentHistory || []);
     // Time spent in previous sessions (seconds)
     const [prevTimeSpent, setPrevTimeSpent] = useState(savedProgress?.currentTimeSpent || 0);
     // Session start time
@@ -60,7 +60,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
         return () => clearInterval(interval);
     }, [sessionStartTime, showResult]);
 
-    const handleAnswer = useCallback((isCorrect: boolean, userAnswer: any) => {
+    const handleAnswer = useCallback((isCorrect: boolean, userAnswer: UserAnswer) => {
         let newScore = score;
         if (isCorrect) {
             newScore = score + 1;

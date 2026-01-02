@@ -71,7 +71,7 @@ export default function Navigation() {
                 </ListItem>
 
                 {/* Admin Only Links */}
-                {(session?.user as any)?.role === 'admin' && (
+                {session?.user?.role === 'admin' && (
                     <>
                         <Divider />
                         <ListItem key="creator" disablePadding>

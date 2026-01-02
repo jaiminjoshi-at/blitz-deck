@@ -13,6 +13,8 @@ interface Props {
     }>;
 }
 
+
+
 export default async function PathwayPage(props: Props) {
     const params = await props.params;
 

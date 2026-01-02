@@ -29,7 +29,7 @@ export function mapDBLessonToQuizLesson(dbLesson: DBLesson): Lesson {
 }
 
 function mapDBQuestionToQuizQuestion(dbQuestion: DBQuestion): Question {
-    const data = dbQuestion.data as Record<string, any>;
+    const data = dbQuestion.data as Partial<Question>;
 
     // Base Question
     const base: Question = {

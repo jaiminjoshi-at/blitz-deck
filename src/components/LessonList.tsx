@@ -7,12 +7,12 @@ import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Lesson } from '@/lib/content/types';
+import { LessonSummary } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 import { Box, Typography } from '@mui/material';
 
 interface LessonListProps {
-    lessons: Lesson[];
+    lessons: LessonSummary[];
     pathwayId: string;
     unitId: string;
 }

@@ -11,11 +11,15 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         const session = await auth();
+        console.log('[API/Sync] GET request. Session User ID:', session?.user?.id);
+
         if (!session?.user?.id) {
+            console.warn('[API/Sync] Unauthorized - No session user ID');
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const progressRecords = await db.select().from(userProgress).where(eq(userProgress.userId, session.user.id));
+        console.log(`[API/Sync] Found ${progressRecords.length} records for user ${session.user.id}`);
 
         // Transform DB records back to store format if needed, or Store adapts.
         // Store expects a map of lessonId -> Progress.
@@ -44,7 +48,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { lessonId, score } = body;
+        const { lessonId, score, bestScore, lastScore, bestTime, lastTime } = body;
 
         if (!lessonId) {
             // If body is the huge state object, ignore it or handle it. 
@@ -57,12 +61,20 @@ export async function POST(request: Request) {
             userId: session.user.id,
             lessonId: lessonId,
             score: score || 0,
+            bestScore: bestScore,
+            lastScore: lastScore,
+            bestTime: bestTime,
+            lastTime: lastTime,
             completedAt: new Date(),
         })
             .onConflictDoUpdate({
                 target: [userProgress.userId, userProgress.lessonId],
                 set: {
                     score: score || 0,
+                    bestScore: bestScore,
+                    lastScore: lastScore,
+                    bestTime: bestTime,
+                    lastTime: lastTime,
                     completedAt: new Date()
                 }
             });

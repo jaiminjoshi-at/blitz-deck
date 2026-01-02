@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { STORAGE_KEYS } from './constants';
-import { UserProfile, UserProgress, LessonProgress } from './content/types';
+import { UserProfile, UserProgress, LessonProgress, UserAnswer } from './content/types';
 
 interface ProgressState extends UserProgress {
     startLesson: (lessonId: string, pathwayId?: string, unitId?: string) => void;
-    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, history: { questionId: string; isCorrect: boolean; userAnswer: any }[], timeSpent: number, pathwayId?: string, unitId?: string) => void;
+    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, history: { questionId: string; isCorrect: boolean; userAnswer: UserAnswer }[], timeSpent: number, pathwayId?: string, unitId?: string) => void;
     completeLesson: (lessonId: string, score: number, timeTaken: number, pathwayId?: string, unitId?: string) => void;
     isLessonCompleted: (lessonId: string, pathwayId?: string, unitId?: string) => boolean;
     getLessonProgress: (lessonId: string, pathwayId?: string, unitId?: string) => LessonProgress | undefined;
@@ -158,7 +158,14 @@ export const useProgressStore = create<ProgressState>()(
                 fetch('/api/sync', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ lessonId, score })
+                    body: JSON.stringify({
+                        lessonId,
+                        score,
+                        bestScore,
+                        lastScore: score,
+                        bestTime,
+                        lastTime: timeTaken
+                    })
                 }).catch(err => console.error("Failed to sync progress", err));
             },
 
@@ -254,7 +261,7 @@ export const useProgressStore = create<ProgressState>()(
                         set((state) => {
                             const newLessonStatus = { ...state.lessonStatus };
 
-                            dbProgress.forEach((record: any) => {
+                            dbProgress.forEach((record: { lessonId: string; score: number; bestScore?: number; lastScore?: number; bestTime?: number; lastTime?: number }) => {
                                 // We don't have pathway/unit ID in simple DB record, so key is mostly lessonId based
                                 // But store uses composite keys.
                                 // Simplest approach: create a key pattern that matches our lookups.
@@ -267,15 +274,24 @@ export const useProgressStore = create<ProgressState>()(
                                     newLessonStatus[simpleKey] = {
                                         status: 'completed',
                                         currentQuestionIndex: 0,
-                                        currentScore: record.score,
+                                        currentScore: record.lastScore ?? record.score,
                                         currentHistory: [],
                                         currentTimeSpent: 0,
-                                        bestScore: record.score,
-                                        lastScore: record.score
+                                        bestScore: record.bestScore ?? record.score,
+                                        lastScore: record.lastScore ?? record.score,
+                                        bestTime: record.bestTime,
+                                        lastTime: record.lastTime
                                     } as LessonProgress; // simplified casting
                                 } else {
                                     // Merge if exists
-                                    newLessonStatus[simpleKey].status = 'completed';
+                                    newLessonStatus[simpleKey] = {
+                                        ...newLessonStatus[simpleKey],
+                                        status: 'completed',
+                                        bestScore: Math.max(newLessonStatus[simpleKey].bestScore || 0, record.bestScore ?? record.score),
+                                        lastScore: record.lastScore ?? record.score,
+                                        bestTime: record.bestTime ?? newLessonStatus[simpleKey].bestTime,
+                                        lastTime: record.lastTime ?? newLessonStatus[simpleKey].lastTime
+                                    };
                                 }
                             });
 

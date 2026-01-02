@@ -19,9 +19,8 @@ export default async function LearnerDashboard() {
     }
 
     // 1. Get Learner's Assigned Admin
-    // We could rely on session assignedAdminId if we trust it, but safer to re-fetch or use session if updated.
-    // Session strategy updates assignedAdminId on login, so it should be fresh enough.
-    const assignedAdminId = (session.user as any).assignedAdminId;
+    // We trust the session to have the correct assignedAdminId from the JWT callback
+    const assignedAdminId = session.user.assignedAdminId;
 
     if (!assignedAdminId) {
         return (
@@ -64,12 +63,23 @@ export default async function LearnerDashboard() {
                 </Typography>
 
                 {assignedPathways.length === 0 ? (
-                    <Alert severity="info">Your instructor hasn't assigned any content yet.</Alert>
+                    <Alert severity="info">Your instructor hasn&apos;t assigned any content yet.</Alert>
                 ) : (
                     <Grid container spacing={3}>
                         {assignedPathways.map((pathway) => (
                             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={pathway.id}>
-                                <PathwayCard pathway={pathway as any} />
+                                <PathwayCard pathway={{
+                                    ...pathway,
+                                    units: pathway.units.map(u => ({
+                                        ...u,
+                                        lessons: u.lessons.map(l => ({
+                                            ...l,
+                                            content: l.learningContent || '',
+                                            description: l.description || '', // Handle null description
+                                            questions: []
+                                        }))
+                                    }))
+                                }} />
                             </Grid>
                         ))}
                     </Grid>

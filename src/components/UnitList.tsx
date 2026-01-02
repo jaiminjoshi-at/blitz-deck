@@ -9,11 +9,11 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import LessonList from '@/components/LessonList';
-import { Unit } from '@/lib/content/types';
+import { UnitSummary } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 
 interface UnitListProps {
-    units: Unit[];
+    units: UnitSummary[];
     pathwayId: string;
 }
 

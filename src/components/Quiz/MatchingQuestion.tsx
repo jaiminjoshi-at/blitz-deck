@@ -4,11 +4,11 @@ import Typography from '@mui/material/Typography';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Question } from '@/lib/content/types';
+import { Question, UserAnswer } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function MatchingQuestion({ question, onAnswer }: Props) {

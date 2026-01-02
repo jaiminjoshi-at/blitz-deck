@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { CategorizeQuestion as CategorizeQuestionType } from '@/lib/content/types';
+import { CategorizeQuestion as CategorizeQuestionType, UserAnswer } from '@/lib/content/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -29,7 +29,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
     question: CategorizeQuestionType;
-    onAnswer: (isCorrect: boolean, userAnswer: any) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 function SortableItem(props: { id: string; text: string; disabled: boolean }) {

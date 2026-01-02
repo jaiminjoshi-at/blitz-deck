@@ -24,7 +24,7 @@ export const users = pgTable("user", {
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
     password: text("password"),
-    role: roleEnum("role").default("learner"),
+    role: roleEnum("role").default("learner").notNull(),
     assignedAdminId: text("assignedAdminId"), // For learners, points to their admin
 });
 
@@ -132,6 +132,10 @@ export const userProgress = pgTable("user_progress", {
         .references(() => lessons.id, { onDelete: "cascade" }),
     completedAt: timestamp("completed_at").defaultNow(),
     score: integer("score"),
+    bestScore: integer("best_score"),
+    lastScore: integer("last_score"),
+    bestTime: integer("best_time"),
+    lastTime: integer("last_time"),
 }, (t) => [
     primaryKey({ columns: [t.userId, t.lessonId] })
 ]);

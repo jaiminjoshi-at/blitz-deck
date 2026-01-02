@@ -2,9 +2,12 @@ import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { getAllContentPacks } from '@/lib/content/contentLoader';
 import { notFound } from 'next/navigation';
 import Quiz from '@/components/Quiz/Quiz';
+import { db } from '@/lib/db';
+import { lessons } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import { mapDBLessonToQuizLesson } from '@/lib/content/mappers';
 
 interface Props {
     params: Promise<{
@@ -16,30 +19,21 @@ interface Props {
 export default async function LessonPage(props: Props) {
     const params = await props.params; // Await params in Next.js 15+
 
-    // Scoped Lookup: Find pathway first, then lesson
-    const packs = await getAllContentPacks();
-    let lesson = null;
-    const pathwayId = params.id;
-
-    // Search across packs for the SPECIFIC pathway
-    for (const pack of packs) {
-        const foundPathway = pack.pathways.find(p => p.id === pathwayId);
-        if (foundPathway) {
-            // Found pathway, now simple lookup for lesson
-            for (const unit of foundPathway.units) {
-                const foundLesson = unit.lessons.find(l => l.id === params.lessonId);
-                if (foundLesson) {
-                    lesson = foundLesson;
-                    break;
-                }
+    const lessonRecord = await db.query.lessons.findFirst({
+        where: eq(lessons.id, params.lessonId),
+        with: {
+            questions: {
+                orderBy: (questions, { asc }) => [asc(questions.order)],
             }
-            break; // Stop searching packs once pathway is found
         }
-    }
+    });
 
-    if (!lesson) {
+    if (!lessonRecord) {
         notFound();
     }
+
+    // Map to Quiz Lesson type
+    const lesson = mapDBLessonToQuizLesson(lessonRecord);
 
     return (
         <Container maxWidth="md">
@@ -52,7 +46,7 @@ export default async function LessonPage(props: Props) {
                 </Typography>
 
                 <Box sx={{ mt: 4 }}>
-                    <Quiz lesson={lesson} pathwayId={pathwayId} />
+                    <Quiz lesson={lesson} pathwayId={params.id} unitId={lessonRecord.unitId} />
                 </Box>
             </Box>
         </Container>
