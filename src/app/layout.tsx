@@ -5,6 +5,7 @@ import SessionProvider from '@/components/Auth/SessionProvider';
 import { auth } from "@/auth";
 import StoreInitializer from "@/components/StoreInitializer";
 import SyncManager from '@/components/SyncManager';
+import BFCacheBuster from '@/components/BFCacheBuster';
 
 export const metadata: Metadata = {
   title: 'BlitzDeck',
@@ -21,6 +22,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
+        <BFCacheBuster />
         <ThemeRegistry>
           <SessionProvider>
             {session?.user && (
