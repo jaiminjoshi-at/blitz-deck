@@ -56,6 +56,10 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Install dependencies strictly needed for seed script (not covered by standalone)
+RUN npm install dotenv
+RUN chown -R nextjs:nodejs node_modules
+
 USER nextjs
 
 EXPOSE 3000
