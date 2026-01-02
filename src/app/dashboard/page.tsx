@@ -1,6 +1,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Container from '@mui/material/Container';
@@ -11,11 +12,9 @@ import PathwayCard from "@/components/PathwayCard";
 import Alert from '@mui/material/Alert';
 
 export default async function LearnerDashboard() {
-    const session = await auth();
-    const userId = session?.user?.id;
-
     if (!userId) {
-        return <Typography>Please log in.</Typography>;
+        // Fallback if middleware fails
+        redirect('/login');
     }
 
     // 1. Get Learner's Assigned Admin

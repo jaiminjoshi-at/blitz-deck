@@ -1,8 +1,9 @@
 
-import { auth } from "./auth";
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 import { NextResponse } from "next/server";
 
-export default auth((req) => {
+export default NextAuth(authConfig).auth((req) => {
     const isLoggedIn = !!req.auth;
     const { nextUrl } = req;
     const userRole = req.auth?.user?.role;

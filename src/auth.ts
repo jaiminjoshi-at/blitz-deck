@@ -9,30 +9,11 @@ import { eq } from "drizzle-orm";
 // For this MVP we will compare plain text tokens or mocked hashes for simplicity 
 // until we add a proper registration flow with hashing.
 
+import { authConfig } from "./auth.config";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
     adapter: DrizzleAdapter(db) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-    session: { strategy: "jwt" },
-    pages: {
-        signIn: '/login',
-    },
-    callbacks: {
-        jwt({ token, user }) {
-            if (user) {
-                token.role = user.role;
-                token.id = user.id;
-                token.assignedAdminId = user.assignedAdminId;
-            }
-            return token;
-        },
-        session({ session, token }) {
-            if (session.user) {
-                session.user.role = (token.role as string) || 'learner';
-                session.user.id = token.id as string;
-                session.user.assignedAdminId = token.assignedAdminId as string | null;
-            }
-            return session;
-        }
-    },
     providers: [
         Credentials({
             credentials: {
