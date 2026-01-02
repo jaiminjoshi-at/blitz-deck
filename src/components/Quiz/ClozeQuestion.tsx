@@ -8,18 +8,20 @@ import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import Fade from '@mui/material/Fade';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { ClozeQuestion as ClozeQuestionType } from '@/lib/content/types';
+import { ClozeQuestion as ClozeQuestionType, UserAnswer } from '@/lib/content/types';
 
 interface ClozeQuestionProps {
     question: ClozeQuestionType;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function ClozeQuestion({ question, onAnswer }: ClozeQuestionProps) {
+    // ... state ...
     const [placements, setPlacements] = React.useState<Map<number, number>>(new Map());
     const [isSubmitted, setIsSubmitted] = React.useState(false);
     const [isCorrect, setIsCorrect] = React.useState(false);
     const [attempts, setAttempts] = React.useState(0);
+
 
     // Reset when question changes
     React.useEffect(() => {
@@ -83,14 +85,16 @@ export default function ClozeQuestion({ question, onAnswer }: ClozeQuestionProps
         setIsCorrect(allCorrect);
         setIsSubmitted(true);
 
+        const userAnswer = Object.fromEntries(placements); // Convert Map to object for storage
+
         if (allCorrect) {
-            onAnswer(true);
+            onAnswer(true, userAnswer);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
             if (newAttempts >= 2) {
                 // Second failure
-                onAnswer(false);
+                onAnswer(false, userAnswer);
             }
         }
     };

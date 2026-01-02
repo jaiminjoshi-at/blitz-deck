@@ -9,8 +9,21 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - CONTENT_DIR=/app/content 
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: blitz-deck-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: blitzdeck
     volumes:
-      # Mount the local content packs directory to the container
-      # Admin can update JSON files here to update content
-      - ./src/content/packs:/app/content
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+

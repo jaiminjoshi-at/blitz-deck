@@ -4,11 +4,11 @@ import Typography from '@mui/material/Typography';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Question } from '@/lib/content/types';
+import { Question, UserAnswer } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function MatchingQuestion({ question, onAnswer }: Props) {
@@ -16,9 +16,12 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
     const [matches, setMatches] = React.useState<Record<string, string>>({});
     const [completed, setCompleted] = React.useState(false);
 
+    // ... items state ...
     const [leftItems, setLeftItems] = React.useState<string[]>([]);
     const [rightItems, setRightItems] = React.useState<string[]>([]);
 
+
+    // ... useEffect ...
     React.useEffect(() => {
         // Initialize and shuffle items when question changes
         const rawLeft = Object.keys(question.pairs || {});
@@ -43,6 +46,7 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
         setCompleted(false);
     }, [question]);
 
+
     const handleLeftClick = (item: string) => {
         if (matches[item]) return; // Already matched
         setSelectedLeft(item);
@@ -60,7 +64,7 @@ export default function MatchingQuestion({ question, onAnswer }: Props) {
 
             if (Object.keys(newMatches).length === leftItems.length) {
                 setCompleted(true);
-                onAnswer(true);
+                onAnswer(true, newMatches);
             }
         } else {
             // Incorrect match logic (could add visual feedback)

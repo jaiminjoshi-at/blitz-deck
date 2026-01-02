@@ -24,8 +24,9 @@ export default function JsonImporter({ onImport, defaultValue = '' }: JsonImport
             } else {
                 setError(`Validation Error: ${result.error.issues.map((e) => `${e.path.join('.')}: ${e.message}`).join(', ')}`);
             }
-        } catch (e: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-            setError(`Invalid JSON syntax: ${e.message}`);
+        } catch (e: unknown) {
+            const msg = e instanceof Error ? e.message : String(e);
+            setError(`Invalid JSON syntax: ${msg}`);
         }
     };
 

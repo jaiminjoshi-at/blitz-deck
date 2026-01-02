@@ -3,11 +3,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { Question } from '@/lib/content/types';
+import { Question, UserAnswer } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function FillInTheBlankQuestion({ question, onAnswer }: Props) {
@@ -41,14 +41,14 @@ export default function FillInTheBlankQuestion({ question, onAnswer }: Props) {
         setIsCorrect(correct);
 
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, value);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
             if (newAttempts >= 2) {
                 // Auto-advance on second failure
-                onAnswer(false);
+                onAnswer(false, value);
             }
         }
     };

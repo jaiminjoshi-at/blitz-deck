@@ -19,16 +19,13 @@ import ListItemText from '@mui/material/ListItemText';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { useProgressStore } from '@/lib/store';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navigation() {
     const router = useRouter();
     const pathname = usePathname();
     const [drawerOpen, setDrawerOpen] = React.useState(false);
-    const { profiles, activeProfileId, selectProfile } = useProgressStore();
-
-    // Derived state
-    const activeProfile = profiles.find(p => p.id === activeProfileId);
+    const { data: session } = useSession();
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
@@ -41,14 +38,8 @@ export default function Navigation() {
         setDrawerOpen(open);
     };
 
-    const handleSwitchProfile = () => {
-        selectProfile(''); // Clear active profile -> AuthGuard renders LandingPage
-        setDrawerOpen(false);
-        router.push('/');
-    };
-
-    const handleProfileClick = () => {
-        router.push('/profile');
+    const handleSignOut = () => {
+        signOut({ callbackUrl: '/login' });
         setDrawerOpen(false);
     };
 
@@ -61,11 +52,15 @@ export default function Navigation() {
         >
             <List>
                 <ListItem key="profile" disablePadding>
-                    <ListItemButton onClick={handleProfileClick}>
+                    <ListItemButton>
                         <ListItemIcon>
-                            <Typography variant="h6">{activeProfile?.avatar}</Typography>
+                            {/* Placeholder Avatar - could use session image if available */}
+                            <Typography variant="h6">👤</Typography>
                         </ListItemIcon>
-                        <ListItemText primary="My Profile" secondary={activeProfile?.name} />
+                        <ListItemText
+                            primary={session?.user?.name || "User"}
+                            secondary={session?.user?.email}
+                        />
                     </ListItemButton>
                 </ListItem>
                 <Divider />
@@ -74,21 +69,29 @@ export default function Navigation() {
                         <ListItemText primary="Home" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key="switch" disablePadding>
-                    <ListItemButton onClick={handleSwitchProfile}>
-                        <ListItemText primary="Switch Profile" />
-                    </ListItemButton>
-                </ListItem>
+
+                {/* Admin Only Links */}
+                {session?.user?.role === 'admin' && (
+                    <>
+                        <Divider />
+                        <ListItem key="creator" disablePadding>
+                            <ListItemButton onClick={() => {
+                                router.push('/admin/content'); // Updated to new path
+                                setDrawerOpen(false);
+                            }}>
+                                <ListItemIcon>
+                                    <Typography variant="h6">🎨</Typography>
+                                </ListItemIcon>
+                                <ListItemText primary="Creator Studio" />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                )}
+
                 <Divider />
-                <ListItem key="creator" disablePadding>
-                    <ListItemButton onClick={() => {
-                        router.push('/creator');
-                        setDrawerOpen(false);
-                    }}>
-                        <ListItemIcon>
-                            <Typography variant="h6">🎨</Typography>
-                        </ListItemIcon>
-                        <ListItemText primary="Creator Studio" />
+                <ListItem key="signout" disablePadding>
+                    <ListItemButton onClick={handleSignOut}>
+                        <ListItemText primary="Sign Out" />
                     </ListItemButton>
                 </ListItem>
             </List>
@@ -100,8 +103,9 @@ export default function Navigation() {
             <AppBar position="static" sx={{ height: { xs: 56, sm: 64 }, justifyContent: 'center' }}>
                 <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
 
+
                     {/* Back Button Logic */}
-                    {pathname !== '/' && (
+                    {pathname !== '/' && pathname !== '/dashboard' && pathname !== '/admin' && pathname !== '/login' && (
                         <IconButton
                             size="large"
                             edge="start"
@@ -109,19 +113,19 @@ export default function Navigation() {
                             aria-label="back"
                             sx={{ mr: 1 }}
                             onClick={() => {
-                                // Intelligent Back Navigation
-                                if (pathname.startsWith('/pathway/')) {
-                                    router.push('/');
-                                } else if (pathname.startsWith('/lesson/')) {
-                                    // ideally we go back to the pathway, but we don't know ID easily here without looking up the lesson.
-                                    // For now, let's trust router.back() for lesson->pathway as it's the natural flow,
-                                    // BUT if history length is short (refresh), maybe fallback?
-                                    // Simplest fix for "After completing lesson... back... takes to lesson":
-                                    // The issue is likely: Pathway -> Lesson -> (Finish->Push Pathway) -> Pathway. Back -> Lesson.
-                                    // If we are on Pathway, we handled it above (Push /).
-                                    // If we are on Lesson, Back -> Pathway is correct.
-                                    router.back();
+                                // Deterministic "Up" Navigation
+                                if (pathname.includes('/lesson/')) {
+                                    // /pathway/[id]/unit/.../lesson/... -> /pathway/[id]
+                                    const match = pathname.match(/^\/pathway\/([^/]+)/);
+                                    if (match) router.push(`/pathway/${match[1]}`);
+                                    else router.push('/dashboard');
+                                } else if (pathname.startsWith('/pathway/')) {
+                                    router.push('/dashboard');
+                                } else if (pathname.startsWith('/admin/content')) {
+                                    if (pathname === '/admin/content') router.push('/admin');
+                                    else router.push('/admin/content');
                                 } else {
+                                    // Fallback: Default history back
                                     router.back();
                                 }
                             }}
@@ -130,13 +134,14 @@ export default function Navigation() {
                         </IconButton>
                     )}
 
-                    {!pathname.includes('lesson') && pathname === '/' && (
+                    {!pathname.includes('lesson') && (
                         <IconButton
                             size="large"
                             edge="start"
                             color="inherit"
                             aria-label="menu"
                             sx={{ mr: 2, display: { md: 'none' } }} // Hide on larger screens if we had a distinct sidebar
+                            onClick={toggleDrawer(true)}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -149,10 +154,7 @@ export default function Navigation() {
                         </Typography>
                     </Box>
 
-                    {/* Desktop Links (Optional - keeping simple for now, can add if needed) */}
-                    {/* <Button color="inherit" component={Link} href="/" sx={{ display: { xs: 'none', sm: 'block' } }}>Home</Button> */}
-
-                    {activeProfile && (
+                    {session?.user && (
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Button
                                 color="inherit"
@@ -160,10 +162,10 @@ export default function Navigation() {
                                 sx={{ textTransform: 'none', p: 1 }}
                             >
                                 <Typography variant="subtitle1" sx={{ mr: 1, display: { xs: 'none', sm: 'block' } }}>
-                                    {activeProfile.name}
+                                    {session.user.name || "User"}
                                 </Typography>
                                 <Typography variant="h5">
-                                    {activeProfile.avatar}
+                                    👤
                                 </Typography>
                             </Button>
 

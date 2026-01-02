@@ -7,16 +7,16 @@ import Container from '@mui/material/Container';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 
-export default function CreatorLayout({ children }: { children: React.ReactNode }) {
+export default function CreateLayout({ children }: { children: React.ReactNode }) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f5f5f5' }}>
             <AppBar position="static" color="default" elevation={1}>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        BlitzDeck Creator Studio
+                        Create New Pathway
                     </Typography>
-                    <Link href="/" passHref>
-                        <Button color="inherit">Back to App</Button>
+                    <Link href="/admin/content" passHref>
+                        <Button color="inherit">Back to Studio</Button>
                     </Link>
                 </Toolbar>
             </AppBar>

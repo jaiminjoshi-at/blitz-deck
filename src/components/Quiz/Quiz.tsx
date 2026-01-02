@@ -13,6 +13,7 @@ import OrderingQuestion from './OrderingQuestion';
 import MultipleResponseQuestion from './MultipleResponseQuestion';
 import CategorizeQuestion from './CategorizeQuestion';
 import FillInTheBlankQuestion from './FillInTheBlankQuestion';
+import QuestionReview from './QuestionReview';
 import { useQuiz } from '@/hooks/useQuiz';
 
 interface Props {
@@ -59,39 +60,14 @@ export default function Quiz({ lesson, pathwayId, unitId }: Props) {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {lesson.questions.map((q, index) => {
                             const result = history.find(h => h.questionId === q.id);
-                            const isCorrect = result?.isCorrect;
 
                             return (
-                                <Paper key={q.id} variant="outlined" sx={{ p: 2, borderColor: isCorrect ? 'success.light' : 'error.light', borderLeftWidth: 6 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 1 }}>
-                                        <Box sx={{ mt: 0.5 }}>
-                                            {isCorrect ? (
-                                                <Typography color="success.main" fontWeight="bold">✓ Correct</Typography>
-                                            ) : (
-                                                <Typography color="error.main" fontWeight="bold">✗ Incorrect</Typography>
-                                            )}
-                                        </Box>
-                                        <Box sx={{ flex: 1 }}>
-                                            <Typography variant="subtitle1" fontWeight="medium">
-                                                {index + 1}. {q.prompt}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-
-                                    <Box sx={{ ml: 4, mb: 2, p: 1, bgcolor: isCorrect ? 'success.lighter' : 'error.lighter', borderRadius: 1 }}>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Correct Answer: <strong>{Array.isArray(q.correctAnswer) ? q.correctAnswer.join(', ') : q.correctAnswer}</strong>
-                                        </Typography>
-                                    </Box>
-
-                                    {q.explanation && (
-                                        <Box sx={{ ml: 4, p: 1.5, bgcolor: 'action.hover', borderRadius: 1, display: 'flex', gap: 1 }}>
-                                            <Typography variant="body2" color="text.primary">
-                                                💡 <strong>Explanation:</strong> {q.explanation}
-                                            </Typography>
-                                        </Box>
-                                    )}
-                                </Paper>
+                                <QuestionReview
+                                    key={q.id}
+                                    question={q}
+                                    userResult={result}
+                                    index={index}
+                                />
                             );
                         })}
                     </Box>

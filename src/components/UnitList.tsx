@@ -9,17 +9,18 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import LessonList from '@/components/LessonList';
-import { Unit } from '@/lib/content/types';
+import { UnitSummary } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 
 interface UnitListProps {
-    units: Unit[];
+    units: UnitSummary[];
     pathwayId: string;
 }
 
 export default function UnitList({ units, pathwayId }: UnitListProps) {
     // Subscribe to lessonStatus to ensure re-renders
     const lessonStatus = useProgressStore((state) => state.lessonStatus);
+    const activeProfileId = useProgressStore((state) => state.activeProfileId); // Force re-render on profile load
     const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
 
     // Hydration check

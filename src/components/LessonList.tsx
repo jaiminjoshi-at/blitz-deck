@@ -7,12 +7,12 @@ import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Lesson } from '@/lib/content/types';
+import { LessonSummary } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 import { Box, Typography } from '@mui/material';
 
 interface LessonListProps {
-    lessons: Lesson[];
+    lessons: LessonSummary[];
     pathwayId: string;
     unitId: string;
 }
@@ -26,8 +26,8 @@ export default function LessonList({ lessons, pathwayId, unitId }: LessonListPro
 
     // Subscribe to lessonStatus to ensure re-renders when progress updates
     const lessonStatus = useProgressStore((state) => state.lessonStatus);
+    const activeProfileId = useProgressStore((state) => state.activeProfileId); // Force re-render on profile load
     const getLessonProgress = useProgressStore((state) => state.getLessonProgress);
-    // const activeProfileId = useProgressStore((state) => state.activeProfileId); // Removed debug
 
     // Dummy usage to satisfy linter while maintaining subscription
     React.useEffect(() => {

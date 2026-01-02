@@ -1,10 +1,12 @@
+
 import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { getAllContentPacks } from '@/lib/content/contentLoader';
+import { db } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import Quiz from '@/components/Quiz/Quiz';
+import { mapDBLessonToQuizLesson } from '@/lib/content/mappers';
 
 interface Props {
     params: Promise<{
@@ -17,32 +19,23 @@ interface Props {
 export default async function LessonPage(props: Props) {
     const params = await props.params;
 
-    // Scoped Lookup: Find pathway first, then unit, then lesson
-    const packs = await getAllContentPacks();
-    let lesson = null;
-    const pathwayId = params.id;
-    const unitId = params.unitId;
-
-    // Search across packs for the SPECIFIC pathway
-    for (const pack of packs) {
-        const foundPathway = pack.pathways.find(p => p.id === pathwayId);
-        if (foundPathway) {
-            // Found pathway, now specific lookup for unit
-            const foundUnit = foundPathway.units.find(u => u.id === unitId);
-            if (foundUnit) {
-                // Found unit, now specific lookup for lesson
-                const foundLesson = foundUnit.lessons.find(l => l.id === params.lessonId);
-                if (foundLesson) {
-                    lesson = foundLesson;
-                }
+    // Fetch Lesson with Questions
+    const lesson = await db.query.lessons.findFirst({
+        where: (lessons, { eq }) => eq(lessons.id, params.lessonId),
+        with: {
+            questions: {
+                orderBy: (questions, { asc }) => [asc(questions.order)],
             }
-            break; // Stop searching packs once pathway is found
         }
-    }
+    });
 
     if (!lesson) {
         notFound();
     }
+
+    // Transform DB questions to match what Quiz component expects
+    // Using strict mapper
+    const quizLesson = mapDBLessonToQuizLesson(lesson);
 
     return (
         <Container maxWidth="md">
@@ -51,12 +44,12 @@ export default async function LessonPage(props: Props) {
                     {lesson.title}
                 </Typography>
                 <Typography variant="body1" paragraph>
-                    {lesson.content}
+                    {lesson.learningContent}
                 </Typography>
 
                 <Box sx={{ mt: 4 }}>
                     {/* Pass unitId to Quiz for correct progress tracking */}
-                    <Quiz lesson={lesson} pathwayId={pathwayId} unitId={unitId} />
+                    <Quiz lesson={quizLesson} pathwayId={params.id} unitId={params.unitId} />
                 </Box>
             </Box>
         </Container>

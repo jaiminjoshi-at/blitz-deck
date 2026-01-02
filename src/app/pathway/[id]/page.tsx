@@ -1,8 +1,9 @@
+
 import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { getAllContentPacks } from '@/lib/content/contentLoader';
+import { db } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import UnitList from '@/components/UnitList';
 
@@ -12,26 +13,29 @@ interface Props {
     }>;
 }
 
+
+
 export default async function PathwayPage(props: Props) {
     const params = await props.params;
-    // In a real app, we'd look up the pack by pathway ID. 
-    // For now, we'll search all packs for the pathway.
-    const packs = await getAllContentPacks();
-    let pathway = null;
 
-    for (const pack of packs) {
-        const found = pack.pathways.find(p => p.id === params.id);
-        if (found) {
-            pathway = found;
-            break;
+    // Fetch Pathway with nested Units and Lessons from DB
+    const pathway = await db.query.pathways.findFirst({
+        where: (pathways, { eq }) => eq(pathways.id, params.id),
+        with: {
+            units: {
+                orderBy: (units, { asc }) => [asc(units.order)],
+                with: {
+                    lessons: {
+                        orderBy: (lessons, { asc }) => [asc(lessons.order)],
+                    }
+                }
+            }
         }
-    }
+    });
 
     if (!pathway) {
         notFound();
     }
-
-    const units = pathway.units;
 
     return (
         <Container maxWidth="md">
@@ -44,7 +48,7 @@ export default async function PathwayPage(props: Props) {
                 </Typography>
 
                 <Box sx={{ mt: 4 }}>
-                    <UnitList units={units} pathwayId={params.id} />
+                    <UnitList units={pathway.units} pathwayId={params.id} />
                 </Box>
             </Box>
         </Container>

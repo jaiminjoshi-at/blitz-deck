@@ -1,10 +1,13 @@
 'use client';
 import * as React from 'react';
-import { OrderingQuestion as OrderingQuestionType } from '@/lib/content/types';
+import { OrderingQuestion as OrderingQuestionType, UserAnswer } from '@/lib/content/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import {
     DndContext,
     closestCenter,
@@ -26,10 +29,16 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 interface Props {
     question: OrderingQuestionType;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
-function SortableItem(props: { id: string; text: string; disabled: boolean; isCorrect?: boolean; isIncorrect?: boolean }) {
+function SortableItem(props: {
+    id: string;
+    text: string;
+    disabled: boolean;
+    isCorrect?: boolean;
+    isIncorrect?: boolean;
+}) {
     const {
         attributes,
         listeners,
@@ -45,28 +54,28 @@ function SortableItem(props: { id: string; text: string; disabled: boolean; isCo
 
     let bgcolor = 'background.paper';
     if (props.isCorrect) bgcolor = 'success.light';
-    if (props.isIncorrect) bgcolor = 'error.light';
+    else if (props.isIncorrect) bgcolor = 'error.light';
 
     return (
         <Paper
             ref={setNodeRef}
             style={style}
             sx={{
-                p: 1.5,
+                p: 2,
                 mb: 1,
+                bgcolor,
                 display: 'flex',
                 alignItems: 'center',
-                bgcolor: bgcolor,
                 cursor: props.disabled ? 'default' : 'grab',
                 '&:active': { cursor: props.disabled ? 'default' : 'grabbing' },
-                border: 1,
-                borderColor: 'divider'
             }}
             {...attributes}
             {...listeners}
         >
-            <DragIndicatorIcon sx={{ mr: 2, color: 'text.secondary' }} />
-            <Typography>{props.text}</Typography>
+            <Box sx={{ mr: 2, color: 'text.secondary', display: 'flex' }}>
+                <DragIndicatorIcon />
+            </Box>
+            <Typography variant="body1">{props.text}</Typography>
         </Paper>
     );
 }
@@ -129,12 +138,12 @@ export default function OrderingQuestion({ question, onAnswer }: Props) {
         setIsCorrect(correct);
 
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, currentOrderIds);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
             if (newAttempts >= 2) {
-                onAnswer(false);
+                onAnswer(false, currentOrderIds);
             }
         }
     };
@@ -181,6 +190,7 @@ export default function OrderingQuestion({ question, onAnswer }: Props) {
                 </Button>
             </Box>
 
+
             {submitted && (
                 <Box sx={{ mt: 2, textAlign: 'center' }}>
                     <Typography
@@ -190,9 +200,27 @@ export default function OrderingQuestion({ question, onAnswer }: Props) {
                         {isCorrect
                             ? 'Correct Order!'
                             : isFailed
-                                ? 'Must be implemented better to show correct order.' // TODO: improve feedback
+                                ? 'Use the order below as a guide.'
                                 : 'Incorrect, try again.'}
                     </Typography>
+
+                    {isFailed && (
+                        <Box sx={{ mt: 2, p: 2, bgcolor: 'warning.light', borderRadius: 1, textAlign: 'left' }}>
+                            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>Correct Order:</Typography>
+                            <List dense>
+                                {question.correctOrder.map((id, index) => {
+                                    const item = question.items.find(i => i.id === id);
+                                    return (
+                                        <ListItem key={id} disablePadding>
+                                            <ListItemText
+                                                primary={`${index + 1}. ${item?.text || 'Unknown'}`}
+                                            />
+                                        </ListItem>
+                                    );
+                                })}
+                            </List>
+                        </Box>
+                    )}
                 </Box>
             )}
         </Box>

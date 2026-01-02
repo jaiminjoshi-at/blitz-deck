@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Lesson } from '@/lib/content/types';
+import { Lesson, UserAnswer } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 
 export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
@@ -9,7 +9,8 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
         completeLesson,
         updateProgress,
         getLessonProgress,
-        resetLesson
+        resetLesson,
+        activeProfileId // Subscribe to profile
     } = useProgressStore();
 
     // Initialize state from potential checkpoint
@@ -24,7 +25,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     const [hydrated, setHydrated] = useState(false);
 
     // History and Time tracking
-    const [history, setHistory] = useState<{ questionId: string; isCorrect: boolean }[]>(savedProgress?.currentHistory || []);
+    const [history, setHistory] = useState<{ questionId: string; isCorrect: boolean; userAnswer: UserAnswer }[]>(savedProgress?.currentHistory || []);
     // Time spent in previous sessions (seconds)
     const [prevTimeSpent, setPrevTimeSpent] = useState(savedProgress?.currentTimeSpent || 0);
     // Session start time
@@ -34,28 +35,32 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     const [sessionDuration, setSessionDuration] = useState(0);
 
     // Initial mount effect
-    // eslint-disable-next-line
+     
     useEffect(() => {
         // Delay hydration to avoid synchronous set state warning
         const t = setTimeout(() => setHydrated(true), 0);
-        startLesson(lesson.id, pathwayId, unitId);
+
+        if (activeProfileId) {
+            startLesson(lesson.id, pathwayId, unitId);
+        }
+
         setSessionStartTime(Date.now());
         return () => clearTimeout(t);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [lesson.id, pathwayId, unitId, startLesson]);
+         
+    }, [lesson.id, pathwayId, unitId, startLesson, activeProfileId]); // added activeProfileId
 
     // Timer effect to update display time
     useEffect(() => {
-        if (!sessionStartTime) return;
+        if (!sessionStartTime || showResult) return;
 
         const interval = setInterval(() => {
             setSessionDuration((Date.now() - sessionStartTime) / 1000);
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [sessionStartTime]);
+    }, [sessionStartTime, showResult]);
 
-    const handleAnswer = useCallback((isCorrect: boolean) => {
+    const handleAnswer = useCallback((isCorrect: boolean, userAnswer: UserAnswer) => {
         let newScore = score;
         if (isCorrect) {
             newScore = score + 1;
@@ -64,7 +69,7 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
 
         // Update history
         const currentQ = lesson.questions[currentQuestionIndex];
-        const newHistory = [...history, { questionId: currentQ.id, isCorrect }];
+        const newHistory = [...history, { questionId: currentQ.id, isCorrect, userAnswer }];
         setHistory(newHistory);
 
         // Calculate time

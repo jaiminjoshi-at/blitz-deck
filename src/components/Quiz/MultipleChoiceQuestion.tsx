@@ -4,11 +4,11 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { Question } from '@/lib/content/types';
+import { Question, UserAnswer } from '@/lib/content/types';
 
 interface Props {
     question: Question;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {
@@ -42,26 +42,14 @@ export default function MultipleChoiceQuestion({ question, onAnswer }: Props) {
         setIsCorrect(correct);
 
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, value);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
 
             if (newAttempts >= 2) {
                 // Failed twice - proceed with false
-                // Small delay to let them see the error message if we want, 
-                // but usually we want to show the correct answer then proceed.
-                // The requirements say "Move ahead", but also maybe show correct answer?
-                // The plan said: Show "Correct Answer: X", Call onAnswer(false).
-
-                // We'll rely on the UI showing the error state here.
-                // But we need to actually *trigger* the move.
-                // Let's delay slighty so they see "Incorrect" then move? 
-                // Or better, just show "Incorrect. Correct was X" and wait for user?
-                // Request said "When correct answer is still not selected, move ahead."
-                // Implies automatic.
-
-                onAnswer(false);
+                onAnswer(false, value);
             }
         }
     };

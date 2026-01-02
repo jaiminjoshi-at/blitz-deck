@@ -15,7 +15,7 @@ import Checkbox from '@mui/material/Checkbox';
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
 import { generateSystemPrompt, PromptStructure, QuestionTypeRegistry } from '@/lib/ai/promptGenerator';
-import { QuestionType } from '@/lib/content/types';
+import { QuestionType, Question } from '@/lib/content/types';
 import JsonImporter from '@/components/Creator/JsonImporter';
 import { saveDraftPathway } from '@/app/actions/content';
 import { useRouter } from 'next/navigation';
@@ -24,10 +24,13 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Snackbar from '@mui/material/Snackbar';
 import { copyToClipboard } from '@/lib/utils';
-import { PathwayImportSchema } from '@/lib/content/schemas';
+import { PathwayImportSchema, QuestionImportSchema } from '@/lib/content/schemas';
 import { z } from 'zod';
 
 type PathwayImport = z.infer<typeof PathwayImportSchema>;
+type QuestionImport = z.infer<typeof QuestionImportSchema>;
+
+
 
 // Updated Steps
 const steps = ['Details', 'Structure', 'Configuration', 'Generate', 'Import', 'Preview'];
@@ -153,7 +156,7 @@ export default function WorkflowWizard() {
                 showError('Failed to save: ' + result.error);
                 setIsSaving(false);
             }
-            // On success, the server action redirects to /creator
+            // On success, the server action redirects to /admin/content
         } catch (e) {
             console.error(e);
         }
@@ -161,7 +164,7 @@ export default function WorkflowWizard() {
 
     // --- Helper for Structure Step ---
     const addUnit = () => setUnits([...units, { title: `Unit ${units.length + 1}`, description: '', lessons: [] }]);
-    const updateUnit = (idx: number, field: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    const updateUnit = (idx: number, field: string, value: string) => {
         const newUnits = [...units];
         newUnits[idx] = { ...newUnits[idx], [field]: value };
         setUnits(newUnits);
@@ -171,7 +174,7 @@ export default function WorkflowWizard() {
         newUnits[unitIdx].lessons.push({ title: `Lesson ${newUnits[unitIdx].lessons.length + 1}`, types: [] });
         setUnits(newUnits);
     };
-    const updateLesson = (unitIdx: number, lessonIdx: number, field: string, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    const updateLesson = (unitIdx: number, lessonIdx: number, field: string, value: string) => {
         const newUnits = [...units];
         newUnits[unitIdx].lessons[lessonIdx] = { ...newUnits[unitIdx].lessons[lessonIdx], [field]: value };
         setUnits(newUnits);
@@ -199,35 +202,38 @@ export default function WorkflowWizard() {
         switch (step) {
             case 0: // Details
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <TextField
-                            label="Topic" fullWidth value={details.topic}
-                            onChange={e => {
-                                setDetails({ ...details, topic: e.target.value });
-                                setDetailsErrors({ ...detailsErrors, topic: '' });
-                            }}
-                            error={!!detailsErrors.topic}
-                            helperText={detailsErrors.topic}
-                        />
-                        <TextField
-                            label="Target Audience" fullWidth value={details.audience}
-                            onChange={e => {
-                                setDetails({ ...details, audience: e.target.value });
-                                setDetailsErrors({ ...detailsErrors, audience: '' });
-                            }}
-                            error={!!detailsErrors.audience}
-                            helperText={detailsErrors.audience}
-                        />
-                        <TextField
-                            label="Description" fullWidth multiline rows={3} value={details.description}
-                            onChange={e => {
-                                setDetails({ ...details, description: e.target.value });
-                                setDetailsErrors({ ...detailsErrors, description: '' });
-                            }}
-                            error={!!detailsErrors.description}
-                            helperText={detailsErrors.description}
-                        />
-                    </Box>
+                    <Paper sx={{ p: 4 }}>
+                        <Typography variant="h6" gutterBottom>Pathway Details</Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            <TextField
+                                label="Topic" fullWidth value={details.topic}
+                                onChange={e => {
+                                    setDetails({ ...details, topic: e.target.value });
+                                    setDetailsErrors({ ...detailsErrors, topic: '' });
+                                }}
+                                error={!!detailsErrors.topic}
+                                helperText={detailsErrors.topic}
+                            />
+                            <TextField
+                                label="Target Audience" fullWidth value={details.audience}
+                                onChange={e => {
+                                    setDetails({ ...details, audience: e.target.value });
+                                    setDetailsErrors({ ...detailsErrors, audience: '' });
+                                }}
+                                error={!!detailsErrors.audience}
+                                helperText={detailsErrors.audience}
+                            />
+                            <TextField
+                                label="Description" fullWidth multiline rows={3} value={details.description}
+                                onChange={e => {
+                                    setDetails({ ...details, description: e.target.value });
+                                    setDetailsErrors({ ...detailsErrors, description: '' });
+                                }}
+                                error={!!detailsErrors.description}
+                                helperText={detailsErrors.description}
+                            />
+                        </Box>
+                    </Paper>
                 );
             case 1: // Structure
                 return (
@@ -376,7 +382,7 @@ export default function WorkflowWizard() {
 
                                                 <Typography variant="caption" sx={{ mt: 1, display: 'block', fontWeight: 'bold' }}>Questions:</Typography>
                                                 <Box component="ul" sx={{ pl: 2, mt: 0.5 }}>
-                                                    {lesson.questions?.map((q: any, k: number) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+                                                    {lesson.questions?.map((q: QuestionImport, k: number) => (
                                                         <li key={k} style={{ marginBottom: '8px' }}>
                                                             <Typography variant="body2" component="div">
                                                                 <Chip label={q.type} size="small" sx={{ mr: 1, height: '20px', fontSize: '0.7rem' }} />
@@ -435,8 +441,8 @@ export default function WorkflowWizard() {
                 <Typography variant="h5" gutterBottom color="success.main">Success!</Typography>
                 <Typography mb={2}>Pathway &quot;{details.topic}&quot; has been saved as a Draft.</Typography>
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-                    <Button variant="contained" onClick={() => router.push('/creator')}>Go to Dashboard</Button>
-                    <Button variant="outlined" onClick={() => router.push(`/creator`)}>Preview (via Dashboard)</Button>
+                    <Button variant="contained" onClick={() => router.push('/admin/content')}>Go to Dashboard</Button>
+                    <Button variant="outlined" onClick={() => router.push(`/admin/content`)}>Preview (via Dashboard)</Button>
                 </Box>
             </Paper>
         );

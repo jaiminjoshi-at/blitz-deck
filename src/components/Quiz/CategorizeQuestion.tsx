@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { CategorizeQuestion as CategorizeQuestionType } from '@/lib/content/types';
+import { CategorizeQuestion as CategorizeQuestionType, UserAnswer } from '@/lib/content/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -29,7 +29,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
     question: CategorizeQuestionType;
-    onAnswer: (isCorrect: boolean) => void;
+    onAnswer: (isCorrect: boolean, userAnswer: UserAnswer) => void;
 }
 
 function SortableItem(props: { id: string; text: string; disabled: boolean }) {
@@ -102,6 +102,7 @@ function DroppableContainer(props: { id: string; title: string; items: { id: str
         </Paper>
     );
 }
+
 
 export default function CategorizeQuestion({ question, onAnswer }: Props) {
     // State: mapping of containerId -> array of items
@@ -239,13 +240,22 @@ export default function CategorizeQuestion({ question, onAnswer }: Props) {
         setSubmitted(true);
         setIsCorrect(correct);
 
+        // Serialize items state for user answer. 
+        // We only care about item ID -> category name mapping really
+        const userMapping: Record<string, string> = {};
+        Object.entries(items).forEach(([category, catItems]) => {
+            catItems.forEach(item => {
+                userMapping[item.id] = category;
+            });
+        });
+
         if (correct) {
-            onAnswer(true);
+            onAnswer(true, userMapping);
         } else {
             const newAttempts = attempts + 1;
             setAttempts(newAttempts);
             if (newAttempts >= 2) {
-                onAnswer(false);
+                onAnswer(false, userMapping);
             }
         }
     };

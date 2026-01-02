@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { STORAGE_KEYS } from './constants';
-import { UserProfile, UserProgress, LessonProgress } from './content/types';
+import { UserProfile, UserProgress, LessonProgress, UserAnswer } from './content/types';
 
 interface ProgressState extends UserProgress {
     startLesson: (lessonId: string, pathwayId?: string, unitId?: string) => void;
-    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, history: { questionId: string; isCorrect: boolean }[], timeSpent: number, pathwayId?: string, unitId?: string) => void;
+    updateProgress: (lessonId: string, questionIndex: number, currentScore: number, history: { questionId: string; isCorrect: boolean; userAnswer: UserAnswer }[], timeSpent: number, pathwayId?: string, unitId?: string) => void;
     completeLesson: (lessonId: string, score: number, timeTaken: number, pathwayId?: string, unitId?: string) => void;
     isLessonCompleted: (lessonId: string, pathwayId?: string, unitId?: string) => boolean;
     getLessonProgress: (lessonId: string, pathwayId?: string, unitId?: string) => LessonProgress | undefined;
@@ -15,6 +15,7 @@ interface ProgressState extends UserProgress {
     deleteProfile: (profileId: string) => void;
     resetLesson: (lessonId: string, pathwayId?: string, unitId?: string) => void;
     syncWithServer: () => Promise<void>;
+    syncUserSession: (userId: string, name: string, avatar?: string) => void;
 }
 
 export const useProgressStore = create<ProgressState>()(
@@ -41,7 +42,10 @@ export const useProgressStore = create<ProgressState>()(
 
             startLesson: (lessonId, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
-                if (!activeProfileId) return;
+                // console.log('[Store] startLesson', { lessonId, activeProfileId });
+                if (!activeProfileId) {
+                    return;
+                }
 
                 // Create key with unitId if available, otherwise fallback to pathwayId or just lessonId
                 const key = (pathwayId && unitId)
@@ -55,6 +59,7 @@ export const useProgressStore = create<ProgressState>()(
 
                 // Else, mark as in-progress (initializing if needed)
                 if (current?.status !== 'in-progress') {
+
                     set((state) => ({
                         lessonStatus: {
                             ...state.lessonStatus,
@@ -73,7 +78,10 @@ export const useProgressStore = create<ProgressState>()(
 
             updateProgress: (lessonId, questionIndex, currentScore, history, timeSpent, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
-                if (!activeProfileId) return;
+                // console.log('[Store] updateProgress', { lessonId, index: questionIndex, activeProfileId });
+                if (!activeProfileId) {
+                    return;
+                }
 
                 const key = (pathwayId && unitId)
                     ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
@@ -143,6 +151,20 @@ export const useProgressStore = create<ProgressState>()(
                         return p;
                     })
                 }));
+
+                // Post-update: Sync to DB
+                fetch('/api/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        lessonId,
+                        score,
+                        bestScore,
+                        lastScore: score,
+                        bestTime,
+                        lastTime: timeTaken
+                    })
+                }).catch(() => { });
             },
 
             isLessonCompleted: (lessonId, pathwayId, unitId) => {
@@ -161,12 +183,10 @@ export const useProgressStore = create<ProgressState>()(
             },
 
             addProfile: (name, avatar) => set((state) => {
-                // Determine ID generation method
                 const generateId = () => {
                     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
                         return crypto.randomUUID();
                     }
-                    // Fallback for non-secure contexts (http) where randomUUID is not available
                     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                         const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                         return v.toString(16);
@@ -206,10 +226,8 @@ export const useProgressStore = create<ProgressState>()(
                     ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
                     : (pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`);
 
-                // Keep bestScore/bestTime but reset current progress
                 const current = lessonStatus[key];
 
-                // CRITICAL FIX: Preserve 'completed' status to avoid losing the checkmark
                 const newStatus = current?.status === 'completed' ? 'completed' : 'not-started';
 
                 set((state) => ({
@@ -222,28 +240,88 @@ export const useProgressStore = create<ProgressState>()(
                             currentScore: 0,
                             currentHistory: [],
                             currentTimeSpent: 0
-                            // keep bestScore, lastScore, bestTime, lastTime
                         }
                     }
                 }));
             },
 
             syncWithServer: async () => {
+                // Fetch progress from DB on mount/login
                 try {
                     const response = await fetch('/api/sync', { cache: 'no-store' });
                     if (!response.ok) return;
-                    const serverData = await response.json();
+                    const dbProgress = await response.json();
 
-                    if (serverData && (serverData.profiles || serverData.lessonStatus)) {
-                        set((state) => ({
-                            ...state,
-                            ...serverData
-                        }));
+                    if (Array.isArray(dbProgress)) {
+                        const { activeProfileId } = get();
+                        if (!activeProfileId) return;
+
+                        set((state) => {
+                            const newLessonStatus = { ...state.lessonStatus };
+
+                            dbProgress.forEach((record: { lessonId: string; score: number; bestScore?: number; lastScore?: number; bestTime?: number; lastTime?: number }) => {
+                                // We don't have pathway/unit ID in simple DB record, so key is mostly lessonId based
+                                // But store uses composite keys.
+                                // Simplest approach: create a key pattern that matches our lookups.
+                                // Since we don't know the exact key, we can iterate or just store as simple key if possible?
+                                // Actually, our lookup `getLessonProgress` checks `${activeProfileId}:${lessonId}` as a fallback.
+                                // So let's store it there.
+                                const simpleKey = `${activeProfileId}:${record.lessonId}`;
+
+                                if (!newLessonStatus[simpleKey]) {
+                                    newLessonStatus[simpleKey] = {
+                                        status: 'completed',
+                                        currentQuestionIndex: 0,
+                                        currentScore: record.lastScore ?? record.score,
+                                        currentHistory: [],
+                                        currentTimeSpent: 0,
+                                        bestScore: record.bestScore ?? record.score,
+                                        lastScore: record.lastScore ?? record.score,
+                                        bestTime: record.bestTime,
+                                        lastTime: record.lastTime
+                                    } as LessonProgress; // simplified casting
+                                } else {
+                                    // Merge if exists
+                                    newLessonStatus[simpleKey] = {
+                                        ...newLessonStatus[simpleKey],
+                                        status: 'completed',
+                                        bestScore: Math.max(newLessonStatus[simpleKey].bestScore || 0, record.bestScore ?? record.score),
+                                        lastScore: record.lastScore ?? record.score,
+                                        bestTime: record.bestTime ?? newLessonStatus[simpleKey].bestTime,
+                                        lastTime: record.lastTime ?? newLessonStatus[simpleKey].lastTime
+                                    };
+                                }
+                            });
+
+                            return { lessonStatus: newLessonStatus };
+                        });
                     }
                 } catch (error) {
-                    console.error('Failed to sync with server:', error);
+
                 }
             },
+
+            syncUserSession: (userId, name, avatar) => set((state) => {
+                const existing = state.profiles.find(p => p.id === userId);
+                if (existing) {
+                    // Update if needed, and ensure active
+                    return {
+                        activeProfileId: userId,
+                        profiles: state.profiles.map(p => p.id === userId ? { ...p, name, avatar: avatar || p.avatar } : p)
+                    };
+                }
+                // Add new
+                const newProfile: UserProfile = {
+                    id: userId,
+                    name,
+                    avatar: avatar || '',
+                    lastLoginDate: new Date().toISOString(),
+                };
+                return {
+                    profiles: [...state.profiles, newProfile],
+                    activeProfileId: userId
+                };
+            }),
         }),
         {
             name: STORAGE_KEYS.PROGRESS,

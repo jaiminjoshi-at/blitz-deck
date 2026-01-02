@@ -53,22 +53,38 @@ export interface CategorizeQuestion extends Question {
 export interface Lesson {
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     content: string; // Markdown or HTML content
     questions: Question[];
+}
+
+export interface LessonSummary {
+    id: string;
+    title: string;
+    description: string | null;
+    order?: number;
+    unitId?: string; // Optional reference
 }
 
 export interface Unit {
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     lessons: Lesson[];
+}
+
+export interface UnitSummary {
+    id: string;
+    title: string;
+    description: string | null;
+    lessons: LessonSummary[];
+    order?: number;
 }
 
 export interface Pathway {
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     icon?: string; // Emoji or URL
     units: Unit[];
     status?: 'draft' | 'published';
@@ -90,6 +106,8 @@ export interface UserProfile {
 
 export type LessonStatus = 'not-started' | 'in-progress' | 'completed';
 
+export type UserAnswer = string | string[] | Record<string, string> | Record<string, number> | number | null;
+
 export interface LessonProgress {
     status: LessonStatus;
     bestScore?: number;
@@ -97,7 +115,7 @@ export interface LessonProgress {
     currentQuestionIndex?: number;
     currentScore?: number;
     currentTimeSpent?: number;
-    currentHistory?: { questionId: string; isCorrect: boolean }[];
+    currentHistory?: { questionId: string; isCorrect: boolean; userAnswer: UserAnswer }[];
     bestTime?: number;
     lastTime?: number;
 }
