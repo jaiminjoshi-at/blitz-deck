@@ -27,7 +27,9 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+
 RUN npm run build
+RUN npm run build:seed
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -40,25 +42,14 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Install tsx for running seed scripts
-RUN npm install -g tsx
+# Copy compiled seed script
+COPY --from=builder /app/scripts/seed.js ./scripts/seed.js
+# Copy content packs for seeding
+COPY --from=builder /app/src/content/packs ./src/content/packs
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/scripts ./scripts
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+# Copy Next.js standalone build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Install dependencies strictly needed for seed script (not covered by standalone)
-RUN npm install dotenv
-RUN chown -R nextjs:nodejs node_modules
 
 USER nextjs
 

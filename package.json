@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test:e2e": "playwright test",
     "db:push": "drizzle-kit push",
-    "seed": "tsx scripts/seed.ts"
+    "build:seed": "esbuild scripts/seed.ts --bundle --platform=node --outfile=scripts/seed.js --external:pg-native",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",
@@ -22,6 +23,7 @@
     "@mui/material": "^7.3.6",
     "@neondatabase/serverless": "^1.0.2",
     "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "next": "16.0.5",
     "next-auth": "^5.0.0-beta.30",
@@ -31,14 +33,14 @@
     "react-dom": "19.2.0",
     "tsx": "^4.21.0",
     "zod": "^4.2.1",
-    "zustand": "^5.0.9",
-    "drizzle-kit": "^0.31.8"
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "^0.27.2",
     "eslint": "^9",
     "eslint-config-next": "16.0.5",
     "typescript": "^5"
