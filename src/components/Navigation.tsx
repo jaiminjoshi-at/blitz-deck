@@ -39,6 +39,10 @@ export default function Navigation() {
     };
 
     const handleSignOut = async () => {
+        // Visual Obfuscation: Hide everything immediately to prevent "Ghost Page" in BFCache
+        document.body.style.opacity = '0';
+        document.body.style.pointerEvents = 'none'; // Prevent clicks while fading out
+
         await signOut({ redirect: false });
         router.push('/login');
         setDrawerOpen(false);
