@@ -44,7 +44,8 @@ export default function Navigation() {
         document.body.style.pointerEvents = 'none'; // Prevent clicks while fading out
 
         await signOut({ redirect: false });
-        router.push('/login');
+        // Fix: Use hard navigation to clear DOM state (opacity: 0) for the next page
+        window.location.href = '/login';
         setDrawerOpen(false);
     };
 
