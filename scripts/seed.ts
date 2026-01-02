@@ -29,9 +29,17 @@ async function main() {
     // Import schema tables
     const { users, pathways, units, lessons, questions } = await import("../src/db/schema");
     // Import eq for deletions
+    // Import eq for deletions
     const { eq } = await import("drizzle-orm");
+    // Import migrator
+    const { migrate } = await import("drizzle-orm/postgres-js/migrator");
 
     console.log("🌱 Starting seed...");
+
+    // 0. Run Migrations
+    console.log("🚀 Running migrations...");
+    await migrate(db, { migrationsFolder: "drizzle" });
+    console.log("✅ Migrations complete!");
 
     // 1. Clean Database (Optional: safer to truncate or delete all for clean state in dev)
     console.log("🧹 Cleaning old data...");
