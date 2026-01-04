@@ -105,7 +105,7 @@ export default function Navigation() {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ width: '100%' }}>
             <AppBar position="static" sx={{ height: { xs: 56, sm: 64 }, justifyContent: 'center' }}>
                 <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
 

@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import StoreInitializer from "@/components/StoreInitializer";
 import SyncManager from '@/components/SyncManager';
 import BFCacheBuster from '@/components/BFCacheBuster';
+import Box from '@mui/material/Box';
 
 export const metadata: Metadata = {
   title: 'BlitzDeck',
@@ -21,7 +22,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body style={{ display: 'flex', flexDirection: 'column' }}>
         <BFCacheBuster />
         <ThemeRegistry>
           <SessionProvider>
@@ -36,7 +37,18 @@ export default async function RootLayout({
               </>
             )}
             <Navigation />
-            {children}
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                overflow: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative' // Ensure stacking context
+              }}
+            >
+              {children}
+            </Box>
           </SessionProvider>
         </ThemeRegistry>
       </body>

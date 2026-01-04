@@ -1,1 +1,9 @@
-/* Global styles can be added here */
+/* Global styles */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Lock the main viewport */
+  overscroll-behavior: none; /* Prevent rubber-banding on iOS */
+}
