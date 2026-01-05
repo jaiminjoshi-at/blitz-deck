@@ -32,7 +32,8 @@ export default function LessonList({ lessons, pathwayId, unitId }: LessonListPro
     // Dummy usage to satisfy linter while maintaining subscription
     React.useEffect(() => {
         void lessonStatus;
-    }, [lessonStatus]);
+        void activeProfileId;
+    }, [lessonStatus, activeProfileId]);
 
     return (
         <List>

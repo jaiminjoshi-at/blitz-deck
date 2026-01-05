@@ -1,20 +1,19 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Lesson, UserAnswer } from '@/lib/content/types';
 import { useProgressStore } from '@/lib/store';
 
 export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
-    const {
-        startLesson,
-        completeLesson,
-        updateProgress,
-        getLessonProgress,
-        resetLesson,
-        activeProfileId // Subscribe to profile
-    } = useProgressStore();
+    const startLesson = useProgressStore(s => s.startLesson);
+    const completeLesson = useProgressStore(s => s.completeLesson);
+    const updateProgress = useProgressStore(s => s.updateProgress);
+    const resetLesson = useProgressStore(s => s.resetLesson);
+    const activeProfileId = useProgressStore(s => s.activeProfileId);
+
+    // Select saved progress specifically to avoid unnecessary re-renders
+    const savedProgress = useProgressStore(s => s.getLessonProgress(lesson.id, pathwayId, unitId));
 
     // Initialize state from potential checkpoint
-    const savedProgress = getLessonProgress(lesson.id, pathwayId, unitId);
     const startQuestionIndex = savedProgress?.currentQuestionIndex || 0;
     // CRITICAL FIX: Restore previous score ONLY if resuming mid-lesson. If index is 0, score must be 0.
     const startScore = startQuestionIndex === 0 ? 0 : (savedProgress?.currentScore || 0);
@@ -34,8 +33,11 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
     // Session duration in seconds (updated via effect)
     const [sessionDuration, setSessionDuration] = useState(0);
 
+    // Ref to track if we are currently handling an answer transition
+    const isTransitioning = useRef(false);
+
     // Initial mount effect
-     
+
     useEffect(() => {
         // Delay hydration to avoid synchronous set state warning
         const t = setTimeout(() => setHydrated(true), 0);
@@ -46,8 +48,28 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
 
         setSessionStartTime(Date.now());
         return () => clearTimeout(t);
-         
+
     }, [lesson.id, pathwayId, unitId, startLesson, activeProfileId]); // added activeProfileId
+
+    // REACTIVE SYNC: If store updates (e.g. from server sync), update local state if we are behind.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        if (!savedProgress) return;
+
+        // Skip update if we are in the middle of a local transition (showing feedback)
+        if (isTransitioning.current) {
+            return;
+        }
+
+        // If local index is 0 (fresh load) and remote is > 0, fast-forward.
+        // OR if remote index > local index (progress made elsewhere), fast-forward.
+        if ((savedProgress.currentQuestionIndex ?? 0) > currentQuestionIndex) {
+            setCurrentQuestionIndex(savedProgress.currentQuestionIndex ?? 0);
+            setScore(savedProgress.currentScore || 0);
+            setHistory(savedProgress.currentHistory || []);
+            setPrevTimeSpent(savedProgress.currentTimeSpent || 0);
+        }
+    }, [savedProgress, currentQuestionIndex]);
 
     // Timer effect to update display time
     useEffect(() => {
@@ -77,15 +99,24 @@ export function useQuiz(lesson: Lesson, pathwayId?: string, unitId?: string) {
         const duration = sessionStartTime ? (now - sessionStartTime) / 1000 : 0;
         const totalTime = prevTimeSpent + duration;
 
+        const nextIndex = currentQuestionIndex + 1;
+
+        // Mark transition start to block reactive sync
+        isTransitioning.current = true;
+
+        if (nextIndex < lesson.questions.length) {
+            // Persist immediately so if user aborts during feedback, we resume at next question
+            updateProgress(lesson.id, nextIndex, newScore, newHistory, totalTime, pathwayId, unitId);
+        }
+
         setTimeout(() => {
-            const nextIndex = currentQuestionIndex + 1;
             if (nextIndex < lesson.questions.length) {
                 setCurrentQuestionIndex(nextIndex);
-                // Persist both index, score, history, and time
-                updateProgress(lesson.id, nextIndex, newScore, newHistory, totalTime, pathwayId, unitId);
             } else {
                 setShowResult(true);
             }
+            // Transition complete
+            isTransitioning.current = false;
         }, 1500);
     }, [currentQuestionIndex, lesson.questions, lesson.id, pathwayId, unitId, updateProgress, score, history, prevTimeSpent, sessionStartTime]);
 

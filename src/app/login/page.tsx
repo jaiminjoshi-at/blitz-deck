@@ -64,7 +64,7 @@ export default async function LoginPage(props: { searchParams: Promise<{ callbac
                                         redirectTo: "/"
                                     });
                                 } catch (error) {
-                                    if ((error as any).type === 'CredentialsSignin') {
+                                    if ((error as { type?: string }).type === 'CredentialsSignin') {
                                         redirect('/login?error=InvalidCredentials');
                                     }
                                     throw error;

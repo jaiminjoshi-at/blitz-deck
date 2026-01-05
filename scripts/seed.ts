@@ -11,6 +11,7 @@ type JsonLesson = {
     title: string;
     description: string;
     content?: string; // or learning_content
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     questions: any[];
 }
 
@@ -18,7 +19,7 @@ async function readJson<T>(filePath: string): Promise<T | null> {
     try {
         const content = await fs.promises.readFile(filePath, 'utf-8');
         return JSON.parse(content) as T;
-    } catch (error) {
+    } catch {
         return null;
     }
 }
@@ -29,8 +30,7 @@ async function main() {
     // Import schema tables
     const { users, pathways, units, lessons, questions } = await import("../src/db/schema");
     // Import eq for deletions
-    // Import eq for deletions
-    const { eq } = await import("drizzle-orm");
+
     // Import migrator
     const { migrate } = await import("drizzle-orm/postgres-js/migrator");
 

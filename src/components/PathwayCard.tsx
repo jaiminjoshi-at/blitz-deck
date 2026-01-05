@@ -14,12 +14,19 @@ interface PathwayCardProps {
 }
 
 export default function PathwayCard({ pathway }: PathwayCardProps) {
+    // Subscribe to lessonStatus to ensure re-renders when progress updates (e.g. hydration)
+    const lessonStatus = useProgressStore((state) => state.lessonStatus);
     const isLessonCompleted = useProgressStore((state) => state.isLessonCompleted);
     const [hydrated, setHydrated] = React.useState(false);
 
     React.useEffect(() => {
         setHydrated(true);
     }, []);
+
+    // Dummy usage to satisfy linter regarding unused variable while ensuring subscription
+    React.useEffect(() => {
+        void lessonStatus;
+    }, [lessonStatus]);
 
     // Calculate Progress
     // Calculate Progress

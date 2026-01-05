@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { userProgress } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export const dynamic = 'force-dynamic';
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { lessonId, score, bestScore, lastScore, bestTime, lastTime } = body;
+        const { lessonId, score, bestScore, lastScore, bestTime, lastTime, currentQuestionIndex, currentHistory, currentTimeSpent, isCompleted } = body;
 
         if (!lessonId) {
             // If body is the huge state object, ignore it or handle it. 
@@ -59,7 +59,8 @@ export async function POST(request: Request) {
         const safeIntDefault = (val: unknown, def = 0) => typeof val === 'number' ? Math.round(val) : def;
 
         // Upsert progress
-        await db.insert(userProgress).values({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const valuesToInsert: any = {
             userId: session.user.id,
             lessonId: lessonId,
             score: safeIntDefault(score),
@@ -67,8 +68,18 @@ export async function POST(request: Request) {
             lastScore: safeInt(lastScore),
             bestTime: safeInt(bestTime),
             lastTime: safeInt(lastTime),
-            completedAt: new Date(),
-        })
+            currentQuestionIndex: safeInt(currentQuestionIndex),
+            currentTimeSpent: safeInt(currentTimeSpent),
+            currentHistory: currentHistory || [],
+        };
+
+        if (isCompleted) {
+            valuesToInsert.completedAt = new Date();
+        } else {
+            valuesToInsert.completedAt = null;
+        }
+
+        await db.insert(userProgress).values(valuesToInsert)
             .onConflictDoUpdate({
                 target: [userProgress.userId, userProgress.lessonId],
                 set: {
@@ -77,7 +88,10 @@ export async function POST(request: Request) {
                     lastScore: safeInt(lastScore),
                     bestTime: safeInt(bestTime),
                     lastTime: safeInt(lastTime),
-                    completedAt: new Date()
+                    currentQuestionIndex: safeInt(currentQuestionIndex),
+                    currentTimeSpent: safeInt(currentTimeSpent),
+                    currentHistory: currentHistory || [],
+                    ...(isCompleted ? { completedAt: new Date() } : {})
                 }
             });
 

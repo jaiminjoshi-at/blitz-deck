@@ -15,7 +15,7 @@ import Checkbox from '@mui/material/Checkbox';
 import AddIcon from '@mui/icons-material/Add';
 import Alert from '@mui/material/Alert';
 import { generateSystemPrompt, PromptStructure, QuestionTypeRegistry } from '@/lib/ai/promptGenerator';
-import { QuestionType, Question } from '@/lib/content/types';
+import { QuestionType } from '@/lib/content/types';
 import JsonImporter from '@/components/Creator/JsonImporter';
 import { saveDraftPathway } from '@/app/actions/content';
 import { useRouter } from 'next/navigation';

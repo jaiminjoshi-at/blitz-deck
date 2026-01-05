@@ -28,7 +28,8 @@ export default function UnitList({ units, pathwayId }: UnitListProps) {
     React.useEffect(() => {
         setHydrated(true);
         void lessonStatus; // Subscribe to updates
-    }, [lessonStatus]);
+        void activeProfileId;
+    }, [lessonStatus, activeProfileId]);
 
     return (
         <>

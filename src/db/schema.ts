@@ -10,7 +10,7 @@ import {
     pgEnum,
     jsonb,
 } from "drizzle-orm/pg-core";
-import { start } from "repl";
+
 import type { AdapterAccountType } from "next-auth/adapters";
 
 export const roleEnum = pgEnum("role", ["admin", "learner"]);
@@ -136,6 +136,9 @@ export const userProgress = pgTable("user_progress", {
     lastScore: integer("last_score"),
     bestTime: integer("best_time"),
     lastTime: integer("last_time"),
+    currentQuestionIndex: integer("current_question_index").default(0),
+    currentTimeSpent: integer("current_time_spent").default(0),
+    currentHistory: jsonb("current_history"),
 }, (t) => [
     primaryKey({ columns: [t.userId, t.lessonId] })
 ]);

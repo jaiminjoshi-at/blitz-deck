@@ -40,9 +40,9 @@ export const useProgressStore = create<ProgressState>()(
                 return undefined;
             },
 
+
             startLesson: (lessonId, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
-                // console.log('[Store] startLesson', { lessonId, activeProfileId });
                 if (!activeProfileId) {
                     return;
                 }
@@ -52,7 +52,9 @@ export const useProgressStore = create<ProgressState>()(
                     ? `${activeProfileId}:${pathwayId}:${unitId}:${lessonId}`
                     : (pathwayId ? `${activeProfileId}:${pathwayId}:${lessonId}` : `${activeProfileId}:${lessonId}`);
 
+                const genericKey = `${activeProfileId}:${lessonId}`;
                 const current = lessonStatus[key];
+                const generic = lessonStatus[genericKey];
 
                 // If already completed, do not reset status to in-progress
                 if (current?.status === 'completed') return;
@@ -60,17 +62,21 @@ export const useProgressStore = create<ProgressState>()(
                 // Else, mark as in-progress (initializing if needed)
                 if (current?.status !== 'in-progress') {
 
+                    // If we have generic progress but no specific progress, inherit from generic
+                    // This handles the "Resume on new device" case where sync only created generic key
+                    const base = current || generic || {};
+
                     set((state) => ({
                         lessonStatus: {
                             ...state.lessonStatus,
                             [key]: {
-                                ...current,
+                                ...base,
                                 status: 'in-progress',
-                                currentQuestionIndex: current?.currentQuestionIndex || 0,
-                                currentScore: current?.currentScore || 0,
-                                currentHistory: [],
-                                currentTimeSpent: 0
-                            }
+                                currentQuestionIndex: base.currentQuestionIndex || 0,
+                                currentScore: base.currentScore || 0,
+                                currentHistory: base.currentHistory || [],
+                                currentTimeSpent: base.currentTimeSpent || 0
+                            } as LessonProgress
                         }
                     }));
                 }
@@ -78,7 +84,6 @@ export const useProgressStore = create<ProgressState>()(
 
             updateProgress: (lessonId, questionIndex, currentScore, history, timeSpent, pathwayId, unitId) => {
                 const { activeProfileId, lessonStatus } = get();
-                // console.log('[Store] updateProgress', { lessonId, index: questionIndex, activeProfileId });
                 if (!activeProfileId) {
                     return;
                 }
@@ -89,18 +94,47 @@ export const useProgressStore = create<ProgressState>()(
 
                 const current = lessonStatus[key];
 
+                const updatedLesson = {
+                    ...(current || { status: 'in-progress' }), // Ensure fallback if missing
+                    currentQuestionIndex: questionIndex,
+                    currentScore: currentScore,
+                    currentHistory: history,
+                    currentTimeSpent: timeSpent
+                };
+
                 set((state) => ({
                     lessonStatus: {
                         ...state.lessonStatus,
-                        [key]: {
-                            ...(current || { status: 'in-progress' }), // Ensure fallback if missing
-                            currentQuestionIndex: questionIndex,
-                            currentScore: currentScore,
-                            currentHistory: history,
-                            currentTimeSpent: timeSpent
-                        }
+                        [key]: updatedLesson
                     }
                 }));
+
+                // Debounced Sync
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                if ((window as any)._syncTimeout) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    clearTimeout((window as any)._syncTimeout);
+                }
+
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (window as any)._syncTimeout = setTimeout(() => {
+                    fetch('/api/sync', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            lessonId,
+                            score: currentScore, // This might be partial score
+                            currentQuestionIndex: questionIndex,
+                            currentHistory: history,
+                            currentTimeSpent: timeSpent,
+                            bestScore: current?.bestScore,
+                            lastScore: current?.lastScore,
+                            bestTime: current?.bestTime,
+                            lastTime: current?.lastTime,
+                            isCompleted: false
+                        })
+                    }).catch(() => { });
+                }, 1000);
             },
 
             completeLesson: (lessonId, score, timeTaken, pathwayId, unitId) => {
@@ -162,7 +196,8 @@ export const useProgressStore = create<ProgressState>()(
                         bestScore,
                         lastScore: score,
                         bestTime,
-                        lastTime: timeTaken
+                        lastTime: timeTaken,
+                        isCompleted: true
                     })
                 }).catch(() => { });
             },
@@ -258,48 +293,53 @@ export const useProgressStore = create<ProgressState>()(
 
                         set((state) => {
                             const newLessonStatus = { ...state.lessonStatus };
+                            const existingKeys = Object.keys(newLessonStatus);
 
-                            dbProgress.forEach((record: { lessonId: string; score: number; bestScore?: number; lastScore?: number; bestTime?: number; lastTime?: number }) => {
-                                // We don't have pathway/unit ID in simple DB record, so key is mostly lessonId based
-                                // But store uses composite keys.
-                                // Simplest approach: create a key pattern that matches our lookups.
-                                // Since we don't know the exact key, we can iterate or just store as simple key if possible?
-                                // Actually, our lookup `getLessonProgress` checks `${activeProfileId}:${lessonId}` as a fallback.
-                                // So let's store it there.
+                            dbProgress.forEach((record: { lessonId: string; score: number; bestScore?: number; lastScore?: number; bestTime?: number; lastTime?: number; currentQuestionIndex?: number; currentHistory?: { questionId: string; isCorrect: boolean; userAnswer: UserAnswer }[]; currentTimeSpent?: number; completedAt?: string }) => {
                                 const simpleKey = `${activeProfileId}:${record.lessonId}`;
+                                const status = record.completedAt ? 'completed' : 'in-progress';
 
-                                if (!newLessonStatus[simpleKey]) {
-                                    newLessonStatus[simpleKey] = {
-                                        status: 'completed',
-                                        currentQuestionIndex: 0,
-                                        currentScore: record.lastScore ?? record.score,
-                                        currentHistory: [],
-                                        currentTimeSpent: 0,
-                                        bestScore: record.bestScore ?? record.score,
-                                        lastScore: record.lastScore ?? record.score,
-                                        bestTime: record.bestTime,
-                                        lastTime: record.lastTime
-                                    } as LessonProgress; // simplified casting
-                                } else {
-                                    // Merge if exists
-                                    newLessonStatus[simpleKey] = {
-                                        ...newLessonStatus[simpleKey],
-                                        status: 'completed',
-                                        bestScore: Math.max(newLessonStatus[simpleKey].bestScore || 0, record.bestScore ?? record.score),
-                                        lastScore: record.lastScore ?? record.score,
-                                        bestTime: record.bestTime ?? newLessonStatus[simpleKey].bestTime,
-                                        lastTime: record.lastTime ?? newLessonStatus[simpleKey].lastTime
-                                    };
-                                }
+                                const updateData = {
+                                    status: status as 'completed' | 'in-progress',
+                                    currentQuestionIndex: record.currentQuestionIndex || 0,
+                                    currentScore: record.lastScore ?? record.score,
+                                    currentHistory: record.currentHistory || [],
+                                    currentTimeSpent: record.currentTimeSpent || 0,
+                                    bestScore: record.bestScore ?? record.score,
+                                    lastScore: record.lastScore ?? record.score,
+                                    bestTime: record.bestTime,
+                                    lastTime: record.lastTime
+                                } as LessonProgress;
+
+                                // 1. Update/Create Simple Key
+                                newLessonStatus[simpleKey] = {
+                                    ...(newLessonStatus[simpleKey] || {}),
+                                    ...updateData
+                                };
+
+                                // 2. Broadcast to ALL keys for this lesson/user (Shadow Update)
+                                // This ensures that if the user has a composite key locally, it gets updated too.
+                                existingKeys.forEach(k => {
+                                    if (k.startsWith(`${activeProfileId}:`) && k.endsWith(`:${record.lessonId}`)) {
+                                        newLessonStatus[k] = {
+                                            ...newLessonStatus[k],
+                                            ...updateData,
+                                            // Preserve local status if it was completed locally but somehow not on server? 
+                                            // Ideally server is source of truth.
+                                            // But let's trust server for data.
+                                        };
+                                    }
+                                });
                             });
 
                             return { lessonStatus: newLessonStatus };
                         });
                     }
                 } catch (error) {
-
+                    console.error('Failed to sync progress:', error);
                 }
             },
+
 
             syncUserSession: (userId, name, avatar) => set((state) => {
                 const existing = state.profiles.find(p => p.id === userId);
