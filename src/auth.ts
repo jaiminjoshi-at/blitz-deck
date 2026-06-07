@@ -21,7 +21,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
+                console.log("🔑 NextAuth authorize called with email:", credentials?.email);
                 if (!credentials?.email || !credentials?.password) {
+                    console.log("❌ Missing email or password in credentials");
                     return null;
                 }
 
@@ -29,16 +31,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     where: eq(users.email, credentials.email as string)
                 });
 
+                console.log("👤 Found user in DB:", user ? { id: user.id, email: user.email, role: user.role } : "none");
+
                 if (!user) {
+                    console.log("❌ User not found in database");
                     return null;
                 }
 
                 // TODO: REPLACE WITH BCRYPT COMPARE
                 if (user.password !== credentials.password) {
+                    console.log("❌ Password mismatch for user:", user.email);
                     return null;
                 }
 
                 // Ensure strict type match for Drizzle enum role -> string
+                console.log("✅ Authentication successful, returning user:", user.email);
                 return {
                     ...user,
                     role: user.role as string // Explicit cast to satisfy 'string' type

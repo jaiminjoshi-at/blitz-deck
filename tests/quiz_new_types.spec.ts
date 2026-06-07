@@ -1,82 +1,192 @@
 import { test, expect } from '@playwright/test';
+import { loginAsLearner } from './helpers/auth';
+import { db } from '@/lib/db';
+import { questions, userProgress } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
-test('should verify Ordering, Multiple Response, and Categorize', async ({ page }) => {
-    // 1. Visit the lesson page
-    await page.goto('/lesson/lesson-oeffis');
-
-    // Clear state to ensure we start at Q1
-    await page.evaluate(() => {
-        localStorage.clear();
-        sessionStorage.clear();
-    });
-    await page.reload();
-
-    // Wait for content (ensure profiles loaded)
-    await page.waitForLoadState('networkidle');
-
-    // Skip to the new questions (Index 5)
-    await page.evaluate(() => {
-        const state = JSON.parse(localStorage.getItem('blitz-deck-storage') || '{}');
-        const activeId = state.state?.activeProfileId;
-        if (activeId) {
-            const key = `${activeId}:lesson-oeffis`;
-            if (!state.state.lessonStatus) state.state.lessonStatus = {};
-            state.state.lessonStatus[key] = {
-                currentQuestionIndex: 5,
-                status: 'in-progress',
-                currentScore: 0,
-                history: []
-            };
-            localStorage.setItem('blitz-deck-storage', JSON.stringify(state));
+test.describe('Special Question Types', () => {
+    test.beforeEach(async () => {
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        if (learner) {
+            await db.delete(userProgress).where(eq(userProgress.userId, learner.id));
         }
     });
 
-    await page.reload();
-    await page.waitForLoadState('networkidle');
+    test('should verify Ordering question type', async ({ page }) => {
+        const q = await db.query.questions.findFirst({
+            where: eq(questions.type, 'ordering'),
+            with: { lesson: { with: { unit: true } } }
+        });
+        if (!q) throw new Error('No ordering question found in database');
 
-    // 1. ORDERING QUESTION (Assumed #1 now)
-    await expect(page.locator('text=Arrange these U-Bahn stations')).toBeVisible({ timeout: 10000 });
+        const lesson = q.lesson;
+        const unit = lesson.unit;
+        const pathwayId = unit.pathwayId;
+        const data = q.data as { prompt: string; items: { id: string; text: string }[] };
 
-    // Verify "Check Answer" is visible
-    await expect(page.locator('button:has-text("Check Answer")')).toBeVisible();
+        // Log in
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        await loginAsLearner(page);
 
-    // Interact: Click Check Answer (likely fail)
-    await page.click('button:has-text("Check Answer")');
+        // Find question index within the lesson
+        const allQuestions = await db.query.questions.findMany({
+            where: eq(questions.lessonId, lesson.id),
+            orderBy: (questions, { asc }) => [asc(questions.order)]
+        });
+        const qIndex = allQuestions.findIndex(item => item.id === q.id);
 
-    // Attempt skip (Fail 2x strategy)
-    // Click Try Again if visible, or Check Answer again
-    if (await page.isVisible('button:has-text("Try Again")')) {
-        await page.click('button:has-text("Try Again")');
-    }
-    await page.click('button:has-text("Check Answer")');
+        // Set checkpoint in the database to prevent client state from being overwritten by server sync
+        await db.insert(userProgress)
+            .values({
+                userId: learner!.id,
+                lessonId: lesson.id,
+                currentQuestionIndex: qIndex,
+                score: 0,
+                bestScore: 0,
+                lastScore: 0,
+                currentHistory: []
+            })
+            .onConflictDoUpdate({
+                target: [userProgress.userId, userProgress.lessonId],
+                set: { currentQuestionIndex: qIndex }
+            });
 
-    // Click Next
-    await page.click('button:has-text("Next")');
+        // Go to lesson page
+        const url = `/pathway/${pathwayId}/lesson/${lesson.id}`;
+        await page.goto(url);
 
-    // 2. MULTIPLE RESPONSE (Assumed #2)
-    await expect(page.locator('text=Which of these are valid ticket types')).toBeVisible();
+        // Verify the question prompt is displayed
+        await expect(page.locator(`text=${data.prompt}`)).toBeVisible({ timeout: 10000 });
 
-    // Select correct ones
-    await page.click('text=Jahreskarte (Annual Pass)');
-    await page.click('text=24-Stunden-Karte (24h Ticket)');
-    await page.click('text=Einzelfahrt (Single Ride)');
+        // Verify "Check Answer" button is visible
+        await expect(page.locator('button:has-text("Check Answer")')).toBeVisible();
 
-    // Submit
-    await page.click('button:has-text("Check Answer")');
-    await expect(page.locator('text=Correct!')).toBeVisible();
+        // Click Check Answer (will submit default ordering)
+        await page.click('button:has-text("Check Answer")');
 
-    // Next
-    await page.click('button:has-text("Next")');
+        // Handle try again if the default order was incorrect
+        if (await page.isVisible('button:has-text("Try Again")')) {
+            await page.click('button:has-text("Try Again")');
+        }
+        await expect(page.locator('button:has-text("Check Answer")')).toBeVisible();
+    });
 
-    // 3. CATEGORIZE (Assumed #3)
-    await expect(page.locator('text=Categorize these transport lines')).toBeVisible();
+    test('should verify Multiple Response question type', async ({ page }) => {
+        const q = await db.query.questions.findFirst({
+            where: eq(questions.type, 'multiple-response'),
+            with: { lesson: { with: { unit: true } } }
+        });
+        if (!q) throw new Error('No multiple-response question found in database');
 
-    // Verify buckets
-    await expect(page.locator('text=U-Bahn')).toBeVisible();
-    await expect(page.locator('text=Bus')).toBeVisible();
-    await expect(page.locator('text=Tram')).toBeVisible();
+        const lesson = q.lesson;
+        const unit = lesson.unit;
+        const pathwayId = unit.pathwayId;
+        const data = q.data as { prompt: string; options: string[]; correctAnswers: string[] };
 
-    // Verify items in pool (or somewhere)
-    await expect(page.locator('text=U1')).toBeVisible();
-    await expect(page.locator('text=13A')).toBeVisible();
+        // Log in
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        await loginAsLearner(page);
+
+        // Find question index
+        const allQuestions = await db.query.questions.findMany({
+            where: eq(questions.lessonId, lesson.id),
+            orderBy: (questions, { asc }) => [asc(questions.order)]
+        });
+        const qIndex = allQuestions.findIndex(item => item.id === q.id);
+
+        // Set checkpoint in the database
+        await db.insert(userProgress)
+            .values({
+                userId: learner!.id,
+                lessonId: lesson.id,
+                currentQuestionIndex: qIndex,
+                score: 0,
+                bestScore: 0,
+                lastScore: 0,
+                currentHistory: []
+            })
+            .onConflictDoUpdate({
+                target: [userProgress.userId, userProgress.lessonId],
+                set: { currentQuestionIndex: qIndex }
+            });
+
+        // Go to lesson page
+        const url = `/pathway/${pathwayId}/lesson/${lesson.id}`;
+        await page.goto(url);
+
+        // Verify the prompt
+        await expect(page.locator(`text=${data.prompt}`)).toBeVisible({ timeout: 10000 });
+
+        // Click all correct answers
+        for (const answer of data.correctAnswers) {
+            await page.click(`text=${answer}`, { force: true });
+        }
+
+        // Submit and check correction
+        await page.click('button:has-text("Check Answer")');
+        await expect(page.locator('text=Correct!')).toBeVisible();
+    });
+
+    test('should verify Categorize question type', async ({ page }) => {
+        const q = await db.query.questions.findFirst({
+            where: eq(questions.type, 'categorize'),
+            with: { lesson: { with: { unit: true } } }
+        });
+        if (!q) throw new Error('No categorize question found in database');
+
+        const lesson = q.lesson;
+        const unit = lesson.unit;
+        const pathwayId = unit.pathwayId;
+        const data = q.data as { prompt: string; categories: string[]; items: { id: string; text: string }[] };
+
+        // Log in
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        await loginAsLearner(page);
+
+        // Find question index
+        const allQuestions = await db.query.questions.findMany({
+            where: eq(questions.lessonId, lesson.id),
+            orderBy: (questions, { asc }) => [asc(questions.order)]
+        });
+        const qIndex = allQuestions.findIndex(item => item.id === q.id);
+
+        // Set checkpoint in the database
+        await db.insert(userProgress)
+            .values({
+                userId: learner!.id,
+                lessonId: lesson.id,
+                currentQuestionIndex: qIndex,
+                score: 0,
+                bestScore: 0,
+                lastScore: 0,
+                currentHistory: []
+            })
+            .onConflictDoUpdate({
+                target: [userProgress.userId, userProgress.lessonId],
+                set: { currentQuestionIndex: qIndex }
+            });
+
+        // Go to lesson page
+        const url = `/pathway/${pathwayId}/lesson/${lesson.id}`;
+        await page.goto(url);
+
+        // Verify the prompt and categories
+        await expect(page.locator(`text=${data.prompt}`)).toBeVisible({ timeout: 10000 });
+        for (const cat of data.categories) {
+            await expect(page.locator(`text=${cat}`)).toBeVisible();
+        }
+
+        // Verify items pool
+        for (const item of data.items) {
+            await expect(page.locator(`text=${item.text}`)).toBeVisible();
+        }
+    });
 });

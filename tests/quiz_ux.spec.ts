@@ -1,50 +1,81 @@
 import { test, expect } from '@playwright/test';
+import { loginAsLearner } from './helpers/auth';
+import { db } from '@/lib/db';
+import { questions, userProgress } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 test.describe('Quiz UX Refinements', () => {
-    test.beforeEach(async ({ page }) => {
-        // Mock state
-        await page.addInitScript(() => {
-            const mockState = {
-                state: {
-                    profiles: [{ id: 'test-user', name: 'Test User', avatar: '😎', xp: 0, streak: 0, lastLoginDate: '2025-01-01' }],
-                    activeProfileId: 'test-user',
-                    lessonStatus: {}
-                },
-                version: 0
-            };
-            window.localStorage.setItem('blitz-deck-storage', JSON.stringify(mockState));
+    test.beforeEach(async () => {
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
         });
+        if (learner) {
+            await db.delete(userProgress).where(eq(userProgress.userId, learner.id));
+        }
     });
 
     test('should allow retrying an incorrect answer', async ({ page }) => {
-        await page.goto('/');
-        await page.getByText('German for Beginners').click();
+        // Query the database to find a multiple-choice question, along with its full hierarchy
+        const mcQuestion = await db.query.questions.findFirst({
+            where: eq(questions.type, 'multiple-choice'),
+            with: {
+                lesson: {
+                    with: {
+                        unit: {
+                            with: {
+                                pathway: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
-        // Start lesson
-        const lessonItem = page.getByRole('listitem').filter({ hasText: 'Hallo!' });
+        if (!mcQuestion) {
+            throw new Error('No multiple-choice question found in database for testing');
+        }
+
+        const lesson = mcQuestion.lesson;
+        const unit = lesson.unit;
+        const pathway = unit.pathway;
+        
+        // Extract options and correct answer
+        const data = mcQuestion.data as { options: string[]; correctAnswer: string };
+        const correctAnswer = data.correctAnswer;
+        const incorrectAnswer = data.options.find(opt => opt !== correctAnswer);
+        
+        if (!incorrectAnswer) {
+            throw new Error(`Multiple choice question "${mcQuestion.prompt}" does not have at least one incorrect option`);
+        }
+
+        // Log in and start lesson
+        await loginAsLearner(page);
+        await page.getByText(pathway.title).click();
+        
+        // Wait for pathway page to load and render unit title to prevent race conditions
+        await expect(page).toHaveURL(new RegExp(`/pathway/${pathway.id}`));
+        await expect(page.getByText(unit.title)).toBeVisible();
+        
+        const lessonItem = page.getByRole('listitem').filter({ hasText: lesson.title });
         await lessonItem.click();
 
-        // Question: "How do you say 'Hello' in German?"
-        // Correct: "Hallo"
-        // Wrong: "Auf Wiedersehen" (Goodbye)
+        // Wait for the quiz to be hydrated and stable
+        await expect(page.getByText(/Question \d+ of \d+/)).toBeVisible({ timeout: 15000 });
 
         // 1. Select Wrong Answer
-        await page.getByRole('button', { name: 'Auf Wiedersehen', exact: true }).click();
+        await page.getByRole('button', { name: incorrectAnswer, exact: true }).click();
 
         // 2. Check Answer
         await page.getByRole('button', { name: 'Check Answer' }).click();
 
         // 3. Verify Error
         await expect(page.getByText('Incorrect, try again.')).toBeVisible();
-        // The button text changes to "Try Again"
         await expect(page.getByRole('button', { name: 'Try Again' })).toBeVisible();
 
-        // 4. Select Correct Answer (Should be enabled)
-        await page.getByRole('button', { name: 'Hallo', exact: true }).click();
+        // 4. Select Correct Answer
+        await page.getByRole('button', { name: correctAnswer, exact: true }).click();
 
-        // 5. Verify "Try Again" changes back to "Check Answer" or just Verify click works
-        // My code: button label is based on (!isCorrect). If I select correct, it doesn't know it's correct until I check.
-        // But submitted resets to false on click. So button should say "Check Answer".
+        // 5. Verify "Try Again" changes back to "Check Answer"
         await expect(page.getByRole('button', { name: 'Check Answer' })).toBeVisible();
         await expect(page.getByText('Incorrect, try again.')).toBeHidden();
 
@@ -55,20 +86,39 @@ test.describe('Quiz UX Refinements', () => {
     });
 
     test('should navigate home from pathway on back click', async ({ page }) => {
-        await page.goto('/');
-        await page.getByText('German for Beginners').click();
+        // Query database to find a pathway
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        
+        if (!learner || !learner.assignedAdminId) {
+            throw new Error('Learner or assigned instructor not found in database');
+        }
 
-        // Verify we are on pathway
-        await page.waitForURL(/\/pathway\//);
-        expect(page.url()).toContain('/pathway/');
+        const pathway = await db.query.pathways.findFirst({
+            where: (pathways, { eq, and }) => and(
+                eq(pathways.creatorId, learner.assignedAdminId!),
+                eq(pathways.published, true)
+            )
+        });
+
+        if (!pathway) {
+            throw new Error('No pathway found in database for testing back-click navigation');
+        }
+
+        await loginAsLearner(page);
+        await page.getByText(pathway.title).click();
+
+        // Verify we are on pathway page
+        await page.waitForURL(new RegExp(`/pathway/${pathway.id}`));
+        expect(page.url()).toContain(`/pathway/${pathway.id}`);
 
         // Click Back Button (Arrow Icon)
         await expect(page.getByLabel('back')).toBeVisible();
         await page.getByLabel('back').click();
 
-        // Verify we are on Home
-        // Use regex to match root path regardless of port
-        await expect(page).toHaveURL(/localhost:\d+\/$/);
-        await expect(page.getByText('German for Beginners')).toBeVisible();
+        // Verify we are redirected back to the dashboard/home page
+        await expect(page).toHaveURL(/localhost:\d+(\/dashboard|\/)?$/);
+        await expect(page.getByText(pathway.title)).toBeVisible();
     });
 });

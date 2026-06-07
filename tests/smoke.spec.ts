@@ -1,40 +1,51 @@
 import { test, expect } from '@playwright/test';
+import { loginAsLearner } from './helpers/auth';
+import { db } from '@/lib/db';
 
 test.describe('Smoke Tests', () => {
-    test.beforeEach(async ({ page }) => {
-        // Mock a logged-in user
-        await page.addInitScript(() => {
-            const mockState = {
-                state: {
-                    profiles: [{ id: 'test-user', name: 'Test User', avatar: '😎', lastLoginDate: '2025-01-01' }],
-                    activeProfileId: 'test-user',
-                    lessonStatus: {}
-                },
-                version: 0
-            };
-            window.localStorage.setItem('blitz-deck-storage', JSON.stringify(mockState));
-        });
-    });
-
-    test('should load the home page and display title', async ({ page }) => {
+    test('should load the home page and redirect to login if unauthenticated', async ({ page }) => {
         await page.goto('/');
-
-        // Check for the main title
+        await page.waitForURL(/\/login/);
         await expect(page.getByRole('heading', { name: 'BlitzDeck' })).toBeVisible();
-
-        // Check for the welcome data
-        await expect(page.getByText('Build it. Deck it. Know it.')).toBeVisible();
+        await expect(page.getByText('Sign in to continue your learning journey')).toBeVisible();
     });
 
-    test('should display pathway cards', async ({ page }) => {
-        await page.goto('/');
-
-        // Check for at least one pathway card
+    test('should display assigned pathway cards on dashboard', async ({ page }) => {
+        // Query the database to find expected pathways for the learner's instructor
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        
+        if (!learner || !learner.assignedAdminId) {
+            throw new Error('Learner or assigned instructor not found in database');
+        }
+        
+        const expectedPathways = await db.query.pathways.findMany({
+            where: (pathways, { eq, and }) => and(
+                eq(pathways.creatorId, learner.assignedAdminId!),
+                eq(pathways.published, true)
+            )
+        });
+        
+        // Log in and go to dashboard
+        await loginAsLearner(page);
+        
+        // Verify dashboard header elements
+        await expect(page.getByRole('heading', { name: 'Learner Dashboard' })).toBeVisible();
+        await expect(page.getByText(`Welcome back, ${learner.name}`)).toBeVisible();
+        
+        // Verify assigned pathway cards match the database records
         const pathwayCards = page.getByTestId('pathway-card');
-        await expect(pathwayCards.first()).toBeVisible();
-
-        // Optional: Check that we have a reasonable amount (e.g. > 0)
-        const count = await pathwayCards.count();
-        expect(count).toBeGreaterThan(0);
+        if (expectedPathways.length > 0) {
+            await expect(pathwayCards.first()).toBeVisible();
+            const count = await pathwayCards.count();
+            expect(count).toBe(expectedPathways.length);
+            
+            for (const pathway of expectedPathways) {
+                await expect(page.getByText(pathway.title)).toBeVisible();
+            }
+        } else {
+            await expect(page.getByText("Your instructor hasn't assigned any content yet.")).toBeVisible();
+        }
     });
 });

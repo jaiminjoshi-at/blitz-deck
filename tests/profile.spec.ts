@@ -1,39 +1,35 @@
 import { test, expect } from '@playwright/test';
+import { loginAsLearner } from './helpers/auth';
+import { db } from '@/lib/db';
 
 test.describe('Profile Management', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.goto('/');
-    });
-
-    test('should create a new profile', async ({ page }) => {
-        // If we are redirected to home immediately (because a profile exists), 
-        // we might need to clear storage or handle that. 
-        // For now, assuming fresh state or we can access the profile switcher.
-
-        // Note: Since we use local storage, we might need to clear it to force landing page
-        // or manually click "Switch Profile" if we are logged in.
-
-        // Try to find "Switch Profile" if we are logged in
-        // Try to find the Profile button (showing name or avatar)
-        // In the mock, the avatar is '😎'. We use this as it's always visible.
-        const profileBtn = page.getByRole('button', { name: '😎' });
-
-        if (await profileBtn.isVisible()) {
-            await profileBtn.click();
-            // Wait for drawer and click Switch Profile
-            await page.getByText('Switch Profile').click();
+    test('should allow editing profile name', async ({ page }) => {
+        const learner = await db.query.users.findFirst({
+            where: (users, { eq }) => eq(users.email, 'learner@test.com')
+        });
+        
+        if (!learner) {
+            throw new Error('Learner not found in database');
         }
 
-        // Test creation logic would go here. 
-        // Since this depends on state, and the UI is complex (Avatars etc),
-        // we'll keep this simple for the initial setup.
-
-        // We can test that the Landing Page appears if no profile is selected
-        // Automation challenge: Clearing Local Storage in Playwright
-        await page.evaluate(() => window.localStorage.clear());
-        await page.reload();
-
-        await expect(page.getByText('Build it. Deck it. Know it.')).toBeVisible();
-        await expect(page.getByText('Add Profile')).toBeVisible();
+        // Log in
+        await loginAsLearner(page);
+        
+        // Navigate to edit profile page
+        await page.goto('/profile');
+        
+        // Verify input field contains current name
+        const nameInput = page.getByLabel('Your Name');
+        await expect(nameInput).toHaveValue(learner.name || '');
+        
+        // Update profile name
+        const updatedName = 'Updated Test Learner';
+        await nameInput.fill(updatedName);
+        
+        // Save changes
+        await page.click('button:has-text("Save Changes")');
+        
+        // Verify success snackbar
+        await expect(page.getByText('Profile saved successfully!')).toBeVisible();
     });
 });

@@ -52,3 +52,4 @@ lint.json
 *_log.txt
 test_output.txt
 *.log
+/scripts/seed.js
